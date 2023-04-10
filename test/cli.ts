@@ -171,6 +171,7 @@ describe('CLI', () => {
           token: undefined,
           apiUrl: 'https://api.github.com',
           graphqlUrl: 'https://api.github.com',
+          useGraphql: true,
         });
         sinon.assert.calledOnceWithExactly(
           fromManifestStub,
