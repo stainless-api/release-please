@@ -560,46 +560,58 @@ export class GitHub {
         }
 
         const commitData = response.data[i];
-        const commit: Commit = {
-          sha: commitData.sha,
-          message: commitData.commit.message,
-          files: await this.getCommitFiles(commitData.sha),
-        };
-
-        const associatedPRs =
-          await this.octokit.repos.listPullRequestsAssociatedWithCommit({
-            owner: this.repository.owner,
-            repo: this.repository.repo,
-            commit_sha: commit.sha,
-          });
-        if (associatedPRs.data.length) {
-          const pullRequest = associatedPRs.data.find(
-            pr => pr.merge_commit_sha === commit.sha
-          );
-          if (pullRequest) {
-            commit.pullRequest = {
-              sha: commit.sha,
-              number: pullRequest.number,
-              baseBranchName: pullRequest.base.ref,
-              headBranchName: pullRequest.head.ref,
-              title: pullRequest.title,
-              body: pullRequest.body ?? '',
-              labels: pullRequest.labels.map(label => label.name),
-              files: commit.files ?? [],
-            };
-          } else {
-            this.logger.warn(
-              `Found ${associatedPRs.data.length} PRs associated with ${commit.sha} but none matched the commit SHA.`
-            );
-          }
-        }
-
-        yield commit;
+        yield await this.mergeCommitREST(
+          {
+            sha: commitData.sha,
+            message: commitData.commit.message,
+          },
+          options
+        );
       }
       if (results > maxResults) {
         break;
       }
     }
+  }
+
+  private async mergeCommitREST(
+    commitData: Commit,
+    options: CommitIteratorOptions
+  ): Promise<Commit> {
+    const commit = {...commitData};
+    if (options.backfillFiles) {
+      commit.files = await this.getCommitFiles(commit.sha);
+    }
+
+    const associatedPRs =
+      await this.octokit.repos.listPullRequestsAssociatedWithCommit({
+        owner: this.repository.owner,
+        repo: this.repository.repo,
+        commit_sha: commit.sha,
+      });
+    if (associatedPRs.data.length) {
+      const pullRequest = associatedPRs.data.find(
+        pr => pr.merge_commit_sha === commit.sha
+      );
+      if (pullRequest) {
+        commit.pullRequest = {
+          sha: commit.sha,
+          number: pullRequest.number,
+          baseBranchName: pullRequest.base.ref,
+          headBranchName: pullRequest.head.ref,
+          title: pullRequest.title,
+          body: pullRequest.body ?? '',
+          labels: pullRequest.labels.map(label => label.name),
+          files: commit.files ?? [],
+        };
+      } else {
+        this.logger.warn(
+          `Found ${associatedPRs.data.length} PRs associated with ${commit.sha} but none matched the commit SHA.`
+        );
+      }
+    }
+
+    return commit;
   }
 
   /**
