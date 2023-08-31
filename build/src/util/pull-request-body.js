@@ -19,7 +19,9 @@ const node_html_parser_1 = require("node-html-parser");
 const version_1 = require("../version");
 const DEFAULT_HEADER = ':sparkles: Stainless prepared a new release';
 const DEFAULT_FOOTER = `This Pull Request has been generated automatically as part of [Stainless](https://stainlessapi.com/)'s release process.
-For technical details, see [this repository](https://github.com/stainless-api/release-please).`;
+For a better experience, it is recommended to use either rebase-merge or squash-merge when merging this pull request ([see details](https://github.com/stainless-api/release-please/#linear-git-commit-history-use-squash-merge)).
+
+_More technical details can be found at [stainless-api/release-please](https://github.com/stainless-api/release-please)_.`;
 const NOTES_DELIMITER = '---';
 class PullRequestBody {
     constructor(releaseData, options) {
