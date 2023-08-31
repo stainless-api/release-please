@@ -733,7 +733,9 @@ class Manifest {
             }
             catch (err) {
                 if ((0, errors_1.isOctokitRequestError)(err) && err.status === 404) {
-                    throw new Error(`Branch comparison between '${pr.headBranchName}' and '${branchName.changesBranch}' failed due to a missing branch. As a result branches '${pr.baseBranchName}' and '${branchName.changesBranch}' won't be re-aligned which may result in git conflicts when the next release PR is created. Note: the release branch '${pr.headBranchName}' used for the PR ${pr.number} has likely been deleted manually before the release process could run, resulting in this error.`);
+                    // note: this really should trigger an alert of some sort, but that's not yet a thing
+                    this.logger.error(`Branch comparison between '${pr.headBranchName}' and '${branchName.changesBranch}' failed due to a missing branch. As a result branches '${pr.baseBranchName}' and '${branchName.changesBranch}' won't be re-aligned which may result in git conflicts when the next release PR is created. Note: the release branch '${pr.headBranchName}' used for the PR ${pr.number} has likely been deleted manually before the release process could run, resulting in this error.`);
+                    continue;
                 }
             }
             // then check if changes-branch has already been synced with the base branch (that's the case if the release
