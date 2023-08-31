@@ -753,6 +753,11 @@ class Manifest {
             if (!(branchName === null || branchName === void 0 ? void 0 : branchName.changesBranch)) {
                 continue;
             }
+            this.logger.info(`Aligning pull request branches for PR #${pr.number}, changes branch ${branchName.changesBranch}`);
+            if (await this.github.isBranchASyncedWithB(branchName.changesBranch, this.targetBranch)) {
+                this.logger.debug(`Branches ${branchName.changesBranch} and ${this.targetBranch} already in sync, do nothing`);
+                continue;
+            }
             await this.github.alignBranchWithAnother(branchName.changesBranch, this.targetBranch);
         }
     }
