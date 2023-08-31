@@ -42,7 +42,7 @@ class ReleasePleaseConfig {
 }
 exports.ReleasePleaseConfig = ReleasePleaseConfig;
 function releaserConfigToJsonConfig(config) {
-    var _a, _b, _c;
+    var _a, _b, _c, _d;
     const jsonConfig = {
         'package-name': config.packageName,
         component: config.component,
@@ -58,6 +58,7 @@ function releaserConfigToJsonConfig(config) {
         'draft-pull-request': config.draftPullRequest,
         label: (_a = config.labels) === null || _a === void 0 ? void 0 : _a.join(','),
         'release-label': (_b = config.releaseLabels) === null || _b === void 0 ? void 0 : _b.join(','),
+        'prerelease-label': (_c = config.prereleaseLabels) === null || _c === void 0 ? void 0 : _c.join(','),
         'include-component-in-tag': config.includeComponentInTag,
         'include-v-in-tag': config.includeVInTag,
         'changelog-type': config.changelogType,
@@ -68,7 +69,7 @@ function releaserConfigToJsonConfig(config) {
         'tag-separator': config.tagSeparator,
         'extra-files': config.extraFiles,
         'version-file': config.versionFile,
-        'snapshot-label': (_c = config.snapshotLabels) === null || _c === void 0 ? void 0 : _c.join(','), // Java-only
+        'snapshot-label': (_d = config.snapshotLabels) === null || _d === void 0 ? void 0 : _d.join(','), // Java-only
     };
     return jsonConfig;
 }

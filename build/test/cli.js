@@ -325,8 +325,8 @@ const sandbox = sinon.createSandbox();
             sinon.assert.calledOnceWithExactly(fromManifestStub, fakeGitHub, 'main', manifest_1.DEFAULT_RELEASE_PLEASE_CONFIG, manifest_1.DEFAULT_RELEASE_PLEASE_MANIFEST, sinon.match.any);
             sinon.assert.calledOnce(buildReleasesStub);
         });
-        (0, mocha_1.it)('handles --label and --release-label', async () => {
-            await release_please_1.parser.parseAsync('manifest-release --repo-url=googleapis/release-please-cli --label=foo,bar --release-label=asdf,qwer');
+        (0, mocha_1.it)('handles --label, --release-label, and --prerelease-label', async () => {
+            await release_please_1.parser.parseAsync('manifest-release --repo-url=googleapis/release-please-cli --label=foo,bar --release-label=asdf,qwer --prerelease-label=preview1,preview2');
             sinon.assert.calledOnceWithExactly(gitHubCreateStub, {
                 owner: 'googleapis',
                 repo: 'release-please-cli',
@@ -335,7 +335,11 @@ const sandbox = sinon.createSandbox();
                 graphqlUrl: 'https://api.github.com',
                 useGraphql: true,
             });
-            sinon.assert.calledOnceWithExactly(fromManifestStub, fakeGitHub, 'main', manifest_1.DEFAULT_RELEASE_PLEASE_CONFIG, manifest_1.DEFAULT_RELEASE_PLEASE_MANIFEST, sinon.match({ labels: ['foo', 'bar'], releaseLabels: ['asdf', 'qwer'] }));
+            sinon.assert.calledOnceWithExactly(fromManifestStub, fakeGitHub, 'main', manifest_1.DEFAULT_RELEASE_PLEASE_CONFIG, manifest_1.DEFAULT_RELEASE_PLEASE_MANIFEST, sinon.match({
+                labels: ['foo', 'bar'],
+                releaseLabels: ['asdf', 'qwer'],
+                prereleaseLabels: ['preview1', 'preview2'],
+            }));
             sinon.assert.calledOnce(createReleasesStub);
         });
         (0, mocha_1.it)('handles --draft', async () => {
@@ -819,8 +823,8 @@ const sandbox = sinon.createSandbox();
                 sinon.assert.calledOnceWithExactly(fromManifestStub, fakeGitHub, 'main', manifest_1.DEFAULT_RELEASE_PLEASE_CONFIG, manifest_1.DEFAULT_RELEASE_PLEASE_MANIFEST, sinon.match.any);
                 sinon.assert.calledOnce(buildReleasesStub);
             });
-            (0, mocha_1.it)('handles --label and --release-label', async () => {
-                await release_please_1.parser.parseAsync('github-release --repo-url=googleapis/release-please-cli --label=foo,bar --release-label=asdf,qwer');
+            (0, mocha_1.it)('handles --label, --release-label, and --prerelease-label', async () => {
+                await release_please_1.parser.parseAsync('github-release --repo-url=googleapis/release-please-cli --label=foo,bar --release-label=asdf,qwer --prerelease-label=preview1,preview2');
                 sinon.assert.calledOnceWithExactly(gitHubCreateStub, {
                     owner: 'googleapis',
                     repo: 'release-please-cli',
@@ -829,7 +833,11 @@ const sandbox = sinon.createSandbox();
                     graphqlUrl: 'https://api.github.com',
                     useGraphql: true,
                 });
-                sinon.assert.calledOnceWithExactly(fromManifestStub, fakeGitHub, 'main', manifest_1.DEFAULT_RELEASE_PLEASE_CONFIG, manifest_1.DEFAULT_RELEASE_PLEASE_MANIFEST, sinon.match({ labels: ['foo', 'bar'], releaseLabels: ['asdf', 'qwer'] }));
+                sinon.assert.calledOnceWithExactly(fromManifestStub, fakeGitHub, 'main', manifest_1.DEFAULT_RELEASE_PLEASE_CONFIG, manifest_1.DEFAULT_RELEASE_PLEASE_MANIFEST, sinon.match({
+                    labels: ['foo', 'bar'],
+                    releaseLabels: ['asdf', 'qwer'],
+                    prereleaseLabels: ['preview1', 'preview2'],
+                }));
                 sinon.assert.calledOnce(createReleasesStub);
             });
             (0, mocha_1.it)('handles --draft', async () => {
@@ -930,8 +938,8 @@ const sandbox = sinon.createSandbox();
                 sinon.assert.calledOnceWithExactly(fromConfigStub, fakeGitHub, 'main', sinon.match({ releaseType: 'java-yoshi', prerelease: true }), sinon.match.any, undefined);
                 sinon.assert.calledOnce(createReleasesStub);
             });
-            (0, mocha_1.it)('handles --label and --release-label', async () => {
-                await release_please_1.parser.parseAsync('github-release --repo-url=googleapis/release-please-cli --release-type=java-yoshi --label=foo,bar --release-label=asdf,qwer');
+            (0, mocha_1.it)('handles --label, --release-label, and prerelease-label', async () => {
+                await release_please_1.parser.parseAsync('github-release --repo-url=googleapis/release-please-cli --release-type=java-yoshi --label=foo,bar --release-label=asdf,qwer --prerelease-label=preview1,preview2');
                 sinon.assert.calledOnceWithExactly(gitHubCreateStub, {
                     owner: 'googleapis',
                     repo: 'release-please-cli',
@@ -943,6 +951,7 @@ const sandbox = sinon.createSandbox();
                 sinon.assert.calledOnceWithExactly(fromConfigStub, fakeGitHub, 'main', sinon.match({ releaseType: 'java-yoshi' }), sinon.match({
                     labels: ['foo', 'bar'],
                     releaseLabels: ['asdf', 'qwer'],
+                    prereleaseLabels: ['preview1', 'preview2'],
                 }), undefined);
                 sinon.assert.calledOnce(createReleasesStub);
             });

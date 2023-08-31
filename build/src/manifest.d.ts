@@ -60,6 +60,7 @@ export interface ReleaserConfig {
     separatePullRequests?: boolean;
     labels?: string[];
     releaseLabels?: string[];
+    prereleaseLabels?: string[];
     extraLabels?: string[];
     initialVersion?: string;
     changelogSections?: ChangelogSection[];
@@ -96,6 +97,7 @@ interface ReleaserConfigJson {
     'draft-pull-request'?: boolean;
     label?: string;
     'release-label'?: string;
+    'prerelease-label'?: string;
     'extra-label'?: string;
     'include-component-in-tag'?: boolean;
     'include-v-in-tag'?: boolean;
@@ -123,6 +125,7 @@ export interface ManifestOptions {
     manifestPath?: string;
     labels?: string[];
     releaseLabels?: string[];
+    prereleaseLabels?: string[];
     snapshotLabels?: string[];
     skipLabeling?: boolean;
     sequentialCalls?: boolean;
@@ -185,6 +188,7 @@ export declare const DEFAULT_LABELS: string[];
 export declare const DEFAULT_RELEASE_LABELS: string[];
 export declare const DEFAULT_SNAPSHOT_LABELS: string[];
 export declare const SNOOZE_LABEL = "autorelease: snooze";
+export declare const DEFAULT_PRERELEASE_LABELS: string[];
 export declare const MANIFEST_PULL_REQUEST_TITLE_PATTERN = "chore: release ${branch}";
 interface CreatedRelease extends GitHubRelease {
     id: number;
@@ -208,6 +212,7 @@ export declare class Manifest {
     private skipLabeling?;
     private sequentialCalls?;
     private releaseLabels;
+    private prereleaseLabels;
     private snapshotLabels;
     readonly plugins: ManifestPlugin[];
     private _strategiesByPath?;
@@ -247,6 +252,8 @@ export declare class Manifest {
      *   pull request. Defaults to `[autorelease: pending]`
      * @param {string[]} manifestOptions.releaseLabels Labels to apply to a tagged release
      *   pull request. Defaults to `[autorelease: tagged]`
+     * @param {string[]} manifestOptions.prereleaseLabels Labels that denote a pre-release pull request.
+     *   Defaults to `[autorelease: pre-release]`
      */
     constructor(github: GitHub, targetBranch: string, repositoryConfig: RepositoryConfig, releasedVersions: ReleasedVersions, manifestOptions?: ManifestOptions);
     /**
@@ -285,6 +292,8 @@ export declare class Manifest {
      *   pull request. Defaults to `[autorelease: pending]`
      * @param {string[]} manifestOptions.releaseLabels Labels to apply to a tagged release
      *   pull request. Defaults to `[autorelease: tagged]`
+     * @param {string[]} manifestOptions.prereleaseLabels Labels that denote a pre-release pull request.
+     *   Defaults to `[autorelease: pre-release]`
      * @returns {Manifest}
      */
     static fromConfig(github: GitHub, targetBranch: string, config: ReleaserConfig, manifestOptions?: ManifestOptions, path?: string): Promise<Manifest>;
@@ -305,6 +314,7 @@ export declare class Manifest {
      * @returns {PullRequest[]} Pull request numbers of release pull requests
      */
     createPullRequests(): Promise<(PullRequest | undefined)[]>;
+    private registerLabels;
     private findOpenReleasePullRequests;
     private findSnoozedReleasePullRequests;
     private createOrUpdatePullRequest;

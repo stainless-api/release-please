@@ -98,6 +98,11 @@ function releaseOptions(yargs) {
         default: 'autorelease: tagged',
         type: 'string',
     })
+        .option('prerelease-label', {
+        describe: 'set a pre-release pull request label other than "autorelease: pre-release"',
+        default: 'autorelease: pre-release',
+        type: 'string',
+    })
         .option('snapshot-label', {
         describe: 'set a java snapshot pull request label other than "autorelease: snapshot"',
         default: 'autorelease: snapshot',
@@ -626,6 +631,9 @@ function extractManifestOptions(argv) {
     }
     if ('releaseLabel' in argv && argv.releaseLabel) {
         manifestOptions.releaseLabels = argv.releaseLabel.split(',');
+    }
+    if ('prereleaseLabel' in argv && argv.prereleaseLabel) {
+        manifestOptions.prereleaseLabels = argv.prereleaseLabel.split(',');
     }
     if ('snapshotLabel' in argv && argv.snapshotLabel) {
         manifestOptions.snapshotLabels = argv.snapshotLabel.split(',');

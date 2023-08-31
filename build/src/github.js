@@ -1414,6 +1414,35 @@ class GitHub {
             force: true,
         });
     }
+    async getLabels() {
+        const { owner, repo } = this.repository;
+        this.logger.info(`Fetch labels from repo ${owner}/${repo}`);
+        const labels = [];
+        for await (const page of this.octokit.paginate.iterator('GET /repos/{owner}/{repo}/labels', {
+            owner,
+            repo,
+        })) {
+            for (const label of page.data) {
+                labels.push(label.name);
+            }
+        }
+        this.logger.debug(`Found ${labels.length} labels: ${labels.join(', ')}`);
+        return labels;
+    }
+    async createLabels(labels) {
+        const { owner, repo } = this.repository;
+        for (const label of labels) {
+            this.logger.info(`Creating label '${label}' for repo ${owner}/${repo}`);
+            await this.request('POST /repos/{owner}/{repo}/labels', {
+                owner,
+                repo,
+                name: label,
+                headers: {
+                    'X-GitHub-Api-Version': '2022-11-28',
+                },
+            });
+        }
+    }
 }
 exports.GitHub = GitHub;
 /**

@@ -438,6 +438,8 @@ export declare class GitHub {
      * @param {string} targetBranch - The name of the branch whose commit the source branch will be aligned with.
      */
     alignBranchWithAnother(sourceBranchName: string, targetBranchName: string): Promise<void>;
+    getLabels(): Promise<string[]>;
+    createLabels(labels: string[]): Promise<void>;
 }
 export declare const sleepInMs: (ms: number) => Promise<unknown>;
 export {};

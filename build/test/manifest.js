@@ -241,6 +241,9 @@ function pullRequestBody(path) {
             const manifest = await manifest_1.Manifest.fromManifest(github, github.repository.defaultBranch);
             (0, chai_1.expect)(manifest['labels']).to.deep.equal(['custom: pending']);
             (0, chai_1.expect)(manifest['releaseLabels']).to.deep.equal(['custom: tagged']);
+            (0, chai_1.expect)(manifest['prereleaseLabels']).to.deep.equal([
+                'custom: pre-release',
+            ]);
         });
         (0, mocha_1.it)('should read extra labels from manifest', async () => {
             const getFileContentsStub = sandbox.stub(github, 'getFileContentsOnBranch');
@@ -2661,8 +2664,18 @@ function pullRequestBody(path) {
                 plugins: ['node-workspace'],
             });
             sandbox.stub(manifest, 'buildPullRequests').resolves([]);
+            const getLabelsStub = sandbox
+                .stub(github, 'getLabels')
+                .resolves(['label-a', 'label-b']);
+            const createLabelsStub = sandbox.stub(github, 'createLabels').resolves();
             const pullRequests = await manifest.createPullRequests();
             (0, chai_1.expect)(pullRequests).to.be.empty;
+            sinon.assert.calledOnce(getLabelsStub);
+            sinon.assert.calledOnceWithExactly(createLabelsStub, [
+                'autorelease: pending',
+                'autorelease: tagged',
+                'autorelease: pre-release',
+            ]);
         });
         (0, mocha_1.it)('handles a single pull request', async () => {
             sandbox
@@ -2727,8 +2740,18 @@ function pullRequestBody(path) {
                     draft: false,
                 },
             ]);
+            const getLabelsStub = sandbox
+                .stub(github, 'getLabels')
+                .resolves(['label-a', 'label-b']);
+            const createLabelsStub = sandbox.stub(github, 'createLabels').resolves();
             const pullRequests = await manifest.createPullRequests();
             (0, chai_1.expect)(pullRequests).lengthOf(1);
+            sinon.assert.calledOnce(getLabelsStub);
+            sinon.assert.calledOnceWithExactly(createLabelsStub, [
+                'autorelease: pending',
+                'autorelease: tagged',
+                'autorelease: pre-release',
+            ]);
         });
         (0, mocha_1.it)('handles a multiple pull requests', async () => {
             sandbox
@@ -2836,9 +2859,19 @@ function pullRequestBody(path) {
                     draft: false,
                 },
             ]);
+            const getLabelsStub = sandbox
+                .stub(github, 'getLabels')
+                .resolves(['label-a', 'label-b']);
+            const createLabelsStub = sandbox.stub(github, 'createLabels').resolves();
             const pullRequests = await manifest.createPullRequests();
             (0, chai_1.expect)(pullRequests.map(pullRequest => pullRequest.number)).to.eql([
                 123, 124,
+            ]);
+            sinon.assert.calledOnce(getLabelsStub);
+            sinon.assert.calledOnceWithExactly(createLabelsStub, [
+                'autorelease: pending',
+                'autorelease: tagged',
+                'autorelease: pre-release',
             ]);
         });
         (0, mocha_1.it)('handles signoff users', async () => {
@@ -2905,8 +2938,18 @@ function pullRequestBody(path) {
                     draft: false,
                 },
             ]);
+            const getLabelsStub = sandbox
+                .stub(github, 'getLabels')
+                .resolves(['label-a', 'label-b']);
+            const createLabelsStub = sandbox.stub(github, 'createLabels').resolves();
             const pullRequestNumbers = await manifest.createPullRequests();
             (0, chai_1.expect)(pullRequestNumbers).lengthOf(1);
+            sinon.assert.calledOnce(getLabelsStub);
+            sinon.assert.calledOnceWithExactly(createLabelsStub, [
+                'autorelease: pending',
+                'autorelease: tagged',
+                'autorelease: pre-release',
+            ]);
         });
         (0, mocha_1.it)('handles fork = true', async () => {
             sandbox
@@ -2972,8 +3015,18 @@ function pullRequestBody(path) {
                     draft: false,
                 },
             ]);
+            const getLabelsStub = sandbox
+                .stub(github, 'getLabels')
+                .resolves(['label-a', 'label-b']);
+            const createLabelsStub = sandbox.stub(github, 'createLabels').resolves();
             const pullRequestNumbers = await manifest.createPullRequests();
             (0, chai_1.expect)(pullRequestNumbers).lengthOf(1);
+            sinon.assert.calledOnce(getLabelsStub);
+            sinon.assert.calledOnceWithExactly(createLabelsStub, [
+                'autorelease: pending',
+                'autorelease: tagged',
+                'autorelease: pre-release',
+            ]);
         });
         (0, mocha_1.it)('updates an existing pull request', async () => {
             sandbox
@@ -3051,8 +3104,18 @@ function pullRequestBody(path) {
                     draft: false,
                 },
             ]);
+            const getLabelsStub = sandbox
+                .stub(github, 'getLabels')
+                .resolves(['label-a', 'label-b']);
+            const createLabelsStub = sandbox.stub(github, 'createLabels').resolves();
             const pullRequestNumbers = await manifest.createPullRequests();
             (0, chai_1.expect)(pullRequestNumbers).lengthOf(1);
+            sinon.assert.calledOnce(getLabelsStub);
+            sinon.assert.calledOnceWithExactly(createLabelsStub, [
+                'autorelease: pending',
+                'autorelease: tagged',
+                'autorelease: pre-release',
+            ]);
         });
         (0, mocha_1.describe)('with an overflowing body', () => {
             const body = new pull_request_body_1.PullRequestBody((0, helpers_1.mockReleaseData)(1000), {
@@ -3116,9 +3179,21 @@ function pullRequestBody(path) {
                         draft: false,
                     },
                 ]);
+                const getLabelsStub = sandbox
+                    .stub(github, 'getLabels')
+                    .resolves(['label-a', 'label-b']);
+                const createLabelsStub = sandbox
+                    .stub(github, 'createLabels')
+                    .resolves();
                 const pullRequestNumbers = await manifest.createPullRequests();
                 sinon.assert.calledOnce(updatePullRequestStub);
                 sinon.assert.calledOnce(buildPullRequestsStub);
+                sinon.assert.calledOnce(getLabelsStub);
+                sinon.assert.calledOnceWithExactly(createLabelsStub, [
+                    'autorelease: pending',
+                    'autorelease: tagged',
+                    'autorelease: pre-release',
+                ]);
                 (0, chai_1.expect)(pullRequestNumbers).lengthOf(1);
             });
             (0, mocha_1.it)('ignores an existing pull request if there are no changes', async () => {
@@ -3179,6 +3254,12 @@ function pullRequestBody(path) {
                     separatePullRequests: true,
                     plugins: ['node-workspace'],
                 });
+                const getLabelsStub = sandbox
+                    .stub(github, 'getLabels')
+                    .resolves(['label-a', 'label-b', 'autorelease: pending']);
+                const createLabelsStub = sandbox
+                    .stub(github, 'createLabels')
+                    .resolves();
                 sandbox.stub(manifest, 'buildPullRequests').resolves([
                     {
                         title: pull_request_title_1.PullRequestTitle.ofTargetBranch('main', 'main'),
@@ -3197,6 +3278,11 @@ function pullRequestBody(path) {
                 ]);
                 const pullRequestNumbers = await manifest.createPullRequests();
                 (0, chai_1.expect)(pullRequestNumbers).lengthOf(0);
+                sinon.assert.calledOnce(getLabelsStub);
+                sinon.assert.calledOnceWithExactly(createLabelsStub, [
+                    'autorelease: tagged',
+                    'autorelease: pre-release',
+                ]);
             });
         });
         (0, mocha_1.it)('updates an existing snapshot pull request', async () => {
@@ -3254,6 +3340,10 @@ function pullRequestBody(path) {
             }, {
                 separatePullRequests: true,
             });
+            const getLabelsStub = sandbox
+                .stub(github, 'getLabels')
+                .resolves(['label-a', 'label-b', 'autorelease: pending']);
+            const createLabelsStub = sandbox.stub(github, 'createLabels').resolves();
             sandbox.stub(manifest, 'buildPullRequests').resolves([
                 {
                     title: pull_request_title_1.PullRequestTitle.ofTargetBranch('main', 'main'),
@@ -3276,6 +3366,11 @@ function pullRequestBody(path) {
             ]);
             const pullRequestNumbers = await manifest.createPullRequests();
             (0, chai_1.expect)(pullRequestNumbers).lengthOf(1);
+            sinon.assert.calledOnce(getLabelsStub);
+            sinon.assert.calledOnceWithExactly(createLabelsStub, [
+                'autorelease: tagged',
+                'autorelease: pre-release',
+            ]);
         });
         (0, mocha_1.it)('skips pull requests if there are pending, merged pull requests', async () => {
             sandbox
@@ -3329,8 +3424,18 @@ function pullRequestBody(path) {
                     draft: false,
                 },
             ]);
+            const getLabelsStub = sandbox
+                .stub(github, 'getLabels')
+                .resolves(['label-a', 'label-b']);
+            const createLabelsStub = sandbox.stub(github, 'createLabels').resolves();
             const pullRequestNumbers = await manifest.createPullRequests();
             (0, chai_1.expect)(pullRequestNumbers).lengthOf(0);
+            sinon.assert.calledOnce(getLabelsStub);
+            sinon.assert.calledOnceWithExactly(createLabelsStub, [
+                'autorelease: pending',
+                'autorelease: tagged',
+                'autorelease: pre-release',
+            ]);
         });
         (0, mocha_1.it)('reopens snoozed, closed pull request if there are changes', async () => {
             sandbox
@@ -3411,8 +3516,18 @@ function pullRequestBody(path) {
             const removeLabelsStub = sandbox
                 .stub(github, 'removeIssueLabels')
                 .resolves();
+            const getLabelsStub = sandbox
+                .stub(github, 'getLabels')
+                .resolves(['label-a', 'label-b']);
+            const createLabelsStub = sandbox.stub(github, 'createLabels').resolves();
             const pullRequestNumbers = await manifest.createPullRequests();
             (0, chai_1.expect)(pullRequestNumbers).lengthOf(1);
+            sinon.assert.calledOnce(getLabelsStub);
+            sinon.assert.calledOnceWithExactly(createLabelsStub, [
+                'autorelease: pending',
+                'autorelease: tagged',
+                'autorelease: pre-release',
+            ]);
             sinon.assert.calledOnce(removeLabelsStub);
         });
         (0, mocha_1.it)('ignores snoozed, closed pull request if there are no changes', async () => {
@@ -3468,8 +3583,18 @@ function pullRequestBody(path) {
                     draft: false,
                 },
             ]);
+            const getLabelsStub = sandbox
+                .stub(github, 'getLabels')
+                .resolves(['label-a', 'label-b']);
+            const createLabelsStub = sandbox.stub(github, 'createLabels').resolves();
             const pullRequestNumbers = await manifest.createPullRequests();
             (0, chai_1.expect)(pullRequestNumbers).lengthOf(0);
+            sinon.assert.calledOnce(getLabelsStub);
+            sinon.assert.calledOnceWithExactly(createLabelsStub, [
+                'autorelease: pending',
+                'autorelease: tagged',
+                'autorelease: pre-release',
+            ]);
         });
     });
     (0, mocha_1.describe)('buildReleases', () => {
@@ -4381,6 +4506,7 @@ function pullRequestBody(path) {
             }, {
                 labels: ['some-pull-request-label'],
                 releaseLabels: ['some-tagged-label'],
+                prereleaseLabels: ['some-prerelease-label'],
             });
             const releases = await manifest.createReleases();
             (0, chai_1.expect)(releases).lengthOf(1);
@@ -4500,7 +4626,7 @@ function pullRequestBody(path) {
                 prerelease: true,
             });
             sinon.assert.calledOnce(commentStub);
-            sinon.assert.calledOnceWithExactly(addLabelsStub, ['autorelease: tagged'], 1234);
+            sinon.assert.calledOnceWithExactly(addLabelsStub, ['autorelease: tagged', 'autorelease: pre-release'], 1234);
             sinon.assert.calledOnceWithExactly(removeLabelsStub, ['autorelease: pending'], 1234);
             sinon.assert.calledOnce(lockBranchStub);
             sinon.assert.calledOnce(unlockBranchStub);
@@ -4557,6 +4683,61 @@ function pullRequestBody(path) {
             });
             sinon.assert.calledOnce(commentStub);
             sinon.assert.calledOnceWithExactly(addLabelsStub, ['autorelease: tagged'], 1234);
+            sinon.assert.calledOnceWithExactly(removeLabelsStub, ['autorelease: pending'], 1234);
+            sinon.assert.calledOnce(lockBranchStub);
+            sinon.assert.calledOnce(unlockBranchStub);
+        });
+        (0, mocha_1.it)('should create a prerelease when pull request labelled as pre-release', async () => {
+            mockPullRequests(github, [], [
+                {
+                    headBranchName: 'release-please/branches/main',
+                    baseBranchName: 'main',
+                    number: 1234,
+                    title: 'chore: release main',
+                    body: pullRequestBody('release-notes/single-manifest.txt'),
+                    labels: ['autorelease: pending', 'autorelease: pre-release'],
+                    files: [],
+                    sha: 'abc123',
+                },
+            ]);
+            const getFileContentsStub = sandbox.stub(github, 'getFileContentsOnBranch');
+            getFileContentsStub
+                .withArgs('package.json', 'main')
+                .resolves((0, helpers_1.buildGitHubFileRaw)(JSON.stringify({ name: '@google-cloud/release-brancher' })));
+            const githubReleaseStub = mockCreateRelease(github, [
+                {
+                    id: 123456,
+                    sha: 'abc123',
+                    tagName: 'release-brancher-v1.3.1',
+                    prerelease: true,
+                },
+            ]);
+            const commentStub = sandbox.stub(github, 'commentOnIssue').resolves();
+            const addLabelsStub = sandbox.stub(github, 'addIssueLabels').resolves();
+            const removeLabelsStub = sandbox
+                .stub(github, 'removeIssueLabels')
+                .resolves();
+            const lockBranchStub = sandbox.stub(github, 'lockBranch').resolves();
+            const unlockBranchStub = sandbox.stub(github, 'unlockBranch').resolves();
+            const manifest = new manifest_1.Manifest(github, 'main', {
+                '.': {
+                    releaseType: 'node',
+                },
+            }, {
+                '.': version_1.Version.parse('1.3.1'),
+            });
+            const releases = await manifest.createReleases();
+            (0, chai_1.expect)(releases).lengthOf(1);
+            (0, chai_1.expect)(releases[0].tagName).to.eql('release-brancher-v1.3.1');
+            (0, chai_1.expect)(releases[0].sha).to.eql('abc123');
+            (0, chai_1.expect)(releases[0].notes).to.eql('some release notes');
+            (0, chai_1.expect)(releases[0].draft).to.be.undefined;
+            sinon.assert.calledOnceWithExactly(githubReleaseStub, sinon.match.any, {
+                draft: undefined,
+                prerelease: true,
+            });
+            sinon.assert.calledOnce(commentStub);
+            sinon.assert.calledOnceWithExactly(addLabelsStub, ['autorelease: tagged', 'autorelease: pre-release'], 1234);
             sinon.assert.calledOnceWithExactly(removeLabelsStub, ['autorelease: pending'], 1234);
             sinon.assert.calledOnce(lockBranchStub);
             sinon.assert.calledOnce(unlockBranchStub);
