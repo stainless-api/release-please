@@ -4734,7 +4734,7 @@ function pullRequestBody(path) {
             sinon.assert.calledOnce(lockBranchStub);
             sinon.assert.calledOnce(unlockBranchStub);
         });
-        (0, mocha_1.it)('should fallback to checking twice for race conditions when branch lock fails due to missing token permissions (REST error)', async () => {
+        (0, mocha_1.it)('should use fallback when branch lock fails due to missing token permissions (REST error)', async () => {
             mockPullRequests(github, [], [
                 {
                     headBranchName: 'release-please/branches/main',
@@ -4792,7 +4792,7 @@ function pullRequestBody(path) {
             }, {
                 '.': version_1.Version.parse('1.3.1'),
             });
-            // stub the race condition detection method to be able to check it was called twice
+            // stub the race condition detection method to be able to check it was called once
             const throwIfChangesBranchesRaceConditionDetectedStub = sandbox.stub(manifest, 'throwIfChangesBranchesRaceConditionDetected' // eslint-disable-line @typescript-eslint/no-explicit-any
             );
             const releases = await manifest.createReleases();
@@ -4804,11 +4804,11 @@ function pullRequestBody(path) {
             sinon.assert.calledOnce(commentStub);
             sinon.assert.calledOnceWithExactly(addLabelsStub, ['autorelease: tagged'], 1234);
             sinon.assert.calledOnceWithExactly(removeLabelsStub, ['autorelease: pending'], 1234);
-            sinon.assert.calledTwice(throwIfChangesBranchesRaceConditionDetectedStub);
+            sinon.assert.called(throwIfChangesBranchesRaceConditionDetectedStub);
             // ensure we don't try to update permissions rules again given the lock failed
             sinon.assert.notCalled(unlockBranchStub);
         });
-        (0, mocha_1.it)('should fallback to checking twice for race conditions when branch lock fails due to missing token permissions (GraphQL error)', async () => {
+        (0, mocha_1.it)('should use fallback when branch lock fails due to missing token permissions (GraphQL error)', async () => {
             mockPullRequests(github, [], [
                 {
                     headBranchName: 'release-please/branches/main',
@@ -4864,7 +4864,7 @@ function pullRequestBody(path) {
             }, {
                 '.': version_1.Version.parse('1.3.1'),
             });
-            // stub the race condition detection method to be able to check it was called twice
+            // stub the race condition detection method to be able to check it was called once
             const throwIfChangesBranchesRaceConditionDetectedStub = sandbox.stub(manifest, 'throwIfChangesBranchesRaceConditionDetected' // eslint-disable-line @typescript-eslint/no-explicit-any
             );
             const releases = await manifest.createReleases();
@@ -4876,7 +4876,7 @@ function pullRequestBody(path) {
             sinon.assert.calledOnce(commentStub);
             sinon.assert.calledOnceWithExactly(addLabelsStub, ['autorelease: tagged'], 1234);
             sinon.assert.calledOnceWithExactly(removeLabelsStub, ['autorelease: pending'], 1234);
-            sinon.assert.calledTwice(throwIfChangesBranchesRaceConditionDetectedStub);
+            sinon.assert.calledOnce(throwIfChangesBranchesRaceConditionDetectedStub);
             // ensure we don't try to update permissions rules again given the lock failed
             sinon.assert.notCalled(unlockBranchStub);
         });
