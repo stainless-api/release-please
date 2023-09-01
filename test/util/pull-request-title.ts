@@ -12,10 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {
-  generateMatchPattern,
-  PullRequestTitle,
-} from '../../src/util/pull-request-title';
+import {PullRequestTitle} from '../../src/util/pull-request-title';
 import {describe, it} from 'mocha';
 import {expect} from 'chai';
 import {Version} from '../../src/version';
@@ -148,7 +145,7 @@ describe('PullRequestTitle', () => {
   });
   describe('generateMatchPattern', () => {
     it('return matchPattern with default Pattern', () => {
-      const matchPattern = generateMatchPattern();
+      const matchPattern = PullRequestTitle.generateMatchPattern(undefined);
       expect(matchPattern).to.eql(
         /^chore(\((?<changesBranch>[\w-./]+ => )?(?<branch>[\w-./]+)\))?: release ?(?<component>@?[\w-./]*)? v?(?<version>[0-9].*)$/
       );
@@ -335,7 +332,7 @@ describe('PullRequestTitle with custom pullRequestTitlePattern', () => {
   });
   describe('generateMatchPattern', () => {
     it('return matchPattern with custom Pattern', () => {
-      const matchPattern = generateMatchPattern(
+      const matchPattern = PullRequestTitle.generateMatchPattern(
         'chore${scope}: 🔖 release${component} ${version}'
       );
       expect(matchPattern).to.eql(

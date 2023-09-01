@@ -17,7 +17,7 @@ import {GitHub, GitHubRelease, GitHubTag} from './github';
 import {Version, VersionsMap} from './version';
 import {Commit, parseConventionalCommits} from './commit';
 import {PullRequest} from './pull-request';
-import {logger as defaultLogger, Logger} from './util/logger';
+import {logger as defaultLogger, logger, Logger} from './util/logger';
 import {CommitSplit} from './util/commit-split';
 import {TagName} from './util/tag-name';
 import {Repository} from './repository';
@@ -417,6 +417,7 @@ export class Manifest {
       parseConfig(github, configFile, targetBranch, path, releaseAs),
       parseReleasedVersions(github, manifestFile, targetBranch),
     ]);
+
     return new Manifest(
       github,
       targetBranch,

@@ -21,42 +21,6 @@ import {Version} from '../version';
 
 const DEFAULT_PR_TITLE_PATTERN =
   'chore${scope}: release${component} ${version}';
-export function generateMatchPattern(
-  pullRequestTitlePattern?: string,
-  logger: Logger = defaultLogger
-): RegExp {
-  if (
-    pullRequestTitlePattern &&
-    pullRequestTitlePattern.search(/\$\{scope\}/) === -1
-  ) {
-    logger.warn("pullRequestTitlePattern miss the part of '${scope}'");
-  }
-  if (
-    pullRequestTitlePattern &&
-    pullRequestTitlePattern.search(/\$\{component\}/) === -1
-  )
-    logger.warn("pullRequestTitlePattern miss the part of '${component}'");
-  if (
-    pullRequestTitlePattern &&
-    pullRequestTitlePattern.search(/\$\{version\}/) === -1
-  )
-    logger.warn("pullRequestTitlePattern miss the part of '${version}'");
-  return new RegExp(
-    `^${(pullRequestTitlePattern || DEFAULT_PR_TITLE_PATTERN)
-      .replace('[', '\\[') // TODO: handle all regex escaping
-      .replace(']', '\\]')
-      .replace('(', '\\(')
-      .replace(')', '\\)')
-      .replace(
-        '${scope}',
-        '(\\((?<changesBranch>[\\w-./]+ => )?(?<branch>[\\w-./]+)\\))?'
-      )
-      .replace('${component}', ' ?(?<component>@?[\\w-./]*)?')
-      .replace('${version}', 'v?(?<version>[0-9].*)')
-      .replace('${changesBranch}', '(?<changesBranch>?[\\w-./]+)?')
-      .replace('${branch}', '(?<branch>[\\w-./]+)?')}$`
-  );
-}
 
 export class PullRequestTitle {
   component?: string;
@@ -65,6 +29,7 @@ export class PullRequestTitle {
   version?: Version;
   pullRequestTitlePattern: string;
   matchPattern: RegExp;
+  logger: Logger;
 
   private constructor(opts: {
     version?: Version;
@@ -74,15 +39,61 @@ export class PullRequestTitle {
     pullRequestTitlePattern?: string;
     logger?: Logger;
   }) {
+    this.logger = opts.logger || defaultLogger;
     this.version = opts.version;
     this.component = opts.component;
     this.targetBranch = opts.targetBranch;
     this.changesBranch = opts.changesBranch || this.targetBranch;
     this.pullRequestTitlePattern =
       opts.pullRequestTitlePattern || DEFAULT_PR_TITLE_PATTERN;
-    this.matchPattern = generateMatchPattern(
+
+    this.matchPattern = PullRequestTitle.generateMatchPattern(
       this.pullRequestTitlePattern,
-      opts.logger
+      this.logger
+    );
+    if (this.pullRequestTitlePattern) {
+      this.logger.debug(
+        `Generated match pattern with custom PR title pattern. PR title pattern: '${this.pullRequestTitlePattern}', resulting pattern: '${this.matchPattern}'`
+      );
+    }
+  }
+
+  static generateMatchPattern(
+    pullRequestTitlePattern: string | undefined,
+    logger: Logger = defaultLogger
+  ): RegExp {
+    if (
+      pullRequestTitlePattern &&
+      pullRequestTitlePattern.search(/\$\{scope\}/) === -1
+    ) {
+      logger.warn("pullRequestTitlePattern miss the part of '${scope}'");
+    }
+    if (
+      pullRequestTitlePattern &&
+      pullRequestTitlePattern.search(/\$\{component\}/) === -1
+    ) {
+      logger.warn("pullRequestTitlePattern miss the part of '${component}'");
+    }
+    if (
+      pullRequestTitlePattern &&
+      pullRequestTitlePattern.search(/\$\{version\}/) === -1
+    ) {
+      logger.warn("pullRequestTitlePattern miss the part of '${version}'");
+    }
+    return new RegExp(
+      `^${(pullRequestTitlePattern || DEFAULT_PR_TITLE_PATTERN)
+        .replace('[', '\\[') // TODO: handle all regex escaping
+        .replace(']', '\\]')
+        .replace('(', '\\(')
+        .replace(')', '\\)')
+        .replace(
+          '${scope}',
+          '(\\((?<changesBranch>[\\w-./]+ => )?(?<branch>[\\w-./]+)\\))?'
+        )
+        .replace('${component}', ' ?(?<component>@?[\\w-./]*)?')
+        .replace('${version}', 'v?(?<version>[0-9].*)')
+        .replace('${changesBranch}', '(?<changesBranch>?[\\w-./]+)?')
+        .replace('${branch}', '(?<branch>[\\w-./]+)?')}$`
     );
   }
 
@@ -91,7 +102,10 @@ export class PullRequestTitle {
     pullRequestTitlePattern?: string,
     logger: Logger = defaultLogger
   ): PullRequestTitle | undefined {
-    const matchPattern = generateMatchPattern(pullRequestTitlePattern, logger);
+    const matchPattern = PullRequestTitle.generateMatchPattern(
+      pullRequestTitlePattern,
+      logger
+    );
     const match = title.match(matchPattern);
     if (match?.groups) {
       return new PullRequestTitle({

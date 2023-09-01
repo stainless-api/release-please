@@ -286,10 +286,6 @@ export abstract class BaseStrategy implements Strategy {
       this.includeVInTag
     );
 
-    this.logger.debug(
-      'pull request title pattern:',
-      this.pullRequestTitlePattern
-    );
     const pullRequestTitle = PullRequestTitle.ofComponentTargetBranchVersion(
       component || '',
       this.targetBranch,

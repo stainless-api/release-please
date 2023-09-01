@@ -1663,7 +1663,7 @@ export class GitHub {
 
     if (!content?.html_url) {
       throw new Error(
-        `Failed to write to file: ${filename} on branch: ${newBranchName}`
+        `Failed to write to file '${filename}' on branch '${newBranchName}'`
       );
     }
 
@@ -1677,7 +1677,7 @@ export class GitHub {
    *   or undefined if it can't be found.
    */
   private async getBranchSha(branchName: string): Promise<string | undefined> {
-    this.logger.debug(`Looking up SHA for branch: ${branchName}`);
+    this.logger.debug(`Looking up SHA for branch '${branchName}'`);
     try {
       const {
         data: {
@@ -1688,11 +1688,11 @@ export class GitHub {
         repo: this.repository.repo,
         ref: `heads/${branchName}`,
       });
-      this.logger.debug(`SHA for branch: ${sha}`);
+      this.logger.debug(`SHA: ${sha}`);
       return sha;
     } catch (e) {
       if (isOctokitRequestError(e) && e.status === 404) {
-        this.logger.debug(`Branch: ${branchName} does not exist`);
+        this.logger.debug(`Branch '${branchName}' does not exist`);
         return undefined;
       }
       throw e;
@@ -1776,7 +1776,6 @@ export class GitHub {
     branchName: string,
     branchSha: string
   ): Promise<string> {
-    this.logger.debug(`Updating branch '${branchName}' to '${branchSha}'`);
     const {
       data: {
         object: {sha},
@@ -1788,7 +1787,6 @@ export class GitHub {
       sha: branchSha,
       force: true,
     });
-    this.logger.debug(`Updated branch: '${branchName}' to ${sha}`);
     return sha;
   }
 
