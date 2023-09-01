@@ -540,12 +540,14 @@ export class Manifest {
       const expectedVersion = this.releasedVersions[path];
       if (!expectedVersion) {
         this.logger.warn(
-          `Unable to find expected version for path '${path}' in manifest`
+          `Unable to find an expected version for path '${path}' in manifest`
         );
         continue;
       }
       if (expectedVersion.toString() === tagName.version.toString()) {
-        this.logger.debug(`Found release for path ${path}, ${release.tagName}`);
+        this.logger.debug(
+          `Found release with tag matching expected version for path ${path} (tag ${release.tagName})`
+        );
         releaseShasByPath[path] = release.sha;
         releasesByPath[path] = {
           name: release.name,
@@ -562,14 +564,14 @@ export class Manifest {
     }
 
     if (releasesFound < expectedReleases) {
-      this.logger.warn(
-        `Expected ${expectedReleases} releases, only found ${releasesFound}`
-      );
-      // Fall back to looking for missing releases using expected tags
       const missingPaths = Object.keys(strategiesByPath).filter(
         path => !releasesByPath[path]
       );
-      this.logger.warn(`Missing ${missingPaths.length} paths: ${missingPaths}`);
+      this.logger.warn(
+        `Expected to find ${expectedReleases} releases but only found ${releasesFound} of them. Fall back to finding missing releases using expected tags. Paths missing a release: ${missingPaths.join(
+          ', '
+        )}`
+      );
       const missingReleases = await this.backfillReleasesFromTags(
         missingPaths,
         strategiesByPath
@@ -581,27 +583,27 @@ export class Manifest {
       }
     }
 
-    const needsBootstrap = releasesFound < expectedReleases;
-
     if (releasesFound < expectedReleases) {
       this.logger.warn(
         `Expected ${expectedReleases} releases, only found ${releasesFound}`
       );
     }
+
     for (const path in releasesByPath) {
       const release = releasesByPath[path];
-      this.logger.debug(
-        `release for path: ${path}, version: ${release.tag.version.toString()}, sha: ${
+      this.logger.trace(
+        `Release for path: ${path}, version: ${release.tag.version.toString()}, sha: ${
           release.sha
         }`
       );
     }
 
-    // iterate through commits and collect commits until we have
-    // seen all release commits
-    this.logger.info('Collecting commits since all latest releases');
+    // iterate through commits and collect them until we have seen all release commits
+    this.logger.info('Collecting commits since latest releases');
     const commits: Commit[] = [];
-    this.logger.debug(`commit search depth: ${this.commitSearchDepth}`);
+    this.logger.debug(
+      `Searching through the latest ${this.commitSearchDepth} commits on branch ${this.changesBranch}`
+    );
     const commitGenerator = this.github.mergeCommitIterator(
       this.changesBranch,
       {
@@ -610,10 +612,10 @@ export class Manifest {
       }
     );
     const releaseShas = new Set(Object.values(releaseShasByPath));
-    this.logger.debug(releaseShas);
     const expectedShas = releaseShas.size;
 
     // sha => release pull request
+    const needsBootstrap = releasesFound < expectedReleases;
     const releasePullRequestsBySha: Record<string, PullRequest> = {};
     let releaseCommitsFound = 0;
     for await (const commit of commitGenerator) {

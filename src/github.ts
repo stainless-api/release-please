@@ -432,7 +432,7 @@ export class GitHub {
     options: CommitIteratorOptions = {}
   ): Promise<CommitHistory | null> {
     this.logger.debug(
-      `Fetching merge commits on branch '${targetBranch}' with cursor: '${cursor}'`
+      `Fetching merge commits on branch '${targetBranch}' (cursor ${cursor})`
     );
     const query = `query pullRequestsSince($owner: String!, $repo: String!, $num: Int!, $maxFilesChanged: Int, $targetBranch: String!, $cursor: String) {
       repository(owner: $owner, name: $repo) {
@@ -504,7 +504,7 @@ export class GitHub {
     // if the branch does exist, return null
     if (!response.repository?.ref) {
       this.logger.warn(
-        `Could not find commits for branch '${targetBranch}' - it likely does not exist.`
+        `Could not find commits for branch '${targetBranch}' - it likely does not exist`
       );
       return null;
     }
@@ -993,7 +993,7 @@ export class GitHub {
   private async releaseGraphQL(
     cursor?: string
   ): Promise<ReleaseHistory | null> {
-    this.logger.debug(`Fetching releases with cursor ${cursor}`);
+    this.logger.debug(`Fetching releases (cursor ${cursor})`);
     const response = await this.graphqlRequest({
       query: `query releases($owner: String!, $repo: String!, $num: Int!, $cursor: String) {
         repository(owner: $owner, name: $repo) {
@@ -1023,7 +1023,7 @@ export class GitHub {
       num: 25,
     });
     if (!response.repository.releases.nodes.length) {
-      this.logger.warn('Could not find releases.');
+      this.logger.warn('GraphQL query did not return any GitHub release');
       return null;
     }
     const releases = response.repository.releases.nodes as GraphQLRelease[];
@@ -1033,7 +1033,10 @@ export class GitHub {
         .filter(release => !!release.tagCommit)
         .map(release => {
           if (!release.tag || !release.tagCommit) {
-            this.logger.debug(release);
+            this.logger.warn(
+              `Release returned by GraphQL query missing tag and tagCommit`,
+              release
+            );
           }
           return {
             name: release.name || undefined,
