@@ -588,9 +588,12 @@ export class Manifest {
     }
 
     if (releasesFound < expectedReleases) {
-      this.logger.warn(
-        `Expected ${expectedReleases} releases, only found ${releasesFound}`
-      );
+      const errMessage = `Expected to find ${expectedReleases} releases, but only ${releasesFound} releases could be found. Hint: does the manifest points to versions for which no tag or github release exist?`;
+      if (this.bootstrapSha || this.lastReleaseSha) {
+        this.logger.warn(errMessage);
+      } else {
+        throw new Error(errMessage);
+      }
     }
 
     for (const path in releasesByPath) {
