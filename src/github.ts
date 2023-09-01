@@ -132,6 +132,7 @@ interface GraphQLPullRequest {
 }
 
 interface GraphQLRelease {
+  databaseId: number;
   name: string;
   tag: {
     name: string;
@@ -999,6 +1000,7 @@ export class GitHub {
         repository(owner: $owner, name: $repo) {
           releases(first: $num, after: $cursor, orderBy: {field: CREATED_AT, direction: DESC}) {
             nodes {
+              databaseId
               name
               tag {
                 name
@@ -1039,6 +1041,7 @@ export class GitHub {
             );
           }
           return {
+            id: release.databaseId,
             name: release.name || undefined,
             tagName: release.tag ? release.tag.name : 'unknown',
             sha: release.tagCommit.oid,

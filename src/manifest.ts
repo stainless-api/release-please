@@ -520,10 +520,13 @@ export class Manifest {
 
     // Releases by path
     const releasesByPath: Record<string, Release> = {};
-    this.logger.debug(`release search depth: ${this.releaseSearchDepth}`);
+    this.logger.debug(
+      `Searching through the latest ${this.releaseSearchDepth} GitHub releases`
+    );
     for await (const release of this.github.releaseIterator({
       maxResults: this.releaseSearchDepth,
     })) {
+      this.logger.debug(`GitHub release with id ${release.id}`);
       const tagName = TagName.parse(release.tagName);
       if (!tagName) {
         this.logger.warn(`Unable to parse release name: ${release.name}`);
