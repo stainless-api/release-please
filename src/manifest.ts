@@ -17,7 +17,7 @@ import {GitHub, GitHubRelease, GitHubTag} from './github';
 import {Version, VersionsMap} from './version';
 import {Commit, parseConventionalCommits} from './commit';
 import {PullRequest} from './pull-request';
-import {logger as defaultLogger, logger, Logger} from './util/logger';
+import {logger as defaultLogger, Logger} from './util/logger';
 import {CommitSplit} from './util/commit-split';
 import {TagName} from './util/tag-name';
 import {Repository} from './repository';
@@ -572,7 +572,7 @@ export class Manifest {
         path => !releasesByPath[path]
       );
       this.logger.warn(
-        `Expected to find ${expectedReleases} releases but only found ${releasesFound} of them. Fall back to finding missing releases using expected tags. Paths missing a release: ${missingPaths.join(
+        `Expected to find ${expectedReleases} releases but instead found ${releasesFound} of them. Fall back to finding missing releases using expected tags. Paths missing a release: ${missingPaths.join(
           ', '
         )}`
       );
@@ -588,7 +588,11 @@ export class Manifest {
     }
 
     if (releasesFound < expectedReleases) {
-      const errMessage = `Expected to find ${expectedReleases} releases, but only ${releasesFound} releases could be found. Hint: does the manifest points to versions for which no tag or github release exist?`;
+      const errMessage = `Expected to find ${expectedReleases} releases, but ${
+        releasesFound === 0
+          ? 'none could be found'
+          : `only found ${releasesFound} of them`
+      }. Hint: does the manifest points to versions for which no tag or github release exist? Was the tag deleted?`;
       if (this.bootstrapSha || this.lastReleaseSha) {
         this.logger.warn(errMessage);
       } else {

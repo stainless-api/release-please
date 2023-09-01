@@ -1036,7 +1036,7 @@ export class GitHub {
         .map(release => {
           if (!release.tag || !release.tagCommit) {
             this.logger.warn(
-              `Release returned by GraphQL query missing tag and tagCommit`,
+              'Release returned by GraphQL query missing tag and tagCommit',
               release
             );
           }
