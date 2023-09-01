@@ -433,7 +433,9 @@ export class GitHub {
     options: CommitIteratorOptions = {}
   ): Promise<CommitHistory | null> {
     this.logger.debug(
-      `Fetching merge commits on branch '${targetBranch}' (cursor ${cursor})`
+      `Fetching merge commits on branch '${targetBranch}'${
+        cursor ? ` (cursor ${cursor})` : ''
+      }`
     );
     const query = `query pullRequestsSince($owner: String!, $repo: String!, $num: Int!, $maxFilesChanged: Int, $targetBranch: String!, $cursor: String) {
       repository(owner: $owner, name: $repo) {
@@ -511,12 +513,14 @@ export class GitHub {
     }
     const history = response.repository.ref.target.history;
     const commits = (history.nodes || []) as GraphQLCommit[];
+    this.logger.debug(`Found ${commits.length} merge commits`);
     const commitData: Commit[] = [];
     for (const graphCommit of commits) {
       const commit: Commit = {
         sha: graphCommit.sha,
         message: graphCommit.message,
       };
+      this.logger.trace(`${commit.sha}: "${commit.message}"`);
       const pullRequest = graphCommit.associatedPullRequests.nodes.find(pr => {
         return pr.mergeCommit && pr.mergeCommit.oid === graphCommit.sha;
       });
@@ -643,7 +647,7 @@ export class GitHub {
    * @throws {GitHubAPIError} on an API error
    */
   getCommitFiles = wrapAsync(async (sha: string): Promise<string[]> => {
-    this.logger.debug(`Backfilling file list for commit: ${sha}`);
+    this.logger.trace(`Backfilling file list for commit: ${sha}`);
     const files: string[] = [];
     for await (const resp of this.octokit.paginate.iterator(
       this.octokit.repos.getCommit,
@@ -664,7 +668,7 @@ export class GitHub {
         `Found ${files.length} files. This may not include all the files.`
       );
     } else {
-      this.logger.debug(`Found ${files.length} files`);
+      this.logger.trace(`Found ${files.length} files`);
     }
     return files;
   });
@@ -994,7 +998,9 @@ export class GitHub {
   private async releaseGraphQL(
     cursor?: string
   ): Promise<ReleaseHistory | null> {
-    this.logger.debug(`Fetching releases (cursor ${cursor})`);
+    this.logger.debug(
+      `Fetching releases${cursor ? ` (cursor ${cursor})` : ''}`
+    );
     const response = await this.graphqlRequest({
       query: `query releases($owner: String!, $repo: String!, $num: Int!, $cursor: String) {
         repository(owner: $owner, name: $repo) {
