@@ -31,6 +31,8 @@ const signoff_commit_message_1 = require("./util/signoff-commit-message");
 const git_file_utils_1 = require("@google-automations/git-file-utils");
 const https_proxy_agent_1 = require("https-proxy-agent");
 const http_proxy_agent_1 = require("http-proxy-agent");
+const plugin_retry_1 = require("@octokit/plugin-retry");
+const plugin_throttling_1 = require("@octokit/plugin-throttling");
 class GitHub {
     constructor(options) {
         var _a, _b;
@@ -326,13 +328,10 @@ class GitHub {
                 uploadUrl: resp.data.upload_url,
             };
         }, e => {
-            if ((0, errors_1.isOctokitRequestError)(e)) {
-                if (e.status === 422 &&
-                    errors_1.GitHubAPIError.parseErrors(e).some(error => {
-                        return error.code === 'already_exists';
-                    })) {
-                    throw new errors_1.DuplicateReleaseError(e, 'tagName');
-                }
+            if ((0, errors_1.isOctokitRequestError)(e) &&
+                e.status === 422 &&
+                errors_1.GitHubAPIError.parseErrors(e).some(error => error.code === 'already_exists')) {
+                throw new errors_1.DuplicateReleaseError(e, 'tagName');
             }
         });
         /**
@@ -428,16 +427,54 @@ class GitHub {
      * @param {string} token Optional. A GitHub API token used for authentication.
      */
     static async create(options) {
-        var _a, _b, _c, _d;
+        var _a, _b, _c, _d, _e, _f, _g;
         const apiUrl = (_a = options.apiUrl) !== null && _a !== void 0 ? _a : exports.GH_API_URL;
         const graphqlUrl = (_b = options.graphqlUrl) !== null && _b !== void 0 ? _b : exports.GH_GRAPHQL_URL;
         const releasePleaseVersion = require('../../package.json').version;
-        const apis = (_c = options.octokitAPIs) !== null && _c !== void 0 ? _c : {
-            octokit: new rest_1.Octokit({
+        const OctokitWithPlugins = rest_1.Octokit.plugin(plugin_retry_1.retry, plugin_throttling_1.throttling);
+        const logger = (_c = options.logger) !== null && _c !== void 0 ? _c : logger_2.logger;
+        const throttlingRetries = (_d = options.throttlingRetries) !== null && _d !== void 0 ? _d : 0;
+        const apis = (_e = options.octokitAPIs) !== null && _e !== void 0 ? _e : {
+            octokit: new OctokitWithPlugins({
                 baseUrl: apiUrl,
                 auth: options.token,
                 request: {
                     agent: this.createDefaultAgent(apiUrl, options.proxy),
+                    retries: (_f = options.retries) !== null && _f !== void 0 ? _f : 0,
+                },
+                log: {
+                    // octokit debug logs include all requests, too noisy for our debug level
+                    debug: logger.trace,
+                    // octokit info are debug information
+                    info: logger.debug,
+                    warn: logger.warn,
+                    error: logger.error,
+                },
+                retry: {
+                    doNotRetry: [
+                        '403',
+                        '429', // Too Many Request
+                    ],
+                },
+                throttle: {
+                    enabled: throttlingRetries > 0,
+                    onRateLimit: (retryAfter, options, octokit, retryCount) => {
+                        const method = 'method' in options ? options.method : 'UnknownMethod';
+                        const url = 'url' in options ? options.url : 'UnknownUrl';
+                        octokit.log.warn(`[octokit-throttling] Request quota exhausted for request ${method} ${url}`);
+                        if (retryCount < throttlingRetries) {
+                            octokit.log.info(`Retrying after ${retryAfter} seconds`);
+                            return true;
+                        }
+                        return undefined;
+                    },
+                    // See https://docs.github.com/en/rest/overview/resources-in-the-rest-api?apiVersion=2022-11-28#secondary-rate-limits
+                    onSecondaryRateLimit: (_retryAfter, options, octokit) => {
+                        const method = 'method' in options ? options.method : 'UnknownMethod';
+                        const url = 'url' in options ? options.url : 'UnknownUrl';
+                        // do not retry, only log a warning
+                        octokit.log.warn(`[octokit-throttling] SecondaryRateLimit reached for request ${method} ${url}`);
+                    },
                 },
             }),
             request: request_1.request.defaults({
@@ -463,10 +500,10 @@ class GitHub {
             repository: {
                 owner: options.owner,
                 repo: options.repo,
-                defaultBranch: (_d = options.defaultBranch) !== null && _d !== void 0 ? _d : (await GitHub.defaultBranch(options.owner, options.repo, apis.octokit)),
+                defaultBranch: (_g = options.defaultBranch) !== null && _g !== void 0 ? _g : (await GitHub.defaultBranch(options.owner, options.repo, apis.octokit)),
             },
             octokitAPIs: apis,
-            logger: options.logger,
+            logger,
             useGraphql: options.useGraphql,
         };
         return new GitHub(opts);

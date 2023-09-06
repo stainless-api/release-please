@@ -41,6 +41,8 @@ interface GitHubCreateOptions {
     logger?: Logger;
     proxy?: ProxyOption;
     useGraphql?: boolean;
+    retries?: number;
+    throttlingRetries?: number;
 }
 type CommitFilter = (commit: Commit) => boolean;
 interface CommitIteratorOptions {

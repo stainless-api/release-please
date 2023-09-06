@@ -505,7 +505,7 @@ const bootstrapCommand = {
             versionFile: argv.versionFile,
         };
         if (argv.dryRun) {
-            const pullRequest = await await bootstrapper.buildPullRequest(path, releaserConfig);
+            const pullRequest = await bootstrapper.buildPullRequest(path, releaserConfig);
             logger_1.logger.debug('Would open 1 pull request');
             logger_1.logger.debug('title:', pullRequest.title);
             logger_1.logger.debug('branch:', pullRequest.headBranchName);
@@ -559,6 +559,8 @@ async function buildGitHub(argv) {
         apiUrl: argv.apiUrl,
         graphqlUrl: argv.graphqlUrl,
         useGraphql: argv.useGraphql,
+        retries: 3,
+        throttlingRetries: 3,
     });
     return github;
 }

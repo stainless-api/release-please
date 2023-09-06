@@ -101,7 +101,7 @@ const sandbox = sinon.createSandbox();
             ]);
         });
         (0, mocha_1.it)('instantiates a basic Manifest', async () => {
-            await await release_please_1.parser.parseAsync('manifest-pr --repo-url=googleapis/release-please-cli');
+            await release_please_1.parser.parseAsync('manifest-pr --repo-url=googleapis/release-please-cli');
             sinon.assert.calledOnceWithExactly(gitHubCreateStub, {
                 owner: 'googleapis',
                 repo: 'release-please-cli',
@@ -109,6 +109,8 @@ const sandbox = sinon.createSandbox();
                 apiUrl: 'https://api.github.com',
                 graphqlUrl: 'https://api.github.com',
                 useGraphql: true,
+                retries: 3,
+                throttlingRetries: 3,
             });
             sinon.assert.calledOnceWithExactly(fromManifestStub, fakeGitHub, 'main', manifest_1.DEFAULT_RELEASE_PLEASE_CONFIG, manifest_1.DEFAULT_RELEASE_PLEASE_MANIFEST, sinon.match.any);
             sinon.assert.calledOnce(createPullRequestsStub);
@@ -122,6 +124,8 @@ const sandbox = sinon.createSandbox();
                 apiUrl: 'https://api.github.com',
                 graphqlUrl: 'https://api.github.com',
                 useGraphql: true,
+                retries: 3,
+                throttlingRetries: 3,
             });
             sinon.assert.calledOnceWithExactly(fromManifestStub, fakeGitHub, 'main', 'foo.json', '.bar.json', sinon.match.any);
             sinon.assert.calledOnce(createPullRequestsStub);
@@ -136,6 +140,8 @@ const sandbox = sinon.createSandbox();
                     apiUrl: 'https://api.github.com',
                     graphqlUrl: 'https://api.github.com',
                     useGraphql: true,
+                    retries: 3,
+                    throttlingRetries: 3,
                 });
                 sinon.assert.calledOnceWithExactly(fromManifestStub, fakeGitHub, '1.x', manifest_1.DEFAULT_RELEASE_PLEASE_CONFIG, manifest_1.DEFAULT_RELEASE_PLEASE_MANIFEST, sinon.match.any);
                 sinon.assert.calledOnce(createPullRequestsStub);
@@ -153,6 +159,8 @@ const sandbox = sinon.createSandbox();
                 apiUrl: 'https://api.github.com',
                 graphqlUrl: 'https://api.github.com',
                 useGraphql: true,
+                retries: 3,
+                throttlingRetries: 3,
             });
             sinon.assert.calledOnceWithExactly(fromManifestStub, fakeGitHub, 'main', manifest_1.DEFAULT_RELEASE_PLEASE_CONFIG, manifest_1.DEFAULT_RELEASE_PLEASE_MANIFEST, sinon.match.any);
             sinon.assert.calledOnce(buildPullRequestsStub);
@@ -166,6 +174,8 @@ const sandbox = sinon.createSandbox();
                 apiUrl: 'https://api.github.com',
                 graphqlUrl: 'https://api.github.com',
                 useGraphql: true,
+                retries: 3,
+                throttlingRetries: 3,
             });
             sinon.assert.calledOnceWithExactly(fromManifestStub, fakeGitHub, 'main', manifest_1.DEFAULT_RELEASE_PLEASE_CONFIG, manifest_1.DEFAULT_RELEASE_PLEASE_MANIFEST, sinon.match({ fork: true }));
             sinon.assert.calledOnce(createPullRequestsStub);
@@ -179,6 +189,8 @@ const sandbox = sinon.createSandbox();
                 apiUrl: 'https://api.github.com',
                 graphqlUrl: 'https://api.github.com',
                 useGraphql: true,
+                retries: 3,
+                throttlingRetries: 3,
             });
             sinon.assert.calledOnceWithExactly(fromManifestStub, fakeGitHub, 'main', manifest_1.DEFAULT_RELEASE_PLEASE_CONFIG, manifest_1.DEFAULT_RELEASE_PLEASE_MANIFEST, sinon.match({ labels: ['foo', 'bar'] }));
             sinon.assert.calledOnce(createPullRequestsStub);
@@ -192,6 +204,8 @@ const sandbox = sinon.createSandbox();
                 apiUrl: 'https://api.github.com',
                 graphqlUrl: 'https://api.github.com',
                 useGraphql: true,
+                retries: 3,
+                throttlingRetries: 3,
             });
             sinon.assert.calledOnceWithExactly(fromManifestStub, fakeGitHub, 'main', manifest_1.DEFAULT_RELEASE_PLEASE_CONFIG, manifest_1.DEFAULT_RELEASE_PLEASE_MANIFEST, sinon.match({ labels: [] }));
             sinon.assert.calledOnce(createPullRequestsStub);
@@ -205,6 +219,8 @@ const sandbox = sinon.createSandbox();
                 apiUrl: 'https://api.github.com',
                 graphqlUrl: 'https://api.github.com',
                 useGraphql: true,
+                retries: 3,
+                throttlingRetries: 3,
             });
             sinon.assert.calledOnceWithExactly(fromManifestStub, fakeGitHub, 'main', manifest_1.DEFAULT_RELEASE_PLEASE_CONFIG, manifest_1.DEFAULT_RELEASE_PLEASE_MANIFEST, sinon.match({ skipLabeling: true }));
             sinon.assert.calledOnce(createPullRequestsStub);
@@ -239,6 +255,8 @@ const sandbox = sinon.createSandbox();
                 apiUrl: 'https://api.github.com',
                 graphqlUrl: 'https://api.github.com',
                 useGraphql: true,
+                retries: 3,
+                throttlingRetries: 3,
             });
             sinon.assert.calledOnceWithExactly(fromManifestStub, fakeGitHub, 'main', manifest_1.DEFAULT_RELEASE_PLEASE_CONFIG, manifest_1.DEFAULT_RELEASE_PLEASE_MANIFEST, sinon.match({ signoff: 'Alice <alice@example.com>' }));
             sinon.assert.calledOnce(createPullRequestsStub);
@@ -277,6 +295,8 @@ const sandbox = sinon.createSandbox();
                 apiUrl: 'https://api.github.com',
                 graphqlUrl: 'https://api.github.com',
                 useGraphql: true,
+                retries: 3,
+                throttlingRetries: 3,
             });
             sinon.assert.calledOnceWithExactly(fromManifestStub, fakeGitHub, 'main', manifest_1.DEFAULT_RELEASE_PLEASE_CONFIG, manifest_1.DEFAULT_RELEASE_PLEASE_MANIFEST, sinon.match.any);
             sinon.assert.calledOnce(createReleasesStub);
@@ -290,6 +310,8 @@ const sandbox = sinon.createSandbox();
                 apiUrl: 'https://api.github.com',
                 graphqlUrl: 'https://api.github.com',
                 useGraphql: true,
+                retries: 3,
+                throttlingRetries: 3,
             });
             sinon.assert.calledOnceWithExactly(fromManifestStub, fakeGitHub, 'main', 'foo.json', '.bar.json', sinon.match.any);
             sinon.assert.calledOnce(createReleasesStub);
@@ -304,6 +326,8 @@ const sandbox = sinon.createSandbox();
                     apiUrl: 'https://api.github.com',
                     graphqlUrl: 'https://api.github.com',
                     useGraphql: true,
+                    retries: 3,
+                    throttlingRetries: 3,
                 });
                 sinon.assert.calledOnceWithExactly(fromManifestStub, fakeGitHub, '1.x', manifest_1.DEFAULT_RELEASE_PLEASE_CONFIG, manifest_1.DEFAULT_RELEASE_PLEASE_MANIFEST, sinon.match.any);
                 sinon.assert.calledOnce(createReleasesStub);
@@ -321,6 +345,8 @@ const sandbox = sinon.createSandbox();
                 apiUrl: 'https://api.github.com',
                 graphqlUrl: 'https://api.github.com',
                 useGraphql: true,
+                retries: 3,
+                throttlingRetries: 3,
             });
             sinon.assert.calledOnceWithExactly(fromManifestStub, fakeGitHub, 'main', manifest_1.DEFAULT_RELEASE_PLEASE_CONFIG, manifest_1.DEFAULT_RELEASE_PLEASE_MANIFEST, sinon.match.any);
             sinon.assert.calledOnce(buildReleasesStub);
@@ -334,6 +360,8 @@ const sandbox = sinon.createSandbox();
                 apiUrl: 'https://api.github.com',
                 graphqlUrl: 'https://api.github.com',
                 useGraphql: true,
+                retries: 3,
+                throttlingRetries: 3,
             });
             sinon.assert.calledOnceWithExactly(fromManifestStub, fakeGitHub, 'main', manifest_1.DEFAULT_RELEASE_PLEASE_CONFIG, manifest_1.DEFAULT_RELEASE_PLEASE_MANIFEST, sinon.match({
                 labels: ['foo', 'bar'],
@@ -351,6 +379,8 @@ const sandbox = sinon.createSandbox();
                 apiUrl: 'https://api.github.com',
                 graphqlUrl: 'https://api.github.com',
                 useGraphql: true,
+                retries: 3,
+                throttlingRetries: 3,
             });
             sinon.assert.calledOnceWithExactly(fromManifestStub, fakeGitHub, 'main', manifest_1.DEFAULT_RELEASE_PLEASE_CONFIG, manifest_1.DEFAULT_RELEASE_PLEASE_MANIFEST, sinon.match({ draft: true }));
             sinon.assert.calledOnce(createReleasesStub);
@@ -408,6 +438,8 @@ const sandbox = sinon.createSandbox();
                     apiUrl: 'https://api.github.com',
                     graphqlUrl: 'https://api.github.com',
                     useGraphql: true,
+                    retries: 3,
+                    throttlingRetries: 3,
                 });
                 sinon.assert.calledOnceWithExactly(fromManifestStub, fakeGitHub, 'main', manifest_1.DEFAULT_RELEASE_PLEASE_CONFIG, manifest_1.DEFAULT_RELEASE_PLEASE_MANIFEST, sinon.match.any, undefined, undefined);
                 sinon.assert.calledOnce(createPullRequestsStub);
@@ -421,6 +453,8 @@ const sandbox = sinon.createSandbox();
                     apiUrl: 'https://api.github.com',
                     graphqlUrl: 'https://api.github.com',
                     useGraphql: true,
+                    retries: 3,
+                    throttlingRetries: 3,
                 });
                 sinon.assert.calledOnceWithExactly(fromManifestStub, fakeGitHub, 'main', 'foo.json', '.bar.json', sinon.match.any, undefined, undefined);
                 sinon.assert.calledOnce(createPullRequestsStub);
@@ -435,6 +469,8 @@ const sandbox = sinon.createSandbox();
                         apiUrl: 'https://api.github.com',
                         graphqlUrl: 'https://api.github.com',
                         useGraphql: true,
+                        retries: 3,
+                        throttlingRetries: 3,
                     });
                     sinon.assert.calledOnceWithExactly(fromManifestStub, fakeGitHub, '1.x', manifest_1.DEFAULT_RELEASE_PLEASE_CONFIG, manifest_1.DEFAULT_RELEASE_PLEASE_MANIFEST, sinon.match.any, undefined, undefined);
                     sinon.assert.calledOnce(createPullRequestsStub);
@@ -452,6 +488,8 @@ const sandbox = sinon.createSandbox();
                     apiUrl: 'https://api.github.com',
                     graphqlUrl: 'https://api.github.com',
                     useGraphql: true,
+                    retries: 3,
+                    throttlingRetries: 3,
                 });
                 sinon.assert.calledOnceWithExactly(fromManifestStub, fakeGitHub, 'main', manifest_1.DEFAULT_RELEASE_PLEASE_CONFIG, manifest_1.DEFAULT_RELEASE_PLEASE_MANIFEST, sinon.match.any, undefined, undefined);
                 sinon.assert.calledOnce(buildPullRequestsStub);
@@ -487,6 +525,8 @@ const sandbox = sinon.createSandbox();
                     apiUrl: 'https://api.github.com',
                     graphqlUrl: 'https://api.github.com',
                     useGraphql: true,
+                    retries: 3,
+                    throttlingRetries: 3,
                 });
                 sinon.assert.calledOnceWithExactly(fromConfigStub, fakeGitHub, 'main', sinon.match({ releaseType: 'java-yoshi' }), sinon.match.any, undefined);
                 sinon.assert.calledOnce(createPullRequestsStub);
@@ -501,6 +541,8 @@ const sandbox = sinon.createSandbox();
                         apiUrl: 'https://api.github.com',
                         graphqlUrl: 'https://api.github.com',
                         useGraphql: true,
+                        retries: 3,
+                        throttlingRetries: 3,
                     });
                     sinon.assert.calledOnceWithExactly(fromConfigStub, fakeGitHub, '1.x', sinon.match({ releaseType: 'java-yoshi' }), sinon.match.any, undefined);
                     sinon.assert.calledOnce(createPullRequestsStub);
@@ -518,6 +560,8 @@ const sandbox = sinon.createSandbox();
                     apiUrl: 'https://api.github.com',
                     graphqlUrl: 'https://api.github.com',
                     useGraphql: true,
+                    retries: 3,
+                    throttlingRetries: 3,
                 });
                 sinon.assert.calledOnceWithExactly(fromConfigStub, fakeGitHub, 'main', sinon.match({ releaseType: 'java-yoshi' }), sinon.match.any, undefined);
                 sinon.assert.calledOnce(buildPullRequestsStub);
@@ -531,6 +575,8 @@ const sandbox = sinon.createSandbox();
                     apiUrl: 'https://api.github.com',
                     graphqlUrl: 'https://api.github.com',
                     useGraphql: true,
+                    retries: 3,
+                    throttlingRetries: 3,
                 });
                 sinon.assert.calledOnceWithExactly(fromConfigStub, fakeGitHub, 'main', sinon.match({ releaseType: 'java-yoshi', releaseAs: '2.3.4' }), sinon.match.any, undefined);
                 sinon.assert.calledOnce(createPullRequestsStub);
@@ -544,6 +590,8 @@ const sandbox = sinon.createSandbox();
                     apiUrl: 'https://api.github.com',
                     graphqlUrl: 'https://api.github.com',
                     useGraphql: true,
+                    retries: 3,
+                    throttlingRetries: 3,
                 });
                 sinon.assert.calledOnceWithExactly(fromConfigStub, fakeGitHub, 'main', sinon.match({
                     releaseType: 'java-yoshi',
@@ -560,6 +608,8 @@ const sandbox = sinon.createSandbox();
                     apiUrl: 'https://api.github.com',
                     graphqlUrl: 'https://api.github.com',
                     useGraphql: true,
+                    retries: 3,
+                    throttlingRetries: 3,
                 });
                 sinon.assert.calledOnceWithExactly(fromConfigStub, fakeGitHub, 'main', sinon.match({
                     releaseType: 'java-yoshi',
@@ -577,6 +627,8 @@ const sandbox = sinon.createSandbox();
                     apiUrl: 'https://api.github.com',
                     graphqlUrl: 'https://api.github.com',
                     useGraphql: true,
+                    retries: 3,
+                    throttlingRetries: 3,
                 });
                 sinon.assert.calledOnceWithExactly(fromConfigStub, fakeGitHub, 'main', sinon.match({
                     releaseType: 'java-yoshi',
@@ -593,6 +645,8 @@ const sandbox = sinon.createSandbox();
                     apiUrl: 'https://api.github.com',
                     graphqlUrl: 'https://api.github.com',
                     useGraphql: true,
+                    retries: 3,
+                    throttlingRetries: 3,
                 });
                 sinon.assert.calledOnceWithExactly(fromConfigStub, fakeGitHub, 'main', sinon.match({
                     releaseType: 'ruby-yoshi',
@@ -609,6 +663,8 @@ const sandbox = sinon.createSandbox();
                     apiUrl: 'https://api.github.com',
                     graphqlUrl: 'https://api.github.com',
                     useGraphql: true,
+                    retries: 3,
+                    throttlingRetries: 3,
                 });
                 sinon.assert.calledOnceWithExactly(fromConfigStub, fakeGitHub, 'main', sinon.match({ releaseType: 'java-yoshi' }), sinon.match({ signoff: 'Alice <alice@example.com>' }), undefined);
                 sinon.assert.calledOnce(createPullRequestsStub);
@@ -622,6 +678,8 @@ const sandbox = sinon.createSandbox();
                     apiUrl: 'https://api.github.com',
                     graphqlUrl: 'https://api.github.com',
                     useGraphql: true,
+                    retries: 3,
+                    throttlingRetries: 3,
                 });
                 sinon.assert.calledOnceWithExactly(fromConfigStub, fakeGitHub, 'main', sinon.match({
                     releaseType: 'java-yoshi',
@@ -638,6 +696,8 @@ const sandbox = sinon.createSandbox();
                     apiUrl: 'https://api.github.com',
                     graphqlUrl: 'https://api.github.com',
                     useGraphql: true,
+                    retries: 3,
+                    throttlingRetries: 3,
                 });
                 sinon.assert.calledOnceWithExactly(fromConfigStub, fakeGitHub, 'main', sinon.match({
                     releaseType: 'java-yoshi',
@@ -654,6 +714,8 @@ const sandbox = sinon.createSandbox();
                     apiUrl: 'https://api.github.com',
                     graphqlUrl: 'https://api.github.com',
                     useGraphql: true,
+                    retries: 3,
+                    throttlingRetries: 3,
                 });
                 sinon.assert.calledOnceWithExactly(fromConfigStub, fakeGitHub, 'main', sinon.match({
                     releaseType: 'java-yoshi',
@@ -670,6 +732,8 @@ const sandbox = sinon.createSandbox();
                     apiUrl: 'https://api.github.com',
                     graphqlUrl: 'https://api.github.com',
                     useGraphql: true,
+                    retries: 3,
+                    throttlingRetries: 3,
                 });
                 sinon.assert.calledOnceWithExactly(fromConfigStub, fakeGitHub, 'main', sinon.match({ releaseType: 'java-yoshi', draftPullRequest: true }), sinon.match.any, undefined);
                 sinon.assert.calledOnce(createPullRequestsStub);
@@ -683,6 +747,8 @@ const sandbox = sinon.createSandbox();
                     apiUrl: 'https://api.github.com',
                     graphqlUrl: 'https://api.github.com',
                     useGraphql: true,
+                    retries: 3,
+                    throttlingRetries: 3,
                 });
                 sinon.assert.calledOnceWithExactly(fromConfigStub, fakeGitHub, 'main', sinon.match({ releaseType: 'java-yoshi' }), sinon.match({ fork: true }), undefined);
                 sinon.assert.calledOnce(createPullRequestsStub);
@@ -696,6 +762,8 @@ const sandbox = sinon.createSandbox();
                     apiUrl: 'https://api.github.com',
                     graphqlUrl: 'https://api.github.com',
                     useGraphql: true,
+                    retries: 3,
+                    throttlingRetries: 3,
                 });
                 sinon.assert.calledOnceWithExactly(fromConfigStub, fakeGitHub, 'main', sinon.match({ releaseType: 'java-yoshi' }), sinon.match.any, 'submodule');
                 sinon.assert.calledOnce(createPullRequestsStub);
@@ -709,6 +777,8 @@ const sandbox = sinon.createSandbox();
                     apiUrl: 'https://api.github.com',
                     graphqlUrl: 'https://api.github.com',
                     useGraphql: true,
+                    retries: 3,
+                    throttlingRetries: 3,
                 });
                 sinon.assert.calledOnceWithExactly(fromConfigStub, fakeGitHub, 'main', sinon.match({ releaseType: 'java-yoshi', component: 'pkg1' }), sinon.match.any, undefined);
                 sinon.assert.calledOnce(createPullRequestsStub);
@@ -722,6 +792,8 @@ const sandbox = sinon.createSandbox();
                     apiUrl: 'https://api.github.com',
                     graphqlUrl: 'https://api.github.com',
                     useGraphql: true,
+                    retries: 3,
+                    throttlingRetries: 3,
                 });
                 sinon.assert.calledOnceWithExactly(fromConfigStub, fakeGitHub, 'main', sinon.match({ releaseType: 'java-yoshi', packageName: '@foo/bar' }), sinon.match.any, undefined);
                 sinon.assert.calledOnce(createPullRequestsStub);
@@ -735,6 +807,8 @@ const sandbox = sinon.createSandbox();
                     apiUrl: 'https://api.github.com',
                     graphqlUrl: 'https://api.github.com',
                     useGraphql: true,
+                    retries: 3,
+                    throttlingRetries: 3,
                 });
                 sinon.assert.calledOnceWithExactly(fromConfigStub, fakeGitHub, 'main', sinon.match({ releaseType: 'java-yoshi', includeComponentInTag: true }), sinon.match.any, undefined);
                 sinon.assert.calledOnce(createPullRequestsStub);
@@ -775,6 +849,8 @@ const sandbox = sinon.createSandbox();
                     apiUrl: 'https://api.github.com',
                     graphqlUrl: 'https://api.github.com',
                     useGraphql: true,
+                    retries: 3,
+                    throttlingRetries: 3,
                 });
                 sinon.assert.calledOnceWithExactly(fromManifestStub, fakeGitHub, 'main', manifest_1.DEFAULT_RELEASE_PLEASE_CONFIG, manifest_1.DEFAULT_RELEASE_PLEASE_MANIFEST, sinon.match.any);
                 sinon.assert.calledOnce(createReleasesStub);
@@ -788,6 +864,8 @@ const sandbox = sinon.createSandbox();
                     apiUrl: 'https://api.github.com',
                     graphqlUrl: 'https://api.github.com',
                     useGraphql: true,
+                    retries: 3,
+                    throttlingRetries: 3,
                 });
                 sinon.assert.calledOnceWithExactly(fromManifestStub, fakeGitHub, 'main', 'foo.json', '.bar.json', sinon.match.any);
                 sinon.assert.calledOnce(createReleasesStub);
@@ -802,6 +880,8 @@ const sandbox = sinon.createSandbox();
                         apiUrl: 'https://api.github.com',
                         graphqlUrl: 'https://api.github.com',
                         useGraphql: true,
+                        retries: 3,
+                        throttlingRetries: 3,
                     });
                     sinon.assert.calledOnceWithExactly(fromManifestStub, fakeGitHub, '1.x', manifest_1.DEFAULT_RELEASE_PLEASE_CONFIG, manifest_1.DEFAULT_RELEASE_PLEASE_MANIFEST, sinon.match.any);
                     sinon.assert.calledOnce(createReleasesStub);
@@ -819,6 +899,8 @@ const sandbox = sinon.createSandbox();
                     apiUrl: 'https://api.github.com',
                     graphqlUrl: 'https://api.github.com',
                     useGraphql: true,
+                    retries: 3,
+                    throttlingRetries: 3,
                 });
                 sinon.assert.calledOnceWithExactly(fromManifestStub, fakeGitHub, 'main', manifest_1.DEFAULT_RELEASE_PLEASE_CONFIG, manifest_1.DEFAULT_RELEASE_PLEASE_MANIFEST, sinon.match.any);
                 sinon.assert.calledOnce(buildReleasesStub);
@@ -832,6 +914,8 @@ const sandbox = sinon.createSandbox();
                     apiUrl: 'https://api.github.com',
                     graphqlUrl: 'https://api.github.com',
                     useGraphql: true,
+                    retries: 3,
+                    throttlingRetries: 3,
                 });
                 sinon.assert.calledOnceWithExactly(fromManifestStub, fakeGitHub, 'main', manifest_1.DEFAULT_RELEASE_PLEASE_CONFIG, manifest_1.DEFAULT_RELEASE_PLEASE_MANIFEST, sinon.match({
                     labels: ['foo', 'bar'],
@@ -849,6 +933,8 @@ const sandbox = sinon.createSandbox();
                     apiUrl: 'https://api.github.com',
                     graphqlUrl: 'https://api.github.com',
                     useGraphql: true,
+                    retries: 3,
+                    throttlingRetries: 3,
                 });
                 sinon.assert.calledOnceWithExactly(fromManifestStub, fakeGitHub, 'main', manifest_1.DEFAULT_RELEASE_PLEASE_CONFIG, manifest_1.DEFAULT_RELEASE_PLEASE_MANIFEST, sinon.match({ draft: true }));
                 sinon.assert.calledOnce(createReleasesStub);
@@ -892,6 +978,8 @@ const sandbox = sinon.createSandbox();
                     apiUrl: 'https://api.github.com',
                     graphqlUrl: 'https://api.github.com',
                     useGraphql: true,
+                    retries: 3,
+                    throttlingRetries: 3,
                 });
                 sinon.assert.calledOnceWithExactly(fromConfigStub, fakeGitHub, 'main', sinon.match({ releaseType: 'java-yoshi' }), sinon.match.any, undefined);
                 sinon.assert.calledOnce(createReleasesStub);
@@ -908,6 +996,8 @@ const sandbox = sinon.createSandbox();
                     apiUrl: 'https://api.github.com',
                     graphqlUrl: 'https://api.github.com',
                     useGraphql: true,
+                    retries: 3,
+                    throttlingRetries: 3,
                 });
                 sinon.assert.calledOnceWithExactly(fromConfigStub, fakeGitHub, 'main', sinon.match({ releaseType: 'java-yoshi' }), sinon.match.any, undefined);
                 sinon.assert.calledOnce(buildReleasesStub);
@@ -921,6 +1011,8 @@ const sandbox = sinon.createSandbox();
                     apiUrl: 'https://api.github.com',
                     graphqlUrl: 'https://api.github.com',
                     useGraphql: true,
+                    retries: 3,
+                    throttlingRetries: 3,
                 });
                 sinon.assert.calledOnceWithExactly(fromConfigStub, fakeGitHub, 'main', sinon.match({ releaseType: 'java-yoshi', draft: true }), sinon.match.any, undefined);
                 sinon.assert.calledOnce(createReleasesStub);
@@ -934,6 +1026,8 @@ const sandbox = sinon.createSandbox();
                     apiUrl: 'https://api.github.com',
                     graphqlUrl: 'https://api.github.com',
                     useGraphql: true,
+                    retries: 3,
+                    throttlingRetries: 3,
                 });
                 sinon.assert.calledOnceWithExactly(fromConfigStub, fakeGitHub, 'main', sinon.match({ releaseType: 'java-yoshi', prerelease: true }), sinon.match.any, undefined);
                 sinon.assert.calledOnce(createReleasesStub);
@@ -947,6 +1041,8 @@ const sandbox = sinon.createSandbox();
                     apiUrl: 'https://api.github.com',
                     graphqlUrl: 'https://api.github.com',
                     useGraphql: true,
+                    retries: 3,
+                    throttlingRetries: 3,
                 });
                 sinon.assert.calledOnceWithExactly(fromConfigStub, fakeGitHub, 'main', sinon.match({ releaseType: 'java-yoshi' }), sinon.match({
                     labels: ['foo', 'bar'],
@@ -964,6 +1060,8 @@ const sandbox = sinon.createSandbox();
                     apiUrl: 'https://api.github.com',
                     graphqlUrl: 'https://api.github.com',
                     useGraphql: true,
+                    retries: 3,
+                    throttlingRetries: 3,
                 });
                 sinon.assert.calledOnceWithExactly(fromConfigStub, fakeGitHub, 'main', sinon.match({ releaseType: 'java-yoshi' }), sinon.match.any, 'submodule');
                 sinon.assert.calledOnce(createReleasesStub);
@@ -977,6 +1075,8 @@ const sandbox = sinon.createSandbox();
                     apiUrl: 'https://api.github.com',
                     graphqlUrl: 'https://api.github.com',
                     useGraphql: true,
+                    retries: 3,
+                    throttlingRetries: 3,
                 });
                 sinon.assert.calledOnceWithExactly(fromConfigStub, fakeGitHub, 'main', sinon.match({ releaseType: 'java-yoshi', component: 'pkg1' }), sinon.match.any, undefined);
                 sinon.assert.calledOnce(createReleasesStub);
@@ -990,6 +1090,8 @@ const sandbox = sinon.createSandbox();
                     apiUrl: 'https://api.github.com',
                     graphqlUrl: 'https://api.github.com',
                     useGraphql: true,
+                    retries: 3,
+                    throttlingRetries: 3,
                 });
                 sinon.assert.calledOnceWithExactly(fromConfigStub, fakeGitHub, 'main', sinon.match({ releaseType: 'java-yoshi', packageName: '@foo/bar' }), sinon.match.any, undefined);
                 sinon.assert.calledOnce(createReleasesStub);
@@ -1003,6 +1105,8 @@ const sandbox = sinon.createSandbox();
                     apiUrl: 'https://api.github.com',
                     graphqlUrl: 'https://api.github.com',
                     useGraphql: true,
+                    retries: 3,
+                    throttlingRetries: 3,
                 });
                 sinon.assert.calledOnceWithExactly(fromConfigStub, fakeGitHub, 'main', sinon.match({ releaseType: 'java-yoshi', includeComponentInTag: true }), sinon.match.any, undefined);
                 sinon.assert.calledOnce(createReleasesStub);
@@ -1022,7 +1126,7 @@ const sandbox = sinon.createSandbox();
                 labels: [],
                 files: [],
             });
-            await await release_please_1.parser.parseAsync('bootstrap --repo-url=googleapis/release-please-cli --release-type=java');
+            await release_please_1.parser.parseAsync('bootstrap --repo-url=googleapis/release-please-cli --release-type=java');
             sinon.assert.calledOnceWithExactly(createPullStub, sinon.match({
                 headBranchName: 'release-please/bootstrap/default',
             }), 'main', 'main', 'chore: bootstrap releases for path: .', sinon.match.array, {});
