@@ -61,7 +61,10 @@ const ISO_DATE_REGEX = /[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\.[
                 packageName: 'google-cloud-automl',
             });
             const latestRelease = undefined;
-            const release = await strategy.buildReleasePullRequest(commits, latestRelease);
+            const release = await strategy.buildReleasePullRequest({
+                commits,
+                latestRelease,
+            });
             (0, chai_1.expect)((_a = release.version) === null || _a === void 0 ? void 0 : _a.toString()).to.eql(expectedVersion);
         });
         (0, mocha_1.it)('builds a release pull request', async () => {
@@ -78,7 +81,10 @@ const ISO_DATE_REGEX = /[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\.[
                 sha: 'abc123',
                 notes: 'some notes',
             };
-            const pullRequest = await strategy.buildReleasePullRequest(commits, latestRelease);
+            const pullRequest = await strategy.buildReleasePullRequest({
+                commits,
+                latestRelease,
+            });
             (0, chai_1.expect)((_a = pullRequest.version) === null || _a === void 0 ? void 0 : _a.toString()).to.eql(expectedVersion);
         });
         (0, mocha_1.it)('detects a default component', async () => {
@@ -100,7 +106,10 @@ const ISO_DATE_REGEX = /[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\.[
             getFileContentsStub
                 .withArgs('package.json', 'main')
                 .resolves((0, helpers_1.buildGitHubFileContent)(fixturesPath, 'package.json'));
-            const pullRequest = await strategy.buildReleasePullRequest(commits, latestRelease);
+            const pullRequest = await strategy.buildReleasePullRequest({
+                commits,
+                latestRelease,
+            });
             (0, chai_1.expect)((_a = pullRequest.version) === null || _a === void 0 ? void 0 : _a.toString()).to.eql(expectedVersion);
         });
         (0, mocha_1.it)('detects a default packageName', async () => {
@@ -123,7 +132,10 @@ const ISO_DATE_REGEX = /[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\.[
             getFileContentsStub
                 .withArgs('package.json', 'main')
                 .resolves((0, helpers_1.buildGitHubFileContent)(fixturesPath, 'package.json'));
-            const pullRequest = await strategy.buildReleasePullRequest(commits, latestRelease);
+            const pullRequest = await strategy.buildReleasePullRequest({
+                commits,
+                latestRelease,
+            });
             (0, chai_1.expect)((_a = pullRequest.version) === null || _a === void 0 ? void 0 : _a.toString()).to.eql(expectedVersion);
         });
         (0, mocha_1.it)('handles missing package.json', async () => {
@@ -140,7 +152,7 @@ const ISO_DATE_REGEX = /[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\.[
                 notes: 'some notes',
             };
             assert.rejects(async () => {
-                await strategy.buildReleasePullRequest(commits, latestRelease);
+                await strategy.buildReleasePullRequest({ commits, latestRelease });
             }, errors_1.MissingRequiredFileError);
         });
         (0, mocha_1.it)('updates changelog.json if present', async () => {
@@ -165,7 +177,10 @@ const ISO_DATE_REGEX = /[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\.[
                 .withArgs('package.json', 'main')
                 .resolves((0, helpers_1.buildGitHubFileContent)(fixturesPath, 'package.json'));
             const latestRelease = undefined;
-            const release = await strategy.buildReleasePullRequest(COMMITS, latestRelease);
+            const release = await strategy.buildReleasePullRequest({
+                commits: COMMITS,
+                latestRelease,
+            });
             const updates = release.updates;
             (0, helpers_1.assertHasUpdate)(updates, 'CHANGELOG.md', changelog_1.Changelog);
             const update = (0, helpers_1.assertHasUpdate)(updates, 'changelog.json', changelog_json_1.ChangelogJson);
@@ -186,7 +201,10 @@ const ISO_DATE_REGEX = /[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\.[
             });
             sandbox.stub(github, 'findFilesByFilenameAndRef').resolves([]);
             const latestRelease = undefined;
-            const release = await strategy.buildReleasePullRequest(commits, latestRelease);
+            const release = await strategy.buildReleasePullRequest({
+                commits,
+                latestRelease,
+            });
             const updates = release.updates;
             (0, helpers_1.assertHasUpdate)(updates, 'CHANGELOG.md', changelog_1.Changelog);
             (0, helpers_1.assertHasUpdate)(updates, 'package-lock.json', package_lock_json_1.PackageLockJson);

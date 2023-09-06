@@ -30,9 +30,8 @@ export interface AllPackages<T> {
  */
 export declare abstract class WorkspacePlugin<T> extends ManifestPlugin {
     private updateAllPackages;
-    private manifestPath;
     private merge;
-    constructor(github: GitHub, targetBranch: string, repositoryConfig: RepositoryConfig, options?: WorkspacePluginOptions);
+    constructor(github: GitHub, targetBranch: string, manifestPath: string, repositoryConfig: RepositoryConfig, options?: WorkspacePluginOptions);
     run(candidates: CandidateReleasePullRequest[]): Promise<CandidateReleasePullRequest[]>;
     /**
      * Helper for finding a candidate release based on the package name.

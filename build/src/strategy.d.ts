@@ -5,6 +5,7 @@ import { Commit } from './commit';
 import { VersioningStrategy } from './versioning-strategy';
 import { ChangelogNotes } from './changelog-notes';
 import { Version } from './version';
+import { BranchName } from './util/branch-name';
 export interface BuildReleaseOptions {
     groupPullRequestTitlePattern?: string;
 }
@@ -23,11 +24,19 @@ export interface Strategy {
      *   component if available.
      * @param {boolean} draft Optional. Whether or not to create the pull
      *   request as a draft. Defaults to `false`.
-     * @returns {ReleasePullRequest | undefined} The release pull request to
-     *   open for this path/component. Returns undefined if we should not
-     *   open a pull request.
+     * @param {string[]} labels Optional.
+     * @param {PullRequest} existingPullRequest Optional. A pull request already existing for this branch.
+     * @returns {ReleasePullRequest | undefined} The release pull request to open for this path/component. Returns
+     * undefined if we should not open a pull request.
      */
-    buildReleasePullRequest(commits: Commit[], latestRelease?: Release, draft?: boolean, labels?: string[]): Promise<ReleasePullRequest | undefined>;
+    buildReleasePullRequest(opts: {
+        commits: Commit[];
+        latestRelease?: Release;
+        draft?: boolean;
+        labels?: string[];
+        existingPullRequest?: PullRequest;
+        manifestPath?: string;
+    }): Promise<ReleasePullRequest | undefined>;
     /**
      * Given a merged pull request, build the candidate release.
      * @param {PullRequest} mergedPullRequest The merged release pull request.
@@ -52,6 +61,7 @@ export interface Strategy {
      * @returns {string}
      */
     getBranchComponent(): Promise<string | undefined>;
+    getBranchName(): Promise<BranchName>;
     /**
      * Validate whether version is a valid release.
      * @param version Released version.

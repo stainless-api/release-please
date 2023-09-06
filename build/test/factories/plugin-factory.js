@@ -109,7 +109,7 @@ const group_priority_1 = require("../../src/plugins/group-priority");
             (0, plugin_factory_1.unregisterPlugin)(pluginType);
         });
         (0, mocha_1.it)('should register new releaser', async () => {
-            (0, plugin_factory_1.registerPlugin)(pluginType, options => new CustomTest(options.github, options.targetBranch, options.repositoryConfig, {}));
+            (0, plugin_factory_1.registerPlugin)(pluginType, options => new CustomTest(options.github, options.targetBranch, options.manifestPath, options.repositoryConfig, {}));
             const pluginOptions = {
                 type: pluginType,
                 github,
@@ -121,7 +121,7 @@ const group_priority_1 = require("../../src/plugins/group-priority");
             (0, chai_1.expect)(strategy).to.be.instanceof(CustomTest);
         });
         (0, mocha_1.it)('should return custom type', () => {
-            (0, plugin_factory_1.registerPlugin)(pluginType, options => new CustomTest(options.github, options.targetBranch, options.repositoryConfig, {}));
+            (0, plugin_factory_1.registerPlugin)(pluginType, options => new CustomTest(options.github, options.targetBranch, options.manifestPath, options.repositoryConfig, {}));
             const allTypes = (0, plugin_factory_1.getPluginTypes)();
             (0, chai_1.expect)(allTypes).to.contain(pluginType);
         });

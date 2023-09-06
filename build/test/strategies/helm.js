@@ -53,7 +53,10 @@ const fixturesPath = './test/fixtures/strategies/helm';
                 packageName: 'google-cloud-automl',
             });
             const latestRelease = undefined;
-            const release = await strategy.buildReleasePullRequest(commits, latestRelease);
+            const release = await strategy.buildReleasePullRequest({
+                commits,
+                latestRelease,
+            });
             (0, chai_1.expect)((_a = release.version) === null || _a === void 0 ? void 0 : _a.toString()).to.eql(expectedVersion);
         });
         (0, mocha_1.it)('builds a release pull request', async () => {
@@ -70,7 +73,10 @@ const fixturesPath = './test/fixtures/strategies/helm';
                 sha: 'abc123',
                 notes: 'some notes',
             };
-            const pullRequest = await strategy.buildReleasePullRequest(commits, latestRelease);
+            const pullRequest = await strategy.buildReleasePullRequest({
+                commits,
+                latestRelease,
+            });
             (0, chai_1.expect)((_a = pullRequest.version) === null || _a === void 0 ? void 0 : _a.toString()).to.eql(expectedVersion);
         });
         (0, mocha_1.it)('detects a default component', async () => {
@@ -89,7 +95,10 @@ const fixturesPath = './test/fixtures/strategies/helm';
             getFileContentsStub
                 .withArgs('Chart.yaml', 'main')
                 .resolves((0, helpers_1.buildGitHubFileContent)(fixturesPath, 'Chart.yaml'));
-            const pullRequest = await strategy.buildReleasePullRequest(commits, latestRelease);
+            const pullRequest = await strategy.buildReleasePullRequest({
+                commits,
+                latestRelease,
+            });
             (0, chai_1.expect)((_a = pullRequest.version) === null || _a === void 0 ? void 0 : _a.toString()).to.eql(expectedVersion);
         });
     });
@@ -102,7 +111,10 @@ const fixturesPath = './test/fixtures/strategies/helm';
                 packageName: 'google-cloud-automl',
             });
             const latestRelease = undefined;
-            const release = await strategy.buildReleasePullRequest(commits, latestRelease);
+            const release = await strategy.buildReleasePullRequest({
+                commits,
+                latestRelease,
+            });
             const updates = release.updates;
             (0, chai_1.expect)(updates).lengthOf(2);
             (0, helpers_1.assertHasUpdate)(updates, 'CHANGELOG.md', changelog_1.Changelog);

@@ -41,9 +41,9 @@ const XPATH_PROJECT_VERSION = '/*[local-name()="project"]/*[local-name()="versio
 const XPATH_PROJECT_DEPENDENCIES = '/*[local-name()="project"]/*[local-name()="dependencies"]/*[local-name()="dependency"]';
 const XPATH_PROJECT_DEPENDENCY_MANAGEMENT_DEPENDENCIES = '/*[local-name()="project"]/*[local-name()="dependencyManagement"]/*[local-name()="dependencies"]/*[local-name()="dependency"]';
 class MavenWorkspace extends workspace_1.WorkspacePlugin {
-    constructor(github, targetBranch, repositoryConfig, options = {}) {
+    constructor(github, targetBranch, manifestPath, repositoryConfig, options = {}) {
         var _a;
-        super(github, targetBranch, repositoryConfig, options);
+        super(github, targetBranch, manifestPath, repositoryConfig, options);
         this.considerAllArtifacts = (_a = options.considerAllArtifacts) !== null && _a !== void 0 ? _a : true;
     }
     async fetchPom(path) {

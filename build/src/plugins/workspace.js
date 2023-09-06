@@ -31,12 +31,11 @@ const release_please_manifest_1 = require("../updaters/release-please-manifest")
  * the package including the name and current version.
  */
 class WorkspacePlugin extends plugin_1.ManifestPlugin {
-    constructor(github, targetBranch, repositoryConfig, options = {}) {
-        var _a, _b, _c;
-        super(github, targetBranch, repositoryConfig, options);
-        this.manifestPath = (_a = options.manifestPath) !== null && _a !== void 0 ? _a : manifest_1.DEFAULT_RELEASE_PLEASE_MANIFEST;
-        this.updateAllPackages = (_b = options.updateAllPackages) !== null && _b !== void 0 ? _b : false;
-        this.merge = (_c = options.merge) !== null && _c !== void 0 ? _c : true;
+    constructor(github, targetBranch, manifestPath, repositoryConfig, options = {}) {
+        var _a, _b;
+        super(github, targetBranch, manifestPath, repositoryConfig, options);
+        this.updateAllPackages = (_a = options.updateAllPackages) !== null && _a !== void 0 ? _a : false;
+        this.merge = (_b = options.merge) !== null && _b !== void 0 ? _b : true;
     }
     async run(candidates) {
         this.logger.info('Running workspace plugin');
@@ -98,7 +97,7 @@ class WorkspacePlugin extends plugin_1.ManifestPlugin {
         }
         if (this.merge) {
             this.logger.info(`Merging ${newCandidates.length} in-scope candidates`);
-            const mergePlugin = new merge_1.Merge(this.github, this.targetBranch, this.repositoryConfig);
+            const mergePlugin = new merge_1.Merge(this.github, this.targetBranch, this.manifestPath, this.repositoryConfig);
             newCandidates = await mergePlugin.run(newCandidates);
         }
         const newUpdates = newCandidates[0].pullRequest.updates;

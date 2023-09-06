@@ -22,9 +22,10 @@ const logger_1 = require("./util/logger");
  * or update existing files.
  */
 class ManifestPlugin {
-    constructor(github, targetBranch, repositoryConfig, options) {
+    constructor(github, targetBranch, manifestPath, repositoryConfig, options) {
         this.github = github;
         this.targetBranch = targetBranch;
+        this.manifestPath = manifestPath;
         this.repositoryConfig = repositoryConfig;
         this.changesBranch = (options === null || options === void 0 ? void 0 : options.changesBranch) || this.targetBranch;
         this.logger = options.logger || logger_1.logger;

@@ -17,6 +17,7 @@ const mocha_1 = require("mocha");
 const sinon = require("sinon");
 const github_1 = require("../../src/github");
 const merge_1 = require("../../src/plugins/merge");
+const manifest_1 = require("../../src/manifest");
 const chai_1 = require("chai");
 const helpers_1 = require("../helpers");
 const snapshot = require("snap-shot-it");
@@ -38,7 +39,7 @@ const sandbox = sinon.createSandbox();
     (0, mocha_1.describe)('run', () => {
         (0, mocha_1.it)('ignores no pull requests', async () => {
             const candidates = [];
-            const plugin = new merge_1.Merge(github, 'main', {});
+            const plugin = new merge_1.Merge(github, 'main', manifest_1.DEFAULT_RELEASE_PLEASE_MANIFEST, {});
             const newCandidates = await plugin.run(candidates);
             (0, chai_1.expect)(newCandidates).lengthOf(0);
         });
@@ -46,7 +47,7 @@ const sandbox = sinon.createSandbox();
             const candidates = [
                 (0, helpers_1.buildMockCandidatePullRequest)('python', 'python', '1.0.0'),
             ];
-            const plugin = new merge_1.Merge(github, 'main', {});
+            const plugin = new merge_1.Merge(github, 'main', manifest_1.DEFAULT_RELEASE_PLEASE_MANIFEST, {});
             const newCandidates = await plugin.run(candidates);
             (0, chai_1.expect)(newCandidates).lengthOf(1);
             (0, chai_1.expect)(newCandidates[0].pullRequest.title.toString()).to.eql('chore: release main');
@@ -79,7 +80,7 @@ const sandbox = sinon.createSandbox();
                     ],
                 }),
             ];
-            const plugin = new merge_1.Merge(github, 'main', {});
+            const plugin = new merge_1.Merge(github, 'main', manifest_1.DEFAULT_RELEASE_PLEASE_MANIFEST, {});
             const newCandidates = await plugin.run(candidates);
             (0, chai_1.expect)(newCandidates).lengthOf(1);
             const candidate = newCandidates[0];
@@ -121,7 +122,7 @@ const sandbox = sinon.createSandbox();
                     draft: true,
                 }),
             ];
-            const plugin = new merge_1.Merge(github, 'main', {});
+            const plugin = new merge_1.Merge(github, 'main', manifest_1.DEFAULT_RELEASE_PLEASE_MANIFEST, {});
             const newCandidates = await plugin.run(candidates);
             (0, chai_1.expect)(newCandidates).lengthOf(1);
             const candidate = newCandidates[0];
@@ -162,7 +163,7 @@ const sandbox = sinon.createSandbox();
                     labels: ['label-a', 'label-c'],
                 }),
             ];
-            const plugin = new merge_1.Merge(github, 'main', {});
+            const plugin = new merge_1.Merge(github, 'main', manifest_1.DEFAULT_RELEASE_PLEASE_MANIFEST, {});
             const newCandidates = await plugin.run(candidates);
             (0, chai_1.expect)(newCandidates).lengthOf(1);
             const candidate = newCandidates[0];

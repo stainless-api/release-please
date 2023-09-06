@@ -18,6 +18,7 @@ const mocha_1 = require("mocha");
 const sinon = require("sinon");
 const github_1 = require("../../src/github");
 const node_workspace_1 = require("../../src/plugins/node-workspace");
+const manifest_1 = require("../../src/manifest");
 const chai_1 = require("chai");
 const version_1 = require("../../src/version");
 const package_json_1 = require("../../src/updaters/node/package-json");
@@ -67,7 +68,7 @@ function assertHasVersionUpdate(update, expectedVersion) {
             repo: 'node-test-repo',
             defaultBranch: 'main',
         });
-        plugin = new node_workspace_1.NodeWorkspace(github, 'main', {
+        plugin = new node_workspace_1.NodeWorkspace(github, 'main', manifest_1.DEFAULT_RELEASE_PLEASE_MANIFEST, {
             node1: {
                 releaseType: 'node',
             },
@@ -106,7 +107,7 @@ function assertHasVersionUpdate(update, expectedVersion) {
                     ],
                 }),
             ];
-            plugin = new node_workspace_1.NodeWorkspace(github, 'main', {
+            plugin = new node_workspace_1.NodeWorkspace(github, 'main', manifest_1.DEFAULT_RELEASE_PLEASE_MANIFEST, {
                 python: {
                     releaseType: 'python',
                 },
@@ -137,7 +138,7 @@ function assertHasVersionUpdate(update, expectedVersion) {
                     ],
                 }),
             ];
-            plugin = new node_workspace_1.NodeWorkspace(github, 'main', {
+            plugin = new node_workspace_1.NodeWorkspace(github, 'main', manifest_1.DEFAULT_RELEASE_PLEASE_MANIFEST, {
                 plugin1: { releaseType: 'node' },
                 node1: { releaseType: 'node' },
             });
@@ -178,7 +179,7 @@ function assertHasVersionUpdate(update, expectedVersion) {
                 flatten: false,
                 targetBranch: 'main',
             });
-            plugin = new node_workspace_1.NodeWorkspace(github, 'main', {
+            plugin = new node_workspace_1.NodeWorkspace(github, 'main', manifest_1.DEFAULT_RELEASE_PLEASE_MANIFEST, {
                 '.': {
                     releaseType: 'node',
                 },
@@ -312,7 +313,7 @@ function assertHasVersionUpdate(update, expectedVersion) {
                 flatten: false,
                 targetBranch: 'main',
             });
-            plugin = new node_workspace_1.NodeWorkspace(github, 'main', {
+            plugin = new node_workspace_1.NodeWorkspace(github, 'main', manifest_1.DEFAULT_RELEASE_PLEASE_MANIFEST, {
                 node1: {
                     releaseType: 'node',
                 },

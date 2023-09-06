@@ -52,7 +52,10 @@ const COMMITS = [
                 component: 'google-cloud-automl',
             });
             const latestRelease = undefined;
-            const pullRequest = await strategy.buildReleasePullRequest(COMMITS, latestRelease);
+            const pullRequest = await strategy.buildReleasePullRequest({
+                commits: COMMITS,
+                latestRelease,
+            });
             (0, chai_1.expect)((_a = pullRequest.version) === null || _a === void 0 ? void 0 : _a.toString()).to.eql(expectedVersion);
         });
         (0, mocha_1.it)('returns release PR changes with semver patch bump', async () => {
@@ -68,7 +71,10 @@ const COMMITS = [
                 sha: 'abc123',
                 notes: 'some notes',
             };
-            const pullRequest = await strategy.buildReleasePullRequest(COMMITS, latestRelease);
+            const pullRequest = await strategy.buildReleasePullRequest({
+                commits: COMMITS,
+                latestRelease,
+            });
             (0, chai_1.expect)((_a = pullRequest.version) === null || _a === void 0 ? void 0 : _a.toString()).to.eql(expectedVersion);
             (0, helpers_1.safeSnapshot)(pullRequest.body.toString());
         });
@@ -81,7 +87,10 @@ const COMMITS = [
                 component: 'google-cloud-automl',
             });
             const latestRelease = undefined;
-            const pullRequest = await strategy.buildReleasePullRequest(COMMITS, latestRelease);
+            const pullRequest = await strategy.buildReleasePullRequest({
+                commits: COMMITS,
+                latestRelease,
+            });
             const updates = pullRequest.updates;
             (0, chai_1.expect)(updates).lengthOf(2);
             (0, helpers_1.assertHasUpdate)(updates, 'CHANGELOG.md', changelog_1.Changelog);
@@ -98,7 +107,10 @@ const COMMITS = [
                 sha: 'abc123',
                 notes: 'some notes',
             };
-            const pullRequest = await strategy.buildReleasePullRequest(COMMITS, latestRelease);
+            const pullRequest = await strategy.buildReleasePullRequest({
+                commits: COMMITS,
+                latestRelease,
+            });
             const updates = pullRequest.updates;
             (0, chai_1.expect)(updates).lengthOf(2);
             const { updater } = (0, helpers_1.assertHasUpdate)(updates, 'CHANGELOG.md', changelog_1.Changelog);
@@ -112,7 +124,10 @@ const COMMITS = [
                 versionFile: 'lib/foo/version.rb',
             });
             const latestRelease = undefined;
-            const pullRequest = await strategy.buildReleasePullRequest(COMMITS, latestRelease);
+            const pullRequest = await strategy.buildReleasePullRequest({
+                commits: COMMITS,
+                latestRelease,
+            });
             const updates = pullRequest.updates;
             (0, chai_1.expect)(updates).lengthOf(2);
             (0, helpers_1.assertHasUpdate)(updates, 'CHANGELOG.md', changelog_1.Changelog);

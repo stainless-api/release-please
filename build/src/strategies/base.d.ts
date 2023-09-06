@@ -11,6 +11,7 @@ import { TagName } from '../util/tag-name';
 import { Release } from '../release';
 import { ReleasePullRequest } from '../release-pull-request';
 import { Logger } from '../util/logger';
+import { BranchName } from '../util/branch-name';
 import { PullRequestBody } from '../util/pull-request-body';
 import { PullRequest } from '../pull-request';
 export interface BuildUpdatesOptions {
@@ -81,6 +82,7 @@ export declare abstract class BaseStrategy implements Strategy {
     readonly changelogNotes: ChangelogNotes;
     protected changelogSections?: ChangelogSection[];
     constructor(options: BaseStrategyOptions);
+    getBranchName(): Promise<BranchName>;
     /**
      * Specify the files necessary to update in a release pull request.
      * @param {BuildUpdatesOptions} options
@@ -115,12 +117,18 @@ export declare abstract class BaseStrategy implements Strategy {
      *   open for this path/component. Returns undefined if we should not
      *   open a pull request.
      */
-    buildReleasePullRequest(commits: ConventionalCommit[], latestRelease?: Release, draft?: boolean, labels?: string[]): Promise<ReleasePullRequest | undefined>;
+    buildReleasePullRequest({ commits, existingPullRequest, labels, latestRelease, draft, manifestPath, }: {
+        commits: ConventionalCommit[];
+        latestRelease?: Release;
+        draft?: boolean;
+        labels?: string[];
+        existingPullRequest?: PullRequest;
+        manifestPath?: string;
+    }): Promise<ReleasePullRequest | undefined>;
     private extraFilePaths;
     protected extraFileUpdates(version: Version, versionsMap: VersionsMap): Promise<Update[]>;
     protected changelogEmpty(changelogEntry: string): boolean;
     protected updateVersionsMap(versionsMap: VersionsMap, conventionalCommits: ConventionalCommit[], _newVersion: Version): Promise<VersionsMap>;
-    protected buildNewVersion(conventionalCommits: ConventionalCommit[], latestRelease?: Release): Promise<Version>;
     protected buildVersionsMap(_conventionalCommits: ConventionalCommit[]): Promise<VersionsMap>;
     protected parsePullRequestBody(pullRequestBody: string): Promise<PullRequestBody | undefined>;
     /**

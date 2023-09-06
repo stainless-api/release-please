@@ -189,6 +189,7 @@ export declare const DEFAULT_RELEASE_LABELS: string[];
 export declare const DEFAULT_SNAPSHOT_LABELS: string[];
 export declare const SNOOZE_LABEL = "autorelease: snooze";
 export declare const DEFAULT_PRERELEASE_LABELS: string[];
+export declare const DEFAULT_CUSTOM_VERSION_LABEL = "autorelease: custom version";
 export declare const MANIFEST_PULL_REQUEST_TITLE_PATTERN = "chore: release ${branch}";
 interface CreatedRelease extends GitHubRelease {
     id: number;
@@ -305,7 +306,7 @@ export declare class Manifest {
      *
      * @returns {ReleasePullRequest[]} The candidate pull requests to open or update.
      */
-    buildPullRequests(): Promise<ReleasePullRequest[]>;
+    buildPullRequests(openPullRequests: PullRequest[], snoozedPullRequests: PullRequest[]): Promise<ReleasePullRequest[]>;
     private backfillReleasesFromTags;
     private getAllTags;
     /**

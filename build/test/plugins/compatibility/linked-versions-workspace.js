@@ -147,7 +147,7 @@ exports.buildMockPackageUpdate = buildMockPackageUpdate;
                     },
                 ],
             });
-            const pullRequests = await manifest.buildPullRequests();
+            const pullRequests = await manifest.buildPullRequests([], []);
             (0, chai_1.expect)(pullRequests).lengthOf(1);
             const pullRequest = pullRequests[0];
             (0, helpers_1.safeSnapshot)(pullRequest.body.toString());

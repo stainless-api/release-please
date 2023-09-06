@@ -20,7 +20,7 @@ interface MavenWorkspacePluginOptions extends WorkspacePluginOptions {
 }
 export declare class MavenWorkspace extends WorkspacePlugin<MavenArtifact> {
     readonly considerAllArtifacts: boolean;
-    constructor(github: GitHub, targetBranch: string, repositoryConfig: RepositoryConfig, options?: MavenWorkspacePluginOptions);
+    constructor(github: GitHub, targetBranch: string, manifestPath: string, repositoryConfig: RepositoryConfig, options?: MavenWorkspacePluginOptions);
     private fetchPom;
     protected buildAllPackages(candidates: CandidateReleasePullRequest[]): Promise<AllPackages<MavenArtifact>>;
     /**

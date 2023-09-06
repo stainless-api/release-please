@@ -52,7 +52,10 @@ const COMMITS = [
                 component: 'google-cloud-automl',
             });
             const latestRelease = undefined;
-            const release = await strategy.buildReleasePullRequest(COMMITS, latestRelease);
+            const release = await strategy.buildReleasePullRequest({
+                commits: COMMITS,
+                latestRelease,
+            });
             (0, chai_1.expect)((_a = release.version) === null || _a === void 0 ? void 0 : _a.toString()).to.eql(expectedVersion);
         });
         (0, mocha_1.it)('returns release PR changes with semver patch bump', async () => {
@@ -68,7 +71,10 @@ const COMMITS = [
                 sha: 'abc123',
                 notes: 'some notes',
             };
-            const release = await strategy.buildReleasePullRequest(COMMITS, latestRelease);
+            const release = await strategy.buildReleasePullRequest({
+                commits: COMMITS,
+                latestRelease,
+            });
             (0, chai_1.expect)((_a = release.version) === null || _a === void 0 ? void 0 : _a.toString()).to.eql(expectedVersion);
         });
     });
@@ -80,7 +86,10 @@ const COMMITS = [
                 component: 'google-cloud-automl',
             });
             const latestRelease = undefined;
-            const release = await strategy.buildReleasePullRequest(COMMITS, latestRelease);
+            const release = await strategy.buildReleasePullRequest({
+                commits: COMMITS,
+                latestRelease,
+            });
             const updates = release.updates;
             (0, helpers_1.assertHasUpdate)(updates, 'CHANGELOG.md', changelog_1.Changelog);
             (0, helpers_1.assertHasUpdate)(updates, 'version.txt', default_1.DefaultUpdater);
@@ -94,7 +103,10 @@ const COMMITS = [
                 path: 'packages',
             });
             const latestRelease = undefined;
-            const release = await strategy.buildReleasePullRequest(COMMITS, latestRelease);
+            const release = await strategy.buildReleasePullRequest({
+                commits: COMMITS,
+                latestRelease,
+            });
             const updates = release.updates;
             (0, helpers_1.assertHasUpdate)(updates, 'packages/CHANGELOG.md', changelog_1.Changelog);
             (0, helpers_1.assertHasUpdate)(updates, 'packages/some-path/VERSION', default_1.DefaultUpdater);

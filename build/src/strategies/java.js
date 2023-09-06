@@ -58,13 +58,19 @@ class Java extends base_1.BaseStrategy {
         this.snapshotLabels = options.snapshotLabels || manifest_1.DEFAULT_SNAPSHOT_LABELS;
         this.skipSnapshot = (_c = options.skipSnapshot) !== null && _c !== void 0 ? _c : false;
     }
-    async buildReleasePullRequest(commits, latestRelease, draft, labels = []) {
+    async buildReleasePullRequest({ commits, labels = [], latestRelease, draft, manifestPath, }) {
         if (await this.needsSnapshot(commits, latestRelease)) {
             this.logger.info('Repository needs a snapshot bump.');
             return await this.buildSnapshotPullRequest(latestRelease, draft, this.snapshotLabels);
         }
         this.logger.info('No Java snapshot needed');
-        return await super.buildReleasePullRequest(commits, latestRelease, draft, labels);
+        return await super.buildReleasePullRequest({
+            commits,
+            latestRelease,
+            draft,
+            labels,
+            manifestPath,
+        });
     }
     async buildSnapshotPullRequest(latestRelease, draft, labels = []) {
         const component = await this.getComponent();

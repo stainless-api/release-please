@@ -91,14 +91,18 @@ class Node extends base_1.BaseStrategy {
     }
     async getPkgJsonContents() {
         if (!this.pkgJsonContents) {
+            const errMissingFile = new errors_1.MissingRequiredFileError(this.addPath('package.json'), 'node', `${this.repository.owner}/${this.repository.repo}#${this.changesBranch}`);
             try {
                 this.pkgJsonContents = await this.github.getFileContentsOnBranch(this.addPath('package.json'), this.changesBranch);
             }
             catch (e) {
                 if (e instanceof errors_1.FileNotFoundError) {
-                    throw new errors_1.MissingRequiredFileError(this.addPath('package.json'), 'node', `${this.repository.owner}/${this.repository.repo}`);
+                    throw errMissingFile;
                 }
                 throw e;
+            }
+            if (!this.pkgJsonContents) {
+                throw errMissingFile;
             }
         }
         return this.pkgJsonContents;

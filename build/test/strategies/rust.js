@@ -55,7 +55,10 @@ const COMMITS = [
                 component: 'google-cloud-automl',
             });
             const latestRelease = undefined;
-            const release = await strategy.buildReleasePullRequest(COMMITS, latestRelease);
+            const release = await strategy.buildReleasePullRequest({
+                commits: COMMITS,
+                latestRelease,
+            });
             (0, chai_1.expect)((_a = release.version) === null || _a === void 0 ? void 0 : _a.toString()).to.eql(expectedVersion);
         });
         (0, mocha_1.it)('returns release PR changes with semver patch bump', async () => {
@@ -71,7 +74,10 @@ const COMMITS = [
                 sha: 'abc123',
                 notes: 'some notes',
             };
-            const release = await strategy.buildReleasePullRequest(COMMITS, latestRelease);
+            const release = await strategy.buildReleasePullRequest({
+                commits: COMMITS,
+                latestRelease,
+            });
             (0, chai_1.expect)((_a = release.version) === null || _a === void 0 ? void 0 : _a.toString()).to.eql(expectedVersion);
         });
         (0, mocha_1.it)('detects a default component', async () => {
@@ -90,7 +96,10 @@ const COMMITS = [
             getFileContentsStub
                 .withArgs('Cargo.toml', 'main')
                 .resolves((0, helpers_1.buildGitHubFileContent)(fixturesPath, 'Cargo-crate1.toml'));
-            const pullRequest = await strategy.buildReleasePullRequest(COMMITS, latestRelease);
+            const pullRequest = await strategy.buildReleasePullRequest({
+                commits: COMMITS,
+                latestRelease,
+            });
             (0, chai_1.expect)((_a = pullRequest.version) === null || _a === void 0 ? void 0 : _a.toString()).to.eql(expectedVersion);
             snapshot((0, helpers_1.dateSafe)(pullRequest.body.toString()));
         });
@@ -123,7 +132,10 @@ const COMMITS = [
                 .withArgs('Cargo.lock', 'main')
                 .resolves((0, helpers_1.buildGitHubFileContent)(fixturesPath, 'Cargo.lock'));
             const latestRelease = undefined;
-            const release = await strategy.buildReleasePullRequest(COMMITS, latestRelease);
+            const release = await strategy.buildReleasePullRequest({
+                commits: COMMITS,
+                latestRelease,
+            });
             const updates = release.updates;
             (0, helpers_1.assertHasUpdate)(updates, 'CHANGELOG.md', changelog_1.Changelog);
             (0, helpers_1.assertHasUpdate)(updates, 'Cargo.toml', cargo_toml_1.CargoToml);
@@ -159,7 +171,10 @@ const COMMITS = [
                 .withArgs('Cargo.toml', 'main')
                 .resolves((0, helpers_1.buildGitHubFileContent)(fixturesPath, 'Cargo-workspace.toml'));
             const latestRelease = undefined;
-            const release = await strategy.buildReleasePullRequest(COMMITS, latestRelease);
+            const release = await strategy.buildReleasePullRequest({
+                commits: COMMITS,
+                latestRelease,
+            });
             const updates = release.updates;
             (0, helpers_1.assertHasUpdate)(updates, 'CHANGELOG.md', changelog_1.Changelog);
             (0, helpers_1.assertHasUpdate)(updates, 'Cargo.toml', cargo_toml_1.CargoToml);
@@ -180,7 +195,10 @@ const COMMITS = [
                 .withArgs('crates/crate2/Cargo.toml', 'main')
                 .resolves((0, helpers_1.buildGitHubFileContent)(fixturesPath, 'Cargo-crate2.toml'));
             const latestRelease = undefined;
-            const release = await strategy.buildReleasePullRequest(COMMITS, latestRelease);
+            const release = await strategy.buildReleasePullRequest({
+                commits: COMMITS,
+                latestRelease,
+            });
             const updates = release.updates;
             (0, helpers_1.assertHasUpdate)(updates, 'crates/crate1/Cargo.toml', cargo_toml_1.CargoToml);
             (0, helpers_1.assertHasUpdate)(updates, 'crates/crate2/Cargo.toml', cargo_toml_1.CargoToml);

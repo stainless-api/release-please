@@ -18,6 +18,7 @@ const sentence_case_1 = require("../../src/plugins/sentence-case");
 const chai_1 = require("chai");
 const github_1 = require("../../src/github");
 const helpers_1 = require("../helpers");
+const manifest_1 = require("../../src/manifest");
 (0, mocha_1.describe)('SentenceCase Plugin', () => {
     let github;
     beforeEach(async () => {
@@ -29,7 +30,7 @@ const helpers_1 = require("../helpers");
     });
     (0, mocha_1.describe)('processCommits', () => {
         (0, mocha_1.it)('converts description to sentence case', async () => {
-            const plugin = new sentence_case_1.SentenceCase(github, 'main', {});
+            const plugin = new sentence_case_1.SentenceCase(github, 'main', manifest_1.DEFAULT_RELEASE_PLEASE_MANIFEST, {});
             const commits = await plugin.processCommits([
                 ...(0, helpers_1.buildMockConventionalCommit)('fix: hello world'),
                 ...(0, helpers_1.buildMockConventionalCommit)('fix: Goodnight moon'),
@@ -38,7 +39,7 @@ const helpers_1 = require("../helpers");
             (0, chai_1.expect)(commits[1].message).to.equal('fix: Goodnight moon');
         });
         (0, mocha_1.it)('leaves reserved words lowercase', async () => {
-            const plugin = new sentence_case_1.SentenceCase(github, 'main', {});
+            const plugin = new sentence_case_1.SentenceCase(github, 'main', manifest_1.DEFAULT_RELEASE_PLEASE_MANIFEST, {});
             const commits = await plugin.processCommits([
                 ...(0, helpers_1.buildMockConventionalCommit)('feat: gRPC can now handle proxies'),
                 ...(0, helpers_1.buildMockConventionalCommit)('fix: npm now rocks'),
@@ -47,7 +48,7 @@ const helpers_1 = require("../helpers");
             (0, chai_1.expect)(commits[1].message).to.equal('fix: npm now rocks');
         });
         (0, mocha_1.it)('handles sentences with now breaks', async () => {
-            const plugin = new sentence_case_1.SentenceCase(github, 'main', {});
+            const plugin = new sentence_case_1.SentenceCase(github, 'main', manifest_1.DEFAULT_RELEASE_PLEASE_MANIFEST, {});
             const commits = await plugin.processCommits([
                 ...(0, helpers_1.buildMockConventionalCommit)('feat: beep-boop-hello'),
                 ...(0, helpers_1.buildMockConventionalCommit)('fix:log4j.foo.bar'),
@@ -57,7 +58,7 @@ const helpers_1 = require("../helpers");
         });
     });
     (0, mocha_1.it)('allows a custom list of specialWords to be provided', async () => {
-        const plugin = new sentence_case_1.SentenceCase(github, 'main', {}, ['hello']);
+        const plugin = new sentence_case_1.SentenceCase(github, 'main', manifest_1.DEFAULT_RELEASE_PLEASE_MANIFEST, {}, ['hello']);
         const commits = await plugin.processCommits([
             ...(0, helpers_1.buildMockConventionalCommit)('fix: hello world'),
             ...(0, helpers_1.buildMockConventionalCommit)('fix: Goodnight moon'),
@@ -66,7 +67,7 @@ const helpers_1 = require("../helpers");
         (0, chai_1.expect)(commits[1].message).to.equal('fix: Goodnight moon');
     });
     (0, mocha_1.it)('handles subject with multiple : characters', async () => {
-        const plugin = new sentence_case_1.SentenceCase(github, 'main', {}, []);
+        const plugin = new sentence_case_1.SentenceCase(github, 'main', manifest_1.DEFAULT_RELEASE_PLEASE_MANIFEST, {}, []);
         const commits = await plugin.processCommits([
             ...(0, helpers_1.buildMockConventionalCommit)('abc123'),
             ...(0, helpers_1.buildMockConventionalCommit)('fix: hello world:goodnight moon'),
@@ -74,7 +75,7 @@ const helpers_1 = require("../helpers");
         (0, chai_1.expect)(commits[0].message).to.equal('fix: Hello world:goodnight moon');
     });
     (0, mocha_1.it)('handles commit with no :', async () => {
-        const plugin = new sentence_case_1.SentenceCase(github, 'main', {}, []);
+        const plugin = new sentence_case_1.SentenceCase(github, 'main', manifest_1.DEFAULT_RELEASE_PLEASE_MANIFEST, {}, []);
         const commits = await plugin.processCommits([
             ...(0, helpers_1.buildMockConventionalCommit)('hello world goodnight moon'),
         ]);

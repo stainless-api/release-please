@@ -151,7 +151,7 @@ exports.buildMockPackageUpdate = buildMockPackageUpdate;
                 },
             ],
         });
-        const pullRequests = await manifest.buildPullRequests();
+        const pullRequests = await manifest.buildPullRequests([], []);
         (0, chai_1.expect)(pullRequests).lengthOf(1);
         const pullRequest = pullRequests[0];
         const packageData2 = pullRequest.body.releaseData.find(data => data.component === 'pkg2');
@@ -189,7 +189,7 @@ exports.buildMockPackageUpdate = buildMockPackageUpdate;
                 },
             ],
         });
-        const pullRequests = await manifest.buildPullRequests();
+        const pullRequests = await manifest.buildPullRequests([], []);
         (0, chai_1.expect)(pullRequests).lengthOf(2);
         const singlePullRequest = pullRequests[0];
         (0, helpers_1.safeSnapshot)(singlePullRequest.body.toString());
@@ -230,7 +230,7 @@ exports.buildMockPackageUpdate = buildMockPackageUpdate;
                 },
             ],
         });
-        const pullRequests = await manifest.buildPullRequests();
+        const pullRequests = await manifest.buildPullRequests([], []);
         for (const pullRequest of pullRequests) {
             (0, helpers_1.safeSnapshot)(pullRequest.body.toString());
         }
@@ -273,7 +273,7 @@ exports.buildMockPackageUpdate = buildMockPackageUpdate;
                 },
             ],
         });
-        const pullRequests = await manifest.buildPullRequests();
+        const pullRequests = await manifest.buildPullRequests([], []);
         (0, chai_1.expect)(pullRequests).lengthOf(2);
         const groupPullRequest1 = pullRequests[1];
         const packageData1 = groupPullRequest1.body.releaseData.find(data => data.component === 'pkg1');

@@ -301,6 +301,7 @@ class GitHub {
          * @throws {GitHubAPIError} on other API errors
          */
         this.createRelease = wrapAsync(async (release, options = {}) => {
+            this.logger.debug({ tag: release.tag });
             const resp = await this.octokit.repos.createRelease({
                 name: release.name,
                 owner: this.repository.owner,
@@ -1251,7 +1252,7 @@ class GitHub {
      * @returns {string} The SHA of the new branch
      */
     async createNewBranch(branchName, branchSha) {
-        this.logger.debug(`Creating new branch: '${branchName}' at $'{branchSha}'`);
+        this.logger.debug(`Creating new branch: '${branchName}' at '${branchSha}'`);
         const { data: { object: { sha }, }, } = await this.octokit.git.createRef({
             owner: this.repository.owner,
             repo: this.repository.repo,

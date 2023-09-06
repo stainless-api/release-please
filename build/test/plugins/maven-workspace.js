@@ -17,6 +17,7 @@ const mocha_1 = require("mocha");
 const sinon = require("sinon");
 const maven_workspace_1 = require("../../src/plugins/maven-workspace");
 const github_1 = require("../../src/github");
+const manifest_1 = require("../../src/manifest");
 const helpers_1 = require("../helpers");
 const chai_1 = require("chai");
 const version_1 = require("../../src/version");
@@ -34,7 +35,7 @@ const fixturesPath = './test/fixtures/plugins/maven-workspace';
             repo: 'maven-test-repo',
             defaultBranch: 'main',
         });
-        plugin = new maven_workspace_1.MavenWorkspace(github, 'main', {
+        plugin = new maven_workspace_1.MavenWorkspace(github, 'main', manifest_1.DEFAULT_RELEASE_PLEASE_MANIFEST, {
             bom: {
                 releaseType: 'maven',
             },
@@ -223,7 +224,7 @@ const fixturesPath = './test/fixtures/plugins/maven-workspace';
             (0, chai_1.expect)(newCandidates[0].pullRequest.body.releaseData).length(4);
         });
         (0, mocha_1.it)('skips pom files not configured for release', async () => {
-            plugin = new maven_workspace_1.MavenWorkspace(github, 'main', {
+            plugin = new maven_workspace_1.MavenWorkspace(github, 'main', manifest_1.DEFAULT_RELEASE_PLEASE_MANIFEST, {
                 bom: {
                     releaseType: 'maven',
                 },
@@ -279,7 +280,7 @@ const fixturesPath = './test/fixtures/plugins/maven-workspace';
             (0, chai_1.expect)(newCandidates[0].pullRequest.body.releaseData).length(4);
         });
         (0, mocha_1.it)('can consider all artifacts', async () => {
-            plugin = new maven_workspace_1.MavenWorkspace(github, 'main', {
+            plugin = new maven_workspace_1.MavenWorkspace(github, 'main', manifest_1.DEFAULT_RELEASE_PLEASE_MANIFEST, {
                 bom: {
                     component: 'my-bom',
                     releaseType: 'java-yoshi',
@@ -351,7 +352,7 @@ const fixturesPath = './test/fixtures/plugins/maven-workspace';
             (0, helpers_1.safeSnapshot)(await renderUpdate(github, 'main', bomUpdate));
         });
         (0, mocha_1.it)('skips updating manifest with snapshot versions', async () => {
-            plugin = new maven_workspace_1.MavenWorkspace(github, 'main', {
+            plugin = new maven_workspace_1.MavenWorkspace(github, 'main', manifest_1.DEFAULT_RELEASE_PLEASE_MANIFEST, {
                 bom: {
                     releaseType: 'maven',
                 },

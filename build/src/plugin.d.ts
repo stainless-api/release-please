@@ -18,9 +18,10 @@ export declare abstract class ManifestPlugin {
     readonly github: GitHub;
     readonly targetBranch: string;
     readonly changesBranch: string;
+    readonly manifestPath: string;
     readonly repositoryConfig: RepositoryConfig;
     protected logger: Logger;
-    constructor(github: GitHub, targetBranch: string, repositoryConfig: RepositoryConfig, options: ManifestPluginOptions);
+    constructor(github: GitHub, targetBranch: string, manifestPath: string, repositoryConfig: RepositoryConfig, options: ManifestPluginOptions);
     /**
      * Perform post-processing on commits, e.g, sentence casing them.
      * @param {Commit[]} commits The set of commits that will feed into release pull request.

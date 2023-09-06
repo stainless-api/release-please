@@ -17,7 +17,7 @@ export declare class LinkedVersions extends ManifestPlugin {
     readonly groupName: string;
     readonly components: Set<string>;
     readonly merge: boolean;
-    constructor(github: GitHub, targetBranch: string, repositoryConfig: RepositoryConfig, groupName: string, components: string[], options?: LinkedVersionsPluginOptions);
+    constructor(github: GitHub, targetBranch: string, manifestPath: string, repositoryConfig: RepositoryConfig, groupName: string, components: string[], options?: LinkedVersionsPluginOptions);
     /**
      * Pre-configure strategies.
      * @param {Record<string, Strategy>} strategiesByPath Strategies indexed by path

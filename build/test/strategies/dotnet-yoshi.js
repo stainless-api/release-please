@@ -60,7 +60,10 @@ const COMMITS = [
                 component: 'Google.Cloud.SecurityCenter.V1',
             });
             const latestRelease = undefined;
-            const pullRequest = await strategy.buildReleasePullRequest(COMMITS, latestRelease);
+            const pullRequest = await strategy.buildReleasePullRequest({
+                commits: COMMITS,
+                latestRelease,
+            });
             (0, chai_1.expect)((_a = pullRequest.version) === null || _a === void 0 ? void 0 : _a.toString()).to.eql(expectedVersion);
             (0, chai_1.expect)(pullRequest === null || pullRequest === void 0 ? void 0 : pullRequest.title.toString()).to.eql(expectedTitle);
             (0, helpers_1.safeSnapshot)(pullRequest.body.toString());
@@ -79,7 +82,10 @@ const COMMITS = [
                 sha: 'abc123',
                 notes: 'some notes',
             };
-            const pullRequest = await strategy.buildReleasePullRequest(COMMITS, latestRelease);
+            const pullRequest = await strategy.buildReleasePullRequest({
+                commits: COMMITS,
+                latestRelease,
+            });
             (0, chai_1.expect)((_a = pullRequest.version) === null || _a === void 0 ? void 0 : _a.toString()).to.eql(expectedVersion);
             (0, chai_1.expect)(pullRequest === null || pullRequest === void 0 ? void 0 : pullRequest.title.toString()).to.eql(expectedTitle);
             (0, helpers_1.safeSnapshot)(pullRequest.body.toString());
@@ -98,7 +104,10 @@ const COMMITS = [
                 .withArgs('apis/apis.json', 'main')
                 .resolves((0, helpers_1.buildGitHubFileContent)(fixturesPath, 'apis.json'));
             const latestRelease = undefined;
-            const pullRequest = await strategy.buildReleasePullRequest(COMMITS, latestRelease);
+            const pullRequest = await strategy.buildReleasePullRequest({
+                commits: COMMITS,
+                latestRelease,
+            });
             const updates = pullRequest.updates;
             (0, chai_1.expect)(updates).lengthOf(2);
             const changelogUpdate = (0, helpers_1.assertHasUpdate)(updates, 'apis/Google.Cloud.SecurityCenter.V1/docs/history.md', changelog_1.Changelog);
@@ -117,7 +126,10 @@ const COMMITS = [
                 .withArgs('apis/apis.json', 'main')
                 .resolves((0, helpers_1.buildGitHubFileContent)(fixturesPath, 'apis.json'));
             const latestRelease = undefined;
-            const pullRequest = await strategy.buildReleasePullRequest(COMMITS, latestRelease);
+            const pullRequest = await strategy.buildReleasePullRequest({
+                commits: COMMITS,
+                latestRelease,
+            });
             const updates = pullRequest.updates;
             (0, chai_1.expect)(updates).lengthOf(1);
             (0, helpers_1.assertNoHasUpdate)(updates, 'apis/Google.Cloud.SecurityCenter.V1/docs/history.md');

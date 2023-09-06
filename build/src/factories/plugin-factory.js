@@ -22,24 +22,24 @@ const errors_1 = require("../errors");
 const sentence_case_1 = require("../plugins/sentence-case");
 const group_priority_1 = require("../plugins/group-priority");
 const pluginFactories = {
-    'linked-versions': options => new linked_versions_1.LinkedVersions(options.github, options.targetBranch, options.repositoryConfig, options.type.groupName, options.type.components, {
+    'linked-versions': options => new linked_versions_1.LinkedVersions(options.github, options.targetBranch, options.manifestPath, options.repositoryConfig, options.type.groupName, options.type.components, {
         ...options,
         ...options.type,
     }),
-    'cargo-workspace': options => new cargo_workspace_1.CargoWorkspace(options.github, options.targetBranch, options.repositoryConfig, {
+    'cargo-workspace': options => new cargo_workspace_1.CargoWorkspace(options.github, options.targetBranch, options.manifestPath, options.repositoryConfig, {
         ...options,
         ...options.type,
     }),
-    'node-workspace': options => new node_workspace_1.NodeWorkspace(options.github, options.targetBranch, options.repositoryConfig, {
+    'node-workspace': options => new node_workspace_1.NodeWorkspace(options.github, options.targetBranch, options.manifestPath, options.repositoryConfig, {
         ...options,
         ...options.type,
     }),
-    'maven-workspace': options => new maven_workspace_1.MavenWorkspace(options.github, options.targetBranch, options.repositoryConfig, {
+    'maven-workspace': options => new maven_workspace_1.MavenWorkspace(options.github, options.targetBranch, options.manifestPath, options.repositoryConfig, {
         ...options,
         ...options.type,
     }),
-    'sentence-case': options => new sentence_case_1.SentenceCase(options.github, options.targetBranch, options.repositoryConfig, options.type.specialWords),
-    'group-priority': options => new group_priority_1.GroupPriority(options.github, options.targetBranch, options.repositoryConfig, options.type.groups),
+    'sentence-case': options => new sentence_case_1.SentenceCase(options.github, options.targetBranch, options.manifestPath, options.repositoryConfig, options.type.specialWords),
+    'group-priority': options => new group_priority_1.GroupPriority(options.github, options.targetBranch, options.manifestPath, options.repositoryConfig, options.type.groups),
 };
 function buildPlugin(options) {
     if (typeof options.type === 'object') {

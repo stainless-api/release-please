@@ -52,7 +52,10 @@ const COMMITS = [
                 component: 'iam',
             });
             const latestRelease = undefined;
-            const release = await strategy.buildReleasePullRequest(COMMITS, latestRelease);
+            const release = await strategy.buildReleasePullRequest({
+                commits: COMMITS,
+                latestRelease,
+            });
             (0, chai_1.expect)((_a = release === null || release === void 0 ? void 0 : release.version) === null || _a === void 0 ? void 0 : _a.toString()).to.eql(expectedVersion);
         });
         (0, mocha_1.it)('returns release PR changes with semver patch bump', async () => {
@@ -68,7 +71,10 @@ const COMMITS = [
                 sha: 'abc123',
                 notes: 'some notes',
             };
-            const release = await strategy.buildReleasePullRequest(COMMITS, latestRelease);
+            const release = await strategy.buildReleasePullRequest({
+                commits: COMMITS,
+                latestRelease,
+            });
             (0, chai_1.expect)((_a = release === null || release === void 0 ? void 0 : release.version) === null || _a === void 0 ? void 0 : _a.toString()).to.eql(expectedVersion);
         });
     });
@@ -80,7 +86,10 @@ const COMMITS = [
                 component: 'iam',
             });
             const latestRelease = undefined;
-            const release = await strategy.buildReleasePullRequest(COMMITS, latestRelease);
+            const release = await strategy.buildReleasePullRequest({
+                commits: COMMITS,
+                latestRelease,
+            });
             const updates = release.updates;
             (0, helpers_1.assertHasUpdate)(updates, 'CHANGES.md', changelog_1.Changelog);
             (0, helpers_1.assertHasUpdate)(updates, 'internal/version.go', version_go_1.VersionGo);
@@ -103,7 +112,7 @@ const COMMITS = [
                 ...(0, helpers_2.buildMockConventionalCommit)('fix(logging): some logging fix'),
                 ...(0, helpers_2.buildMockConventionalCommit)('feat: some generic feature'),
             ];
-            const pullRequest = await strategy.buildReleasePullRequest(commits);
+            const pullRequest = await strategy.buildReleasePullRequest({ commits });
             const pullRequestBody = pullRequest.body.toString();
             (0, chai_1.expect)(pullRequestBody).to.not.include('logging');
             snapshot((0, helpers_1.dateSafe)(pullRequestBody));
@@ -126,7 +135,7 @@ const COMMITS = [
                 ]),
                 ...(0, helpers_2.buildMockConventionalCommit)('feat: some generic feature'),
             ];
-            const pullRequest = await strategy.buildReleasePullRequest(commits);
+            const pullRequest = await strategy.buildReleasePullRequest({ commits });
             const pullRequestBody = pullRequest.body.toString();
             (0, chai_1.expect)(pullRequestBody).to.not.include('access');
             (0, chai_1.expect)(pullRequestBody).to.include('iam');
@@ -148,7 +157,7 @@ const COMMITS = [
                 ...(0, helpers_2.buildMockConventionalCommit)('feat(all): auto-regenerate discovery clients (#1279)'),
                 ...(0, helpers_2.buildMockConventionalCommit)('feat(all): auto-regenerate discovery clients (#1278)'),
             ];
-            const pullRequest = await strategy.buildReleasePullRequest(commits);
+            const pullRequest = await strategy.buildReleasePullRequest({ commits });
             const pullRequestBody = pullRequest.body.toString();
             snapshot((0, helpers_1.dateSafe)(pullRequestBody));
         });

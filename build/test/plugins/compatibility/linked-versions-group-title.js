@@ -131,7 +131,7 @@ exports.buildMockPackageUpdate = buildMockPackageUpdate;
                 ],
                 groupPullRequestTitlePattern: 'chore: Release${component} ${version}',
             });
-            const pullRequests = await manifest.buildPullRequests();
+            const pullRequests = await manifest.buildPullRequests([], []);
             (0, chai_1.expect)(pullRequests).lengthOf(1);
             const pullRequest = pullRequests[0];
             (0, helpers_1.safeSnapshot)(pullRequest.body.toString());

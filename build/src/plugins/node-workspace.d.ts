@@ -21,7 +21,7 @@ interface NodeWorkspaceOptions extends WorkspacePluginOptions {
 export declare class NodeWorkspace extends WorkspacePlugin<Package> {
     private alwaysLinkLocal;
     private packageGraph?;
-    constructor(github: GitHub, targetBranch: string, repositoryConfig: RepositoryConfig, options?: NodeWorkspaceOptions);
+    constructor(github: GitHub, targetBranch: string, manifestPath: string, repositoryConfig: RepositoryConfig, options?: NodeWorkspaceOptions);
     protected buildAllPackages(candidates: CandidateReleasePullRequest[]): Promise<{
         allPackages: Package[];
         candidatesByPackage: Record<string, CandidateReleasePullRequest>;

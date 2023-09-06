@@ -323,7 +323,7 @@ const createReleasePullRequestCommand = {
             manifest = await manifest_1.Manifest.fromManifest(github, targetBranch, argv.configFile, argv.manifestFile, manifestOptions, argv.path, argv.releaseAs);
         }
         if (argv.dryRun) {
-            const pullRequests = await manifest.buildPullRequests();
+            const pullRequests = await manifest.buildPullRequests([], []);
             logger_1.logger.debug(`Would open ${pullRequests.length} pull requests`);
             logger_1.logger.debug('fork:', manifest.fork);
             logger_1.logger.debug('changes branch:', manifest.changesBranch);
@@ -421,7 +421,7 @@ const createManifestPullRequestCommand = {
         const manifestOptions = extractManifestOptions(argv);
         const manifest = await manifest_1.Manifest.fromManifest(github, targetBranch, argv.configFile, argv.manifestFile, manifestOptions);
         if (argv.dryRun) {
-            const pullRequests = await manifest.buildPullRequests();
+            const pullRequests = await manifest.buildPullRequests([], []);
             logger_1.logger.debug(`Would open ${pullRequests.length} pull requests`);
             logger_1.logger.debug('fork:', manifest.fork);
             for (const pullRequest of pullRequests) {

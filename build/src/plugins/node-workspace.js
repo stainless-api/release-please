@@ -42,8 +42,8 @@ class Package extends package_1.Package {
  * into a single node package.
  */
 class NodeWorkspace extends workspace_1.WorkspacePlugin {
-    constructor(github, targetBranch, repositoryConfig, options = {}) {
-        super(github, targetBranch, repositoryConfig, options);
+    constructor(github, targetBranch, manifestPath, repositoryConfig, options = {}) {
+        super(github, targetBranch, manifestPath, repositoryConfig, options);
         this.alwaysLinkLocal = options.alwaysLinkLocal === false ? false : true;
     }
     async buildAllPackages(candidates) {

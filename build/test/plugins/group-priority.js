@@ -17,6 +17,7 @@ const mocha_1 = require("mocha");
 const chai_1 = require("chai");
 const github_1 = require("../../src/github");
 const group_priority_1 = require("../../src/plugins/group-priority");
+const manifest_1 = require("../../src/manifest");
 const helpers_1 = require("../helpers");
 (0, mocha_1.describe)('GroupPriority plugin', () => {
     let github;
@@ -29,7 +30,7 @@ const helpers_1 = require("../helpers");
     });
     (0, mocha_1.describe)('run', () => {
         (0, mocha_1.it)('prioritizes a group', async () => {
-            const plugin = new group_priority_1.GroupPriority(github, 'main', {}, ['snapshot']);
+            const plugin = new group_priority_1.GroupPriority(github, 'main', manifest_1.DEFAULT_RELEASE_PLEASE_MANIFEST, {}, ['snapshot']);
             const candidates = [
                 (0, helpers_1.buildMockCandidatePullRequest)('path1', 'java', '1.2.3-SNAPSHOT', {
                     component: 'component1',
@@ -47,7 +48,7 @@ const helpers_1 = require("../helpers");
             (0, chai_1.expect)(newCandidates[0].path).to.eql('path1');
         });
         (0, mocha_1.it)('falls back to all pull requests if prioritized group not found', async () => {
-            const plugin = new group_priority_1.GroupPriority(github, 'main', {}, ['snapshot']);
+            const plugin = new group_priority_1.GroupPriority(github, 'main', manifest_1.DEFAULT_RELEASE_PLEASE_MANIFEST, {}, ['snapshot']);
             const candidates = [
                 (0, helpers_1.buildMockCandidatePullRequest)('path1', 'java', '1.2.3', {
                     component: 'component1',

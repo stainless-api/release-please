@@ -48,7 +48,7 @@ class PHPYoshi extends base_1.BaseStrategy {
             changelogSections: CHANGELOG_SECTIONS,
         });
     }
-    async buildReleasePullRequest(commits, latestRelease, draft, labels = []) {
+    async buildReleasePullRequest({ commits, labels = [], latestRelease, draft, }) {
         var _a, _b, _c;
         const conventionalCommits = await this.postProcessCommits((0, commit_1.parseConventionalCommits)(commits, this.logger));
         if (conventionalCommits.length === 0) {

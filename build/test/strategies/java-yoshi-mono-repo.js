@@ -63,7 +63,10 @@ const ISO_DATE_REGEX = /[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\.[
                 .withArgs('versions.txt', 'main')
                 .resolves((0, helpers_1.buildGitHubFileContent)(fixturesPath, 'versions.txt'));
             const latestRelease = undefined;
-            const release = await strategy.buildReleasePullRequest(COMMITS, latestRelease);
+            const release = await strategy.buildReleasePullRequest({
+                commits: COMMITS,
+                latestRelease,
+            });
             (0, chai_1.expect)((_a = release.version) === null || _a === void 0 ? void 0 : _a.toString()).to.eql(expectedVersion);
         });
         (0, mocha_1.it)('returns release PR changes with semver patch bump', async () => {
@@ -84,7 +87,10 @@ const ISO_DATE_REGEX = /[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\.[
                 sha: 'abc123',
                 notes: 'some notes',
             };
-            const release = await strategy.buildReleasePullRequest(COMMITS, latestRelease);
+            const release = await strategy.buildReleasePullRequest({
+                commits: COMMITS,
+                latestRelease,
+            });
             (0, chai_1.expect)((_a = release.version) === null || _a === void 0 ? void 0 : _a.toString()).to.eql(expectedVersion);
         });
         (0, mocha_1.it)('returns a snapshot bump PR', async () => {
@@ -105,7 +111,10 @@ const ISO_DATE_REGEX = /[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\.[
                 sha: 'abc123',
                 notes: 'some notes',
             };
-            const release = await strategy.buildReleasePullRequest(COMMITS, latestRelease);
+            const release = await strategy.buildReleasePullRequest({
+                commits: COMMITS,
+                latestRelease,
+            });
             (0, chai_1.expect)((_a = release.version) === null || _a === void 0 ? void 0 : _a.toString()).to.eql(expectedVersion);
         });
         (0, mocha_1.it)('handles promotion to 1.0.0', async () => {
@@ -129,7 +138,10 @@ const ISO_DATE_REGEX = /[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\.[
                 sha: 'abc123',
                 notes: 'some notes',
             };
-            const releasePullRequest = await strategy.buildReleasePullRequest(commits, latestRelease);
+            const releasePullRequest = await strategy.buildReleasePullRequest({
+                commits: commits,
+                latestRelease,
+            });
             (0, chai_1.expect)((_a = releasePullRequest.version) === null || _a === void 0 ? void 0 : _a.toString()).to.eql(expectedVersion);
             const update = (0, helpers_1.assertHasUpdate)(releasePullRequest.updates, 'versions.txt', versions_manifest_1.VersionsManifest);
             const versionsMap = update.updater.versionsMap;
@@ -150,7 +162,10 @@ const ISO_DATE_REGEX = /[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\.[
                 .withArgs('versions.txt', 'main')
                 .resolves((0, helpers_1.buildGitHubFileContent)(fixturesPath, 'versions.txt'));
             const latestRelease = undefined;
-            const release = await strategy.buildReleasePullRequest(COMMITS, latestRelease);
+            const release = await strategy.buildReleasePullRequest({
+                commits: COMMITS,
+                latestRelease,
+            });
             const updates = release.updates;
             (0, helpers_1.assertHasUpdate)(updates, 'CHANGELOG.md', changelog_1.Changelog);
             (0, helpers_1.assertHasUpdate)(updates, 'versions.txt', versions_manifest_1.VersionsManifest);
@@ -180,7 +195,10 @@ const ISO_DATE_REGEX = /[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\.[
                 .withArgs('versions.txt', 'main')
                 .resolves((0, helpers_1.buildGitHubFileContent)(fixturesPath, 'versions.txt'));
             const latestRelease = undefined;
-            const release = await strategy.buildReleasePullRequest(COMMITS, latestRelease);
+            const release = await strategy.buildReleasePullRequest({
+                commits: COMMITS,
+                latestRelease,
+            });
             const updates = release.updates;
             (0, helpers_1.assertHasUpdate)(updates, 'CHANGELOG.md', changelog_1.Changelog);
             const { updater } = (0, helpers_1.assertHasUpdate)(updates, 'path1/pom.xml', java_update_1.JavaUpdate);
@@ -208,7 +226,10 @@ const ISO_DATE_REGEX = /[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\.[
                 .withArgs('versions.txt', 'main')
                 .resolves((0, helpers_1.buildGitHubFileContent)(fixturesPath, 'versions.txt'));
             const latestRelease = undefined;
-            const release = await strategy.buildReleasePullRequest(COMMITS, latestRelease);
+            const release = await strategy.buildReleasePullRequest({
+                commits: COMMITS,
+                latestRelease,
+            });
             const updates = release.updates;
             (0, helpers_1.assertHasUpdate)(updates, 'CHANGELOG.md', changelog_1.Changelog);
             (0, helpers_1.assertHasUpdate)(updates, 'foo/bar.java', composite_1.CompositeUpdater);
@@ -240,7 +261,10 @@ const ISO_DATE_REGEX = /[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\.[
                 .withArgs('versions.txt', 'main')
                 .resolves((0, helpers_1.buildGitHubFileContent)(fixturesPath, 'versions-released.txt'));
             const latestRelease = undefined;
-            const release = await strategy.buildReleasePullRequest(COMMITS, latestRelease);
+            const release = await strategy.buildReleasePullRequest({
+                commits: COMMITS,
+                latestRelease,
+            });
             const updates = release.updates;
             (0, helpers_1.assertNoHasUpdate)(updates, 'CHANGELOG.md');
             const { updater } = (0, helpers_1.assertHasUpdate)(updates, 'path1/pom.xml', java_update_1.JavaUpdate);
@@ -273,7 +297,10 @@ const ISO_DATE_REGEX = /[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\.[
                 .withArgs('changelog.json', 'main')
                 .resolves((0, helpers_1.buildGitHubFileContent)(fixturesPath, 'changelog.json'));
             const latestRelease = undefined;
-            const release = await strategy.buildReleasePullRequest(COMMITS, latestRelease);
+            const release = await strategy.buildReleasePullRequest({
+                commits: COMMITS,
+                latestRelease,
+            });
             const updates = release.updates;
             (0, helpers_1.assertHasUpdate)(updates, 'CHANGELOG.md', changelog_1.Changelog);
             (0, helpers_1.assertHasUpdate)(updates, 'versions.txt', versions_manifest_1.VersionsManifest);
@@ -313,7 +340,10 @@ const ISO_DATE_REGEX = /[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\.[
                 .withArgs('changelog.json', 'main')
                 .resolves((0, helpers_1.buildGitHubFileContent)(fixturesPath, 'changelog.json'));
             const latestRelease = undefined;
-            const release = await strategy.buildReleasePullRequest(COMMITS, latestRelease);
+            const release = await strategy.buildReleasePullRequest({
+                commits: COMMITS,
+                latestRelease,
+            });
             const updates = release.updates;
             (0, helpers_1.assertHasUpdate)(updates, 'CHANGELOG.md', changelog_1.Changelog);
             (0, helpers_1.assertHasUpdate)(updates, 'versions.txt', versions_manifest_1.VersionsManifest);
@@ -344,7 +374,10 @@ const ISO_DATE_REGEX = /[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\.[
                 .withArgs('changelog.json', 'main')
                 .resolves((0, helpers_1.buildGitHubFileContent)(fixturesPath, 'changelog.json'));
             const latestRelease = undefined;
-            const release = await strategy.buildReleasePullRequest(COMMITS, latestRelease);
+            const release = await strategy.buildReleasePullRequest({
+                commits: COMMITS,
+                latestRelease,
+            });
             const updates = release.updates;
             (0, helpers_1.assertHasUpdate)(updates, 'CHANGELOG.md', changelog_1.Changelog);
             (0, helpers_1.assertHasUpdate)(updates, 'versions.txt', versions_manifest_1.VersionsManifest);

@@ -5,6 +5,7 @@ import { ConventionalCommit } from '../commit';
 import { Release } from '../release';
 import { ReleasePullRequest } from '../release-pull-request';
 import { VersioningStrategy } from '../versioning-strategy';
+import { PullRequest } from '../pull-request';
 export interface JavaBuildUpdatesOption extends BuildUpdatesOptions {
     isSnapshot?: boolean;
 }
@@ -18,7 +19,14 @@ export declare class Java extends BaseStrategy {
     protected readonly snapshotLabels: string[];
     readonly skipSnapshot: boolean;
     constructor(options: BaseStrategyOptions);
-    buildReleasePullRequest(commits: ConventionalCommit[], latestRelease?: Release, draft?: boolean, labels?: string[]): Promise<ReleasePullRequest | undefined>;
+    buildReleasePullRequest({ commits, labels, latestRelease, draft, manifestPath, }: {
+        commits: ConventionalCommit[];
+        latestRelease?: Release;
+        draft?: boolean;
+        labels?: string[];
+        existingPullRequest?: PullRequest;
+        manifestPath?: string;
+    }): Promise<ReleasePullRequest | undefined>;
     protected buildSnapshotPullRequest(latestRelease?: Release, draft?: boolean, labels?: string[]): Promise<ReleasePullRequest>;
     isPublishedVersion(version: Version): boolean;
     protected needsSnapshot(commits: ConventionalCommit[], latestRelease?: Release): Promise<boolean>;

@@ -27,9 +27,9 @@ const composite_1 = require("../updaters/composite");
  * Release notes are broken up using `<summary>`/`<details>` blocks.
  */
 class Merge extends plugin_1.ManifestPlugin {
-    constructor(github, targetBranch, repositoryConfig, options = {}) {
+    constructor(github, targetBranch, manifestPath, repositoryConfig, options = {}) {
         var _a, _b;
-        super(github, targetBranch, repositoryConfig, options);
+        super(github, targetBranch, manifestPath, repositoryConfig, options);
         this.pullRequestTitlePattern =
             (_a = options.pullRequestTitlePattern) !== null && _a !== void 0 ? _a : manifest_1.MANIFEST_PULL_REQUEST_TITLE_PATTERN;
         this.pullRequestHeader = options.pullRequestHeader;

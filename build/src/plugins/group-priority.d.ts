@@ -16,7 +16,7 @@ export declare class GroupPriority extends ManifestPlugin {
      *   repository. This allows plugins to know how components interact.
      * @param {string[]} groups List of group names ordered with highest priority first
      */
-    constructor(github: GitHub, targetBranch: string, repositoryConfig: RepositoryConfig, groups: string[], options?: ManifestPluginOptions);
+    constructor(github: GitHub, targetBranch: string, manifestPath: string, repositoryConfig: RepositoryConfig, groups: string[], options?: ManifestPluginOptions);
     /**
      * Group candidate release PRs by grouping and check our list of preferred
      * groups in order. If a preferred group is found, only return pull requests for

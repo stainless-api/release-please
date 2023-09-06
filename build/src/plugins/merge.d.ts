@@ -18,7 +18,7 @@ export declare class Merge extends ManifestPlugin {
     private pullRequestHeader?;
     private headBranchName?;
     private forceMerge;
-    constructor(github: GitHub, targetBranch: string, repositoryConfig: RepositoryConfig, options?: MergeOptions);
+    constructor(github: GitHub, targetBranch: string, manifestPath: string, repositoryConfig: RepositoryConfig, options?: MergeOptions);
     run(candidates: CandidateReleasePullRequest[]): Promise<CandidateReleasePullRequest[]>;
 }
 export {};

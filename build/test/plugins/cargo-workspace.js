@@ -17,6 +17,7 @@ exports.buildMockPackageUpdate = void 0;
 const mocha_1 = require("mocha");
 const sinon = require("sinon");
 const github_1 = require("../../src/github");
+const manifest_1 = require("../../src/manifest");
 const helpers_1 = require("../helpers");
 const version_1 = require("../../src/version");
 const cargo_workspace_1 = require("../../src/plugins/cargo-workspace");
@@ -52,7 +53,7 @@ exports.buildMockPackageUpdate = buildMockPackageUpdate;
             repo: 'rust-test-repo',
             defaultBranch: 'main',
         });
-        plugin = new cargo_workspace_1.CargoWorkspace(github, 'main', {
+        plugin = new cargo_workspace_1.CargoWorkspace(github, 'main', manifest_1.DEFAULT_RELEASE_PLEASE_MANIFEST, {
             'packages/rustA': {
                 releaseType: 'rust',
             },
@@ -98,7 +99,7 @@ exports.buildMockPackageUpdate = buildMockPackageUpdate;
                     ['Cargo.toml', '[workspace]\nmembers = ["packages/rustA"]'],
                 ],
             });
-            plugin = new cargo_workspace_1.CargoWorkspace(github, 'main', {
+            plugin = new cargo_workspace_1.CargoWorkspace(github, 'main', manifest_1.DEFAULT_RELEASE_PLEASE_MANIFEST, {
                 python: {
                     releaseType: 'python',
                 },
@@ -154,7 +155,7 @@ exports.buildMockPackageUpdate = buildMockPackageUpdate;
                 .resolves(['packages/rustA'])
                 .withArgs('packages/rustD', 'main')
                 .resolves(['packages/rustD']);
-            plugin = new cargo_workspace_1.CargoWorkspace(github, 'main', {
+            plugin = new cargo_workspace_1.CargoWorkspace(github, 'main', manifest_1.DEFAULT_RELEASE_PLEASE_MANIFEST, {
                 'packages/rustA': {
                     releaseType: 'rust',
                 },
@@ -199,7 +200,7 @@ exports.buildMockPackageUpdate = buildMockPackageUpdate;
                 .stub(github, 'findFilesByGlobAndRef')
                 .withArgs('packages/*', 'main')
                 .resolves(['packages/rustA', 'packages/rustD']);
-            plugin = new cargo_workspace_1.CargoWorkspace(github, 'main', {
+            plugin = new cargo_workspace_1.CargoWorkspace(github, 'main', manifest_1.DEFAULT_RELEASE_PLEASE_MANIFEST, {
                 'packages/rustA': {
                     releaseType: 'rust',
                 },
@@ -313,7 +314,7 @@ exports.buildMockPackageUpdate = buildMockPackageUpdate;
                 .resolves(['packages/rustD'])
                 .withArgs('packages/rustE', 'main')
                 .resolves(['packages/rustE']);
-            plugin = new cargo_workspace_1.CargoWorkspace(github, 'main', {
+            plugin = new cargo_workspace_1.CargoWorkspace(github, 'main', manifest_1.DEFAULT_RELEASE_PLEASE_MANIFEST, {
                 'packages/rustA': {
                     releaseType: 'rust',
                 },
@@ -464,7 +465,7 @@ exports.buildMockPackageUpdate = buildMockPackageUpdate;
                 .resolves(['packages/rustA'])
                 .withArgs('packages/rustB', 'main')
                 .resolves(['packages/rustB']);
-            plugin = new cargo_workspace_1.CargoWorkspace(github, 'main', {
+            plugin = new cargo_workspace_1.CargoWorkspace(github, 'main', manifest_1.DEFAULT_RELEASE_PLEASE_MANIFEST, {
                 'packages/rustA': {
                     releaseType: 'rust',
                 },
@@ -511,7 +512,7 @@ exports.buildMockPackageUpdate = buildMockPackageUpdate;
                 .resolves(['packages/rustA'])
                 .withArgs('packages/rustB', 'main')
                 .resolves(['packages/rustB']);
-            plugin = new cargo_workspace_1.CargoWorkspace(github, 'main', {
+            plugin = new cargo_workspace_1.CargoWorkspace(github, 'main', manifest_1.DEFAULT_RELEASE_PLEASE_MANIFEST, {
                 'packages/rustA': {
                     releaseType: 'rust',
                 },

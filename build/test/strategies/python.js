@@ -64,7 +64,10 @@ const COMMITS = [
                 .resolves((0, helpers_1.buildGitHubFileContent)(fixturesPath, 'setup.py'));
             sandbox.stub(github, 'findFilesByFilenameAndRef').resolves([]);
             const latestRelease = undefined;
-            const release = await strategy.buildReleasePullRequest(COMMITS, latestRelease);
+            const release = await strategy.buildReleasePullRequest({
+                commits: COMMITS,
+                latestRelease,
+            });
             (0, chai_1.expect)((_a = release.version) === null || _a === void 0 ? void 0 : _a.toString()).to.eql(expectedVersion);
         });
         (0, mocha_1.it)('returns release PR changes with semver patch bump', async () => {
@@ -84,7 +87,10 @@ const COMMITS = [
                 sha: 'abc123',
                 notes: 'some notes',
             };
-            const release = await strategy.buildReleasePullRequest(COMMITS, latestRelease);
+            const release = await strategy.buildReleasePullRequest({
+                commits: COMMITS,
+                latestRelease,
+            });
             (0, chai_1.expect)((_a = release.version) === null || _a === void 0 ? void 0 : _a.toString()).to.eql(expectedVersion);
         });
     });
@@ -100,7 +106,10 @@ const COMMITS = [
                 .resolves((0, helpers_1.buildGitHubFileContent)(fixturesPath, 'setup.py'));
             sandbox.stub(github, 'findFilesByFilenameAndRef').resolves([]);
             const latestRelease = undefined;
-            const release = await strategy.buildReleasePullRequest(COMMITS, latestRelease);
+            const release = await strategy.buildReleasePullRequest({
+                commits: COMMITS,
+                latestRelease,
+            });
             const updates = release.updates;
             (0, helpers_1.assertHasUpdate)(updates, 'CHANGELOG.md', changelog_1.Changelog);
             (0, helpers_1.assertHasUpdate)(updates, 'setup.cfg', setup_cfg_1.SetupCfg);
@@ -121,7 +130,10 @@ const COMMITS = [
                 .resolves((0, helpers_1.buildGitHubFileContent)('./test/updaters/fixtures', 'pyproject.toml'));
             sandbox.stub(github, 'findFilesByFilenameAndRef').resolves([]);
             const latestRelease = undefined;
-            const release = await strategy.buildReleasePullRequest(COMMITS, latestRelease);
+            const release = await strategy.buildReleasePullRequest({
+                commits: COMMITS,
+                latestRelease,
+            });
             const updates = release.updates;
             (0, helpers_1.assertHasUpdate)(updates, 'pyproject.toml', pyproject_toml_1.PyProjectToml);
         });
@@ -138,7 +150,10 @@ const COMMITS = [
                 .stub(github, 'findFilesByFilenameAndRef')
                 .resolves(['src/version.py']);
             const latestRelease = undefined;
-            const release = await strategy.buildReleasePullRequest(COMMITS, latestRelease);
+            const release = await strategy.buildReleasePullRequest({
+                commits: COMMITS,
+                latestRelease,
+            });
             const updates = release.updates;
             (0, helpers_1.assertHasUpdate)(updates, 'src/version.py', python_file_with_version_1.PythonFileWithVersion);
         });
@@ -164,7 +179,10 @@ const COMMITS = [
                 .withArgs('setup.py', 'main')
                 .resolves((0, helpers_1.buildGitHubFileContent)(fixturesPath, 'setup.py'));
             const latestRelease = undefined;
-            const release = await strategy.buildReleasePullRequest(COMMITS, latestRelease);
+            const release = await strategy.buildReleasePullRequest({
+                commits: COMMITS,
+                latestRelease,
+            });
             const updates = release.updates;
             (0, helpers_1.assertHasUpdate)(updates, 'CHANGELOG.md', changelog_1.Changelog);
             const update = (0, helpers_1.assertHasUpdate)(updates, 'changelog.json', changelog_json_1.ChangelogJson);

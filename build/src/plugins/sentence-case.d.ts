@@ -8,7 +8,7 @@ import { ConventionalCommit } from '../commit';
  */
 export declare class SentenceCase extends ManifestPlugin {
     specialWords: Set<string>;
-    constructor(github: GitHub, targetBranch: string, repositoryConfig: RepositoryConfig, specialWords?: Array<string>, options?: ManifestPluginOptions);
+    constructor(github: GitHub, targetBranch: string, manifestPath: string, repositoryConfig: RepositoryConfig, specialWords?: Array<string>, options?: ManifestPluginOptions);
     /**
      * Perform post-processing on commits, e.g, sentence casing them.
      * @param {Commit[]} commits The set of commits that will feed into release pull request.

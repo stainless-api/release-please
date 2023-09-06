@@ -26,9 +26,9 @@ const branch_name_1 = require("../util/branch-name");
  * Release notes are broken up using `<summary>`/`<details>` blocks.
  */
 class LinkedVersions extends plugin_1.ManifestPlugin {
-    constructor(github, targetBranch, repositoryConfig, groupName, components, options = {}) {
+    constructor(github, targetBranch, manifestPath, repositoryConfig, groupName, components, options = {}) {
         var _a;
-        super(github, targetBranch, repositoryConfig, options);
+        super(github, targetBranch, manifestPath, repositoryConfig, options);
         this.groupName = groupName;
         this.components = new Set(components);
         this.merge = (_a = options.merge) !== null && _a !== void 0 ? _a : true;
@@ -57,7 +57,11 @@ class LinkedVersions extends plugin_1.ManifestPlugin {
         for (const path in groupStrategies) {
             const strategy = groupStrategies[path];
             const latestRelease = releasesByPath[path];
-            const releasePullRequest = await strategy.buildReleasePullRequest((0, commit_1.parseConventionalCommits)(commitsByPath[path], this.logger), latestRelease);
+            const releasePullRequest = await strategy.buildReleasePullRequest({
+                commits: (0, commit_1.parseConventionalCommits)(commitsByPath[path], this.logger),
+                latestRelease,
+                manifestPath: this.manifestPath,
+            });
             if (releasePullRequest === null || releasePullRequest === void 0 ? void 0 : releasePullRequest.version) {
                 groupVersions[path] = releasePullRequest.version;
             }
@@ -123,7 +127,7 @@ class LinkedVersions extends plugin_1.ManifestPlugin {
         this.logger.info(`Found ${inScopeCandidates.length} linked-versions candidates`);
         // delegate to the merge plugin and add merged pull request
         if (inScopeCandidates.length > 0) {
-            const merge = new merge_1.Merge(this.github, this.targetBranch, this.repositoryConfig, {
+            const merge = new merge_1.Merge(this.github, this.targetBranch, this.manifestPath, this.repositoryConfig, {
                 pullRequestTitlePattern: `chore\${scope}: release ${this.groupName} libraries`,
                 forceMerge: true,
                 headBranchName: branch_name_1.BranchName.ofGroupTargetBranch(this.groupName, this.targetBranch, this.changesBranch).toString(),

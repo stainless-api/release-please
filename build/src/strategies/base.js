@@ -30,6 +30,7 @@ const generic_xml_1 = require("../updaters/generic-xml");
 const pom_xml_1 = require("../updaters/java/pom-xml");
 const generic_yaml_1 = require("../updaters/generic-yaml");
 const generic_toml_1 = require("../updaters/generic-toml");
+const errors_1 = require("../errors");
 const DEFAULT_CHANGELOG_PATH = 'CHANGELOG.md';
 /**
  * A strategy is responsible for determining which files are
@@ -65,6 +66,13 @@ class BaseStrategy {
         this.extraFiles = options.extraFiles || [];
         this.initialVersion = options.initialVersion;
         this.extraLabels = options.extraLabels || [];
+    }
+    async getBranchName() {
+        const branchComponent = await this.getBranchComponent();
+        const branchName = branchComponent
+            ? branch_name_1.BranchName.ofComponentTargetBranch(branchComponent, this.targetBranch, this.changesBranch)
+            : branch_name_1.BranchName.ofTargetBranch(this.targetBranch, this.changesBranch);
+        return branchName;
     }
     /**
      * Return the component for this strategy. This may be a computed field.
@@ -140,24 +148,96 @@ class BaseStrategy {
      *   open for this path/component. Returns undefined if we should not
      *   open a pull request.
      */
-    async buildReleasePullRequest(commits, latestRelease, draft, labels = []) {
+    async buildReleasePullRequest({ commits, existingPullRequest, labels = [], latestRelease, draft, manifestPath, }) {
+        var _a;
         const conventionalCommits = await this.postProcessCommits(commits);
         this.logger.info(`Considering: ${conventionalCommits.length} commits`);
         if (conventionalCommits.length === 0) {
             this.logger.info(`No commits for path: ${this.path}, skipping`);
             return undefined;
         }
-        const newVersion = await this.buildNewVersion(conventionalCommits, latestRelease);
-        const versionsMap = await this.updateVersionsMap(await this.buildVersionsMap(conventionalCommits), conventionalCommits, newVersion);
         const component = await this.getComponent();
         this.logger.debug('component:', component);
+        const releaseAsCommit = conventionalCommits.find(conventionalCommit => conventionalCommit.notes.find(note => note.title === 'RELEASE AS'));
+        const releaseAsNote = releaseAsCommit === null || releaseAsCommit === void 0 ? void 0 : releaseAsCommit.notes.find(note => note.title === 'RELEASE AS');
+        let newVersion;
+        if (this.releaseAs) {
+            this.logger.warn(`Setting version for ${this.path} from release-as configuration`);
+            newVersion = version_1.Version.parse(this.releaseAs);
+        }
+        else if (releaseAsNote) {
+            newVersion = version_1.Version.parse(releaseAsNote.text);
+        }
+        else if (latestRelease) {
+            newVersion = await this.versioningStrategy.bump(latestRelease.tag.version, conventionalCommits);
+        }
+        else {
+            newVersion = this.initialReleaseVersion();
+        }
+        // If a pull request already exists, compare the manifest version from its branch against the one from the PR title.
+        // If they don't match, assume the PR title has been edited by an end user to set the version.
+        if (existingPullRequest) {
+            this.logger.info(`PR already exists for ${existingPullRequest.headBranchName}, checking if PR title edited to set custom version`);
+            const existingPRTitleVersion = (_a = pull_request_title_1.PullRequestTitle.parse(existingPullRequest.title)) === null || _a === void 0 ? void 0 : _a.getVersion();
+            const hasCustomVersionLabel = existingPullRequest.labels.find(label => label === manifest_1.DEFAULT_CUSTOM_VERSION_LABEL);
+            if (!existingPRTitleVersion && hasCustomVersionLabel) {
+                // report problem to end user
+                this.github.commentOnIssue(`
+## Invalid version number in PR title
+
+:rotating_light: This Pull Request has the \`${manifest_1.DEFAULT_CUSTOM_VERSION_LABEL}\` label but the version number cannot be found in the title. Instead the generated version \`${newVersion}\` will be used.
+
+If you want to set a custom version be sure to use the [semantic versioning format](https://devhints.io/semver), e.g \`1.2.3\`.
+
+If you do not want to set a custom version and want  to get rid of this warning, remove the label \`${manifest_1.DEFAULT_CUSTOM_VERSION_LABEL}\` from this Pull Request.
+`, existingPullRequest.number);
+            }
+            else if (!existingPRTitleVersion) {
+                // warn end user
+                this.github.commentOnIssue(`
+## Invalid version number in PR title
+
+:warning: No version number can be found in the title, the generated version \`${newVersion}\` will be used. Did you want to change the version for this release?
+
+To set a custom version be sure to use the [semantic versioning format](https://devhints.io/semver), e.g \`1.2.3\`.
+`, existingPullRequest.number);
+            }
+            else if (existingPullRequest.labels.find(label => label === manifest_1.DEFAULT_CUSTOM_VERSION_LABEL)) {
+                // PR labeled as custom version, use version from the title
+                newVersion = existingPRTitleVersion;
+            }
+            else {
+                // look at the manifest from release branch and compare against version from PR title
+                try {
+                    const manifest = (await this.github.getFileJson(manifestPath || manifest_1.DEFAULT_RELEASE_PLEASE_MANIFEST, existingPullRequest.headBranchName)) || {};
+                    const componentVersion = manifest[component || '.'];
+                    if (componentVersion !== (existingPRTitleVersion === null || existingPRTitleVersion === void 0 ? void 0 : existingPRTitleVersion.toString())) {
+                        // version from title has been edited, add custom version label, a comment, and use the title version
+                        this.github.addIssueLabels([manifest_1.DEFAULT_CUSTOM_VERSION_LABEL], existingPullRequest.number);
+                        this.github.commentOnIssue(`
+## Release version edited manually
+
+The Pull Request version has been manually set to \`${existingPRTitleVersion}\` and will be used for the release.
+
+If you instead want to use the version number \`${newVersion}\` generated from conventional commits, just remove the label \`${manifest_1.DEFAULT_CUSTOM_VERSION_LABEL}\` from this Pull Request.
+`, existingPullRequest.number);
+                        newVersion = existingPRTitleVersion;
+                    }
+                }
+                catch (err) {
+                    if (err instanceof errors_1.FileNotFoundError) {
+                        this.logger.error('Manifest file was expected to exist on PR branch but was not found. Checks for PR title edits aborted, will instead use version calculated from commits.', err);
+                    }
+                    else {
+                        throw err;
+                    }
+                }
+            }
+        }
+        const versionsMap = await this.updateVersionsMap(await this.buildVersionsMap(conventionalCommits), conventionalCommits, newVersion);
         const newVersionTag = new tag_name_1.TagName(newVersion, this.includeComponentInTag ? component : undefined, this.tagSeparator, this.includeVInTag);
         this.logger.debug('pull request title pattern:', this.pullRequestTitlePattern);
         const pullRequestTitle = pull_request_title_1.PullRequestTitle.ofComponentTargetBranchVersion(component || '', this.targetBranch, this.changesBranch, newVersion, this.pullRequestTitlePattern);
-        const branchComponent = await this.getBranchComponent();
-        const branchName = branchComponent
-            ? branch_name_1.BranchName.ofComponentTargetBranch(branchComponent, this.targetBranch, this.changesBranch)
-            : branch_name_1.BranchName.ofTargetBranch(this.targetBranch, this.changesBranch);
         const releaseNotesBody = await this.buildReleaseNotes(conventionalCommits, newVersion, newVersionTag, latestRelease, commits);
         if (this.changelogEmpty(releaseNotesBody)) {
             this.logger.info(`No user facing commits found since ${latestRelease ? latestRelease.sha : 'beginning of time'} - skipping`);
@@ -177,7 +257,7 @@ class BaseStrategy {
             body: pullRequestBody,
             updates: updatesWithExtras,
             labels: [...labels, ...this.extraLabels],
-            headRefName: branchName.toString(),
+            headRefName: (await this.getBranchName()).toString(),
             version: newVersion,
             draft: draft !== null && draft !== void 0 ? draft : false,
         };
@@ -266,26 +346,9 @@ class BaseStrategy {
     }
     async updateVersionsMap(versionsMap, conventionalCommits, _newVersion) {
         for (const [component, version] of versionsMap.entries()) {
-            versionsMap.set(component, await this.versioningStrategy.bump(version, conventionalCommits));
+            versionsMap.set(component, this.versioningStrategy.bump(version, conventionalCommits));
         }
         return versionsMap;
-    }
-    async buildNewVersion(conventionalCommits, latestRelease) {
-        if (this.releaseAs) {
-            this.logger.warn(`Setting version for ${this.path} from release-as configuration`);
-            return version_1.Version.parse(this.releaseAs);
-        }
-        const releaseAsCommit = conventionalCommits.find(conventionalCommit => conventionalCommit.notes.find(note => note.title === 'RELEASE AS'));
-        if (releaseAsCommit) {
-            const note = releaseAsCommit.notes.find(note => note.title === 'RELEASE AS');
-            if (note) {
-                return version_1.Version.parse(note.text);
-            }
-        }
-        if (latestRelease) {
-            return await this.versioningStrategy.bump(latestRelease.tag.version, conventionalCommits);
-        }
-        return this.initialReleaseVersion();
     }
     async buildVersionsMap(_conventionalCommits) {
         return new Map();

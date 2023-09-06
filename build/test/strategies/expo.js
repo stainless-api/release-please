@@ -60,7 +60,10 @@ const expoFixturesPath = './test/fixtures/strategies/expo';
                 packageName: 'google-cloud-automl',
             });
             const latestRelease = undefined;
-            const release = await strategy.buildReleasePullRequest(commits, latestRelease);
+            const release = await strategy.buildReleasePullRequest({
+                commits,
+                latestRelease,
+            });
             (0, chai_1.expect)((_a = release.version) === null || _a === void 0 ? void 0 : _a.toString()).to.eql(expectedVersion);
         });
         (0, mocha_1.it)('builds a release pull request', async () => {
@@ -81,7 +84,10 @@ const expoFixturesPath = './test/fixtures/strategies/expo';
                 sha: 'abc123',
                 notes: 'some notes',
             };
-            const pullRequest = await strategy.buildReleasePullRequest(commits, latestRelease);
+            const pullRequest = await strategy.buildReleasePullRequest({
+                commits,
+                latestRelease,
+            });
             (0, chai_1.expect)((_a = pullRequest.version) === null || _a === void 0 ? void 0 : _a.toString()).to.eql(expectedVersion);
         });
         (0, mocha_1.it)('detects a default component', async () => {
@@ -103,7 +109,10 @@ const expoFixturesPath = './test/fixtures/strategies/expo';
                 sha: 'abc123',
                 notes: 'some notes',
             };
-            const pullRequest = await strategy.buildReleasePullRequest(commits, latestRelease);
+            const pullRequest = await strategy.buildReleasePullRequest({
+                commits,
+                latestRelease,
+            });
             (0, chai_1.expect)((_a = pullRequest.version) === null || _a === void 0 ? void 0 : _a.toString()).to.eql(expectedVersion);
         });
         (0, mocha_1.it)('detects a default packageName', async () => {
@@ -126,7 +135,10 @@ const expoFixturesPath = './test/fixtures/strategies/expo';
                 sha: 'abc123',
                 notes: 'some notes',
             };
-            const pullRequest = await strategy.buildReleasePullRequest(commits, latestRelease);
+            const pullRequest = await strategy.buildReleasePullRequest({
+                commits,
+                latestRelease,
+            });
             (0, chai_1.expect)((_a = pullRequest.version) === null || _a === void 0 ? void 0 : _a.toString()).to.eql(expectedVersion);
         });
     });
@@ -144,7 +156,10 @@ const expoFixturesPath = './test/fixtures/strategies/expo';
             });
             sandbox.stub(github, 'findFilesByFilenameAndRef').resolves([]);
             const latestRelease = undefined;
-            const release = await strategy.buildReleasePullRequest(commits, latestRelease);
+            const release = await strategy.buildReleasePullRequest({
+                commits,
+                latestRelease,
+            });
             const updates = release.updates;
             (0, helpers_1.assertHasUpdate)(updates, 'CHANGELOG.md', changelog_1.Changelog);
             (0, helpers_1.assertHasUpdate)(updates, 'package-lock.json', package_lock_json_1.PackageLockJson);

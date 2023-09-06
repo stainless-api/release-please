@@ -52,7 +52,9 @@ class TestStrategy extends base_1.BaseStrategy {
                 github,
                 component: 'google-cloud-automl',
             });
-            const pullRequest = await strategy.buildReleasePullRequest([]);
+            const pullRequest = await strategy.buildReleasePullRequest({
+                commits: [],
+            });
             (0, chai_1.expect)(pullRequest).to.be.undefined;
         });
         (0, mocha_1.it)('allows overriding initial version', async () => {
@@ -63,7 +65,9 @@ class TestStrategy extends base_1.BaseStrategy {
                 component: 'google-cloud-automl',
             });
             const commits = (0, helpers_1.buildMockConventionalCommit)('chore: initial commit\n\nRelease-As: 2.3.4');
-            const pullRequest = await strategy.buildReleasePullRequest(commits);
+            const pullRequest = await strategy.buildReleasePullRequest({
+                commits,
+            });
             (0, chai_1.expect)(pullRequest).to.not.be.undefined;
             (0, chai_1.expect)((_a = pullRequest === null || pullRequest === void 0 ? void 0 : pullRequest.version) === null || _a === void 0 ? void 0 : _a.toString()).to.eql('2.3.4');
             snapshot((0, helpers_1.dateSafe)(pullRequest.body.toString()));
@@ -77,7 +81,9 @@ class TestStrategy extends base_1.BaseStrategy {
                 initialVersion: '0.1.0',
             });
             const commits = (0, helpers_1.buildMockConventionalCommit)('feat: initial commit');
-            const pullRequest = await strategy.buildReleasePullRequest(commits);
+            const pullRequest = await strategy.buildReleasePullRequest({
+                commits,
+            });
             (0, chai_1.expect)(pullRequest).to.not.be.undefined;
             (0, chai_1.expect)((_a = pullRequest === null || pullRequest === void 0 ? void 0 : pullRequest.version) === null || _a === void 0 ? void 0 : _a.toString()).to.eql('0.1.0');
             snapshot((0, helpers_1.dateSafe)(pullRequest.body.toString()));
@@ -97,7 +103,10 @@ class TestStrategy extends base_1.BaseStrategy {
                     '/3.java',
                 ],
             });
-            const pullRequest = await strategy.buildReleasePullRequest((0, helpers_1.buildMockConventionalCommit)('fix: a bugfix'), undefined);
+            const pullRequest = await strategy.buildReleasePullRequest({
+                commits: (0, helpers_1.buildMockConventionalCommit)('fix: a bugfix'),
+                latestRelease: undefined,
+            });
             (0, chai_1.expect)(pullRequest).to.exist;
             (0, chai_1.expect)(pullRequest === null || pullRequest === void 0 ? void 0 : pullRequest.updates).to.be.an('array');
             (0, chai_1.expect)(pullRequest === null || pullRequest === void 0 ? void 0 : pullRequest.updates.map(update => update.path))
@@ -119,7 +128,10 @@ class TestStrategy extends base_1.BaseStrategy {
                 component: 'google-cloud-automl',
                 extraFiles: ['0', { type: 'json', path: '/3.json', jsonpath: '$.foo' }],
             });
-            const pullRequest = await strategy.buildReleasePullRequest((0, helpers_1.buildMockConventionalCommit)('fix: a bugfix'), undefined);
+            const pullRequest = await strategy.buildReleasePullRequest({
+                commits: (0, helpers_1.buildMockConventionalCommit)('fix: a bugfix'),
+                latestRelease: undefined,
+            });
             (0, chai_1.expect)(pullRequest).to.exist;
             const updates = pullRequest === null || pullRequest === void 0 ? void 0 : pullRequest.updates;
             (0, chai_1.expect)(updates).to.be.an('array');
@@ -133,7 +145,10 @@ class TestStrategy extends base_1.BaseStrategy {
                 component: 'google-cloud-automl',
                 extraFiles: ['0', { type: 'yaml', path: '/3.yaml', jsonpath: '$.foo' }],
             });
-            const pullRequest = await strategy.buildReleasePullRequest((0, helpers_1.buildMockConventionalCommit)('fix: a bugfix'), undefined);
+            const pullRequest = await strategy.buildReleasePullRequest({
+                commits: (0, helpers_1.buildMockConventionalCommit)('fix: a bugfix'),
+                latestRelease: undefined,
+            });
             (0, chai_1.expect)(pullRequest).to.exist;
             const updates = pullRequest === null || pullRequest === void 0 ? void 0 : pullRequest.updates;
             (0, chai_1.expect)(updates).to.be.an('array');
@@ -147,7 +162,10 @@ class TestStrategy extends base_1.BaseStrategy {
                 component: 'google-cloud-automl',
                 extraFiles: ['0', { type: 'toml', path: '/3.toml', jsonpath: '$.foo' }],
             });
-            const pullRequest = await strategy.buildReleasePullRequest((0, helpers_1.buildMockConventionalCommit)('fix: a bugfix'), undefined);
+            const pullRequest = await strategy.buildReleasePullRequest({
+                commits: (0, helpers_1.buildMockConventionalCommit)('fix: a bugfix'),
+                latestRelease: undefined,
+            });
             (0, chai_1.expect)(pullRequest).to.exist;
             const updates = pullRequest === null || pullRequest === void 0 ? void 0 : pullRequest.updates;
             (0, chai_1.expect)(updates).to.be.an('array');
@@ -161,7 +179,10 @@ class TestStrategy extends base_1.BaseStrategy {
                 component: 'google-cloud-automl',
                 extraFiles: ['0', { type: 'xml', path: '/3.xml', xpath: '$.foo' }],
             });
-            const pullRequest = await strategy.buildReleasePullRequest((0, helpers_1.buildMockConventionalCommit)('fix: a bugfix'), undefined);
+            const pullRequest = await strategy.buildReleasePullRequest({
+                commits: (0, helpers_1.buildMockConventionalCommit)('fix: a bugfix'),
+                latestRelease: undefined,
+            });
             (0, chai_1.expect)(pullRequest).to.exist;
             const updates = pullRequest === null || pullRequest === void 0 ? void 0 : pullRequest.updates;
             (0, chai_1.expect)(updates).to.be.an('array');
@@ -175,7 +196,10 @@ class TestStrategy extends base_1.BaseStrategy {
                 component: 'google-cloud-automl',
                 extraFiles: ['0', { type: 'pom', path: '/3.xml' }],
             });
-            const pullRequest = await strategy.buildReleasePullRequest((0, helpers_1.buildMockConventionalCommit)('fix: a bugfix'), undefined);
+            const pullRequest = await strategy.buildReleasePullRequest({
+                commits: (0, helpers_1.buildMockConventionalCommit)('fix: a bugfix'),
+                latestRelease: undefined,
+            });
             (0, chai_1.expect)(pullRequest).to.exist;
             const updates = pullRequest === null || pullRequest === void 0 ? void 0 : pullRequest.updates;
             (0, chai_1.expect)(updates).to.be.an('array');
@@ -200,7 +224,10 @@ class TestStrategy extends base_1.BaseStrategy {
                     },
                 ],
             });
-            const pullRequest = await strategy.buildReleasePullRequest((0, helpers_1.buildMockConventionalCommit)('fix: a bugfix'), undefined);
+            const pullRequest = await strategy.buildReleasePullRequest({
+                commits: (0, helpers_1.buildMockConventionalCommit)('fix: a bugfix'),
+                latestRelease: undefined,
+            });
             (0, chai_1.expect)(pullRequest).to.exist;
             const updates = pullRequest === null || pullRequest === void 0 ? void 0 : pullRequest.updates;
             (0, chai_1.expect)(updates).to.be.an('array');
@@ -216,7 +243,9 @@ class TestStrategy extends base_1.BaseStrategy {
                 changelogHost: 'https://example.com',
             });
             const commits = (0, helpers_1.buildMockConventionalCommit)('fix: a bugfix');
-            const pullRequest = await strategy.buildReleasePullRequest(commits);
+            const pullRequest = await strategy.buildReleasePullRequest({
+                commits,
+            });
             (0, chai_1.expect)(pullRequest).to.exist;
             (0, chai_1.expect)(pullRequest === null || pullRequest === void 0 ? void 0 : pullRequest.body.toString()).to.have.string('https://example.com');
             snapshot((0, helpers_1.dateSafe)(pullRequest.body.toString()));
@@ -241,7 +270,10 @@ class TestStrategy extends base_1.BaseStrategy {
                         component: 'google-cloud-automl',
                         extraFiles: [file],
                     });
-                    await strategy.buildReleasePullRequest((0, helpers_1.buildMockConventionalCommit)('fix: a bugfix'), undefined);
+                    await strategy.buildReleasePullRequest({
+                        commits: (0, helpers_1.buildMockConventionalCommit)('fix: a bugfix'),
+                        latestRelease: undefined,
+                    });
                     chai_1.expect.fail(`expected [addPath] to reject path: ${file}`);
                 }
                 catch (err) {
@@ -257,7 +289,10 @@ class TestStrategy extends base_1.BaseStrategy {
                 component: 'google-cloud-automl',
                 extraLabels: ['foo', 'bar'],
             });
-            const pullRequest = await strategy.buildReleasePullRequest((0, helpers_1.buildMockConventionalCommit)('fix: a bugfix'), undefined);
+            const pullRequest = await strategy.buildReleasePullRequest({
+                commits: (0, helpers_1.buildMockConventionalCommit)('fix: a bugfix'),
+                latestRelease: undefined,
+            });
             (0, chai_1.expect)(pullRequest).to.exist;
             (0, chai_1.expect)(pullRequest === null || pullRequest === void 0 ? void 0 : pullRequest.labels).to.eql(['foo', 'bar']);
         });

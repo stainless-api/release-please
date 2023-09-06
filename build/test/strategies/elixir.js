@@ -52,7 +52,10 @@ const sandbox = sinon.createSandbox();
             });
             sandbox.stub(github, 'findFilesByFilenameAndRef').resolves([]);
             const latestRelease = undefined;
-            const release = await strategy.buildReleasePullRequest(commits, latestRelease);
+            const release = await strategy.buildReleasePullRequest({
+                commits,
+                latestRelease,
+            });
             (0, chai_1.expect)((_a = release === null || release === void 0 ? void 0 : release.version) === null || _a === void 0 ? void 0 : _a.toString()).to.eql(expectedVersion);
         });
         (0, mocha_1.it)('builds a release pull request', async () => {
@@ -68,7 +71,10 @@ const sandbox = sinon.createSandbox();
                 sha: 'abc123',
                 notes: 'some notes',
             };
-            const release = await strategy.buildReleasePullRequest(commits, latestRelease);
+            const release = await strategy.buildReleasePullRequest({
+                commits,
+                latestRelease,
+            });
             (0, chai_1.expect)((_a = release === null || release === void 0 ? void 0 : release.version) === null || _a === void 0 ? void 0 : _a.toString()).to.eql(expectedVersion);
         });
     });
@@ -80,7 +86,10 @@ const sandbox = sinon.createSandbox();
                 component: 'google-cloud-automl',
             });
             const latestRelease = undefined;
-            const release = await strategy.buildReleasePullRequest(commits, latestRelease);
+            const release = await strategy.buildReleasePullRequest({
+                commits,
+                latestRelease,
+            });
             const updates = release.updates;
             (0, helpers_1.assertHasUpdate)(updates, 'CHANGELOG.md', changelog_1.Changelog);
             (0, helpers_1.assertHasUpdate)(updates, 'mix.exs', elixir_mix_exs_1.ElixirMixExs);

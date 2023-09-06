@@ -29,8 +29,8 @@ class GroupPriority extends plugin_1.ManifestPlugin {
      *   repository. This allows plugins to know how components interact.
      * @param {string[]} groups List of group names ordered with highest priority first
      */
-    constructor(github, targetBranch, repositoryConfig, groups, options = {}) {
-        super(github, targetBranch, repositoryConfig, options);
+    constructor(github, targetBranch, manifestPath, repositoryConfig, groups, options = {}) {
+        super(github, targetBranch, manifestPath, repositoryConfig, options);
         this.groups = groups;
     }
     /**

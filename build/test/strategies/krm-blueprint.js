@@ -53,7 +53,10 @@ const fixturesPath = './test/fixtures/strategies/krm-blueprint';
             });
             sandbox.stub(github, 'findFilesByExtensionAndRef').resolves([]);
             const latestRelease = undefined;
-            const release = await strategy.buildReleasePullRequest(commits, latestRelease);
+            const release = await strategy.buildReleasePullRequest({
+                commits,
+                latestRelease,
+            });
             (0, chai_1.expect)((_a = release.version) === null || _a === void 0 ? void 0 : _a.toString()).to.eql(expectedVersion);
         });
         (0, mocha_1.it)('builds a release pull request', async () => {
@@ -70,7 +73,10 @@ const fixturesPath = './test/fixtures/strategies/krm-blueprint';
                 sha: 'abc123',
                 notes: 'some notes',
             };
-            const pullRequest = await strategy.buildReleasePullRequest(commits, latestRelease);
+            const pullRequest = await strategy.buildReleasePullRequest({
+                commits,
+                latestRelease,
+            });
             (0, chai_1.expect)((_a = pullRequest.version) === null || _a === void 0 ? void 0 : _a.toString()).to.eql(expectedVersion);
         });
     });
@@ -83,7 +89,10 @@ const fixturesPath = './test/fixtures/strategies/krm-blueprint';
             });
             sandbox.stub(github, 'findFilesByExtensionAndRef').resolves([]);
             const latestRelease = undefined;
-            const release = await strategy.buildReleasePullRequest(commits, latestRelease);
+            const release = await strategy.buildReleasePullRequest({
+                commits,
+                latestRelease,
+            });
             const updates = release.updates;
             (0, helpers_1.assertHasUpdate)(updates, 'CHANGELOG.md', changelog_1.Changelog);
         });
@@ -105,7 +114,10 @@ const fixturesPath = './test/fixtures/strategies/krm-blueprint';
                 targetBranch: 'main',
             });
             const latestRelease = undefined;
-            const release = await strategy.buildReleasePullRequest(commits, latestRelease);
+            const release = await strategy.buildReleasePullRequest({
+                commits,
+                latestRelease,
+            });
             const updates = release.updates;
             (0, helpers_1.assertHasUpdate)(updates, 'project.yaml', krm_blueprint_version_1.KRMBlueprintVersion);
             (0, helpers_1.assertNoHasUpdate)(updates, 'no-attrib-bucket.yaml');

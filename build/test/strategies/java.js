@@ -56,7 +56,12 @@ const sandbox = sinon.createSandbox();
                     github,
                 });
                 const latestRelease = undefined;
-                const release = await strategy.buildReleasePullRequest(COMMITS_WITH_SNAPSHOT, latestRelease, false, manifest_1.DEFAULT_LABELS);
+                const release = await strategy.buildReleasePullRequest({
+                    commits: COMMITS_WITH_SNAPSHOT,
+                    latestRelease,
+                    draft: false,
+                    labels: manifest_1.DEFAULT_LABELS,
+                });
                 (0, chai_1.expect)((_a = release === null || release === void 0 ? void 0 : release.version) === null || _a === void 0 ? void 0 : _a.toString()).to.eql('1.0.0');
                 (0, chai_1.expect)(release === null || release === void 0 ? void 0 : release.title.toString()).to.eql('chore(main): release 1.0.0');
                 (0, chai_1.expect)(release === null || release === void 0 ? void 0 : release.headRefName).to.eql('release-please--branches--main');
@@ -75,7 +80,12 @@ const sandbox = sinon.createSandbox();
                     sha: 'abc123',
                     notes: 'some notes',
                 };
-                const release = await strategy.buildReleasePullRequest(COMMITS_WITH_SNAPSHOT, latestRelease, false, manifest_1.DEFAULT_LABELS);
+                const release = await strategy.buildReleasePullRequest({
+                    commits: COMMITS_WITH_SNAPSHOT,
+                    latestRelease,
+                    draft: false,
+                    labels: manifest_1.DEFAULT_LABELS,
+                });
                 (0, chai_1.expect)((_a = release === null || release === void 0 ? void 0 : release.version) === null || _a === void 0 ? void 0 : _a.toString()).to.eql('2.3.4');
                 (0, chai_1.expect)(release === null || release === void 0 ? void 0 : release.title.toString()).to.eql('chore(main): release 2.3.4');
                 (0, chai_1.expect)(release === null || release === void 0 ? void 0 : release.headRefName).to.eql('release-please--branches--main');
@@ -94,7 +104,12 @@ const sandbox = sinon.createSandbox();
                     sha: 'abc123',
                     notes: 'some notes',
                 };
-                const release = await strategy.buildReleasePullRequest(COMMITS_NO_SNAPSHOT, latestRelease, false, manifest_1.DEFAULT_LABELS);
+                const release = await strategy.buildReleasePullRequest({
+                    commits: COMMITS_NO_SNAPSHOT,
+                    latestRelease,
+                    draft: false,
+                    labels: manifest_1.DEFAULT_LABELS,
+                });
                 (0, chai_1.expect)((_a = release === null || release === void 0 ? void 0 : release.version) === null || _a === void 0 ? void 0 : _a.toString()).to.eql('2.3.4-SNAPSHOT');
                 (0, chai_1.expect)(release === null || release === void 0 ? void 0 : release.title.toString()).to.eql('chore(main): release 2.3.4-SNAPSHOT');
                 (0, chai_1.expect)(release === null || release === void 0 ? void 0 : release.headRefName).to.eql('release-please--branches--main');
@@ -114,7 +129,12 @@ const sandbox = sinon.createSandbox();
                     sha: 'abc123',
                     notes: 'some notes',
                 };
-                const release = await strategy.buildReleasePullRequest(COMMITS_NO_SNAPSHOT, latestRelease, false, manifest_1.DEFAULT_LABELS);
+                const release = await strategy.buildReleasePullRequest({
+                    commits: COMMITS_NO_SNAPSHOT,
+                    latestRelease,
+                    draft: false,
+                    labels: manifest_1.DEFAULT_LABELS,
+                });
                 (0, chai_1.expect)((_a = release === null || release === void 0 ? void 0 : release.version) === null || _a === void 0 ? void 0 : _a.toString()).to.eql('2.3.4');
                 (0, chai_1.expect)(release === null || release === void 0 ? void 0 : release.title.toString()).to.eql('chore(main): release 2.3.4');
                 (0, chai_1.expect)(release === null || release === void 0 ? void 0 : release.headRefName).to.eql('release-please--branches--main');
@@ -133,8 +153,10 @@ const sandbox = sinon.createSandbox();
                     sha: 'abc123',
                     notes: 'some notes',
                 };
-                const release = await strategy.buildReleasePullRequest(COMMITS_NO_SNAPSHOT, // no snapshot in commits
-                latestRelease);
+                const release = await strategy.buildReleasePullRequest({
+                    commits: COMMITS_NO_SNAPSHOT,
+                    latestRelease,
+                });
                 (0, chai_1.expect)((_a = release === null || release === void 0 ? void 0 : release.version) === null || _a === void 0 ? void 0 : _a.toString()).to.eql('2.3.4');
                 (0, helpers_1.assertHasUpdate)(release.updates, 'CHANGELOG.md', changelog_1.Changelog);
             });
@@ -149,10 +171,13 @@ const sandbox = sinon.createSandbox();
                     sha: 'abc123',
                     notes: 'some notes',
                 };
-                const release = await strategy.buildReleasePullRequest([
-                    ...(0, helpers_1.buildMockConventionalCommit)('chore(main): release other 2.3.4-SNAPSHOT'),
-                    ...COMMITS_NO_SNAPSHOT,
-                ], latestRelease);
+                const release = await strategy.buildReleasePullRequest({
+                    commits: [
+                        ...(0, helpers_1.buildMockConventionalCommit)('chore(main): release other 2.3.4-SNAPSHOT'),
+                        ...COMMITS_NO_SNAPSHOT,
+                    ],
+                    latestRelease,
+                });
                 (0, chai_1.expect)((_a = release === null || release === void 0 ? void 0 : release.version) === null || _a === void 0 ? void 0 : _a.toString()).to.eql('2.3.4-SNAPSHOT');
                 (0, chai_1.expect)(release === null || release === void 0 ? void 0 : release.title.toString()).to.eql('chore(main): release 2.3.4-SNAPSHOT');
                 (0, helpers_1.assertNoHasUpdate)(release.updates, 'CHANGELOG.md');
@@ -168,7 +193,12 @@ const sandbox = sinon.createSandbox();
                     sha: 'abc123',
                     notes: 'some notes',
                 };
-                const release = await strategy.buildReleasePullRequest(COMMITS_NO_SNAPSHOT, latestRelease, false, ['custom:pending']);
+                const release = await strategy.buildReleasePullRequest({
+                    commits: COMMITS_NO_SNAPSHOT,
+                    latestRelease,
+                    draft: false,
+                    labels: ['custom:pending'],
+                });
                 (0, chai_1.expect)(release === null || release === void 0 ? void 0 : release.labels).to.eql(['bot', 'custom:snapshot']);
             });
             (0, mocha_1.it)('creates draft snapshot PR', async () => {
@@ -181,7 +211,11 @@ const sandbox = sinon.createSandbox();
                     sha: 'abc123',
                     notes: 'some notes',
                 };
-                const release = await strategy.buildReleasePullRequest(COMMITS_NO_SNAPSHOT, latestRelease, true);
+                const release = await strategy.buildReleasePullRequest({
+                    commits: COMMITS_NO_SNAPSHOT,
+                    latestRelease,
+                    draft: true,
+                });
                 (0, chai_1.expect)(release === null || release === void 0 ? void 0 : release.draft).to.eql(true);
             });
             (0, mocha_1.it)('updates released version in extra files', async () => {
@@ -190,7 +224,10 @@ const sandbox = sinon.createSandbox();
                     github,
                     extraFiles: ['foo/bar.java', 'pom.xml'],
                 });
-                const release = await strategy.buildReleasePullRequest(COMMITS_NO_SNAPSHOT, undefined);
+                const release = await strategy.buildReleasePullRequest({
+                    commits: COMMITS_NO_SNAPSHOT,
+                    latestRelease: undefined,
+                });
                 const updates = release.updates;
                 (0, helpers_1.assertHasUpdate)(updates, 'CHANGELOG.md', changelog_1.Changelog);
                 (0, helpers_1.assertHasUpdates)(updates, 'pom.xml', java_released_1.JavaReleased, generic_1.Generic);
@@ -207,7 +244,10 @@ const sandbox = sinon.createSandbox();
                     sha: 'abc123',
                     notes: 'some notes',
                 };
-                const release = await strategy.buildReleasePullRequest(COMMITS_NO_SNAPSHOT, latestRelease);
+                const release = await strategy.buildReleasePullRequest({
+                    commits: COMMITS_NO_SNAPSHOT,
+                    latestRelease,
+                });
                 const updates = release.updates;
                 (0, helpers_1.assertNoHasUpdate)(updates, 'CHANGELOG.md');
                 (0, helpers_1.assertHasUpdate)(updates, 'foo/bar.java', generic_1.Generic);
@@ -230,7 +270,12 @@ const sandbox = sinon.createSandbox();
                     component: 'test-sample',
                     includeComponentInTag: true,
                 });
-                const release = await strategy.buildReleasePullRequest(COMMITS_WITH_SNAPSHOT, undefined, false, manifest_1.DEFAULT_LABELS);
+                const release = await strategy.buildReleasePullRequest({
+                    commits: COMMITS_WITH_SNAPSHOT,
+                    latestRelease: undefined,
+                    draft: false,
+                    labels: manifest_1.DEFAULT_LABELS,
+                });
                 (0, chai_1.expect)((_a = release === null || release === void 0 ? void 0 : release.version) === null || _a === void 0 ? void 0 : _a.toString()).to.eql('1.0.0');
                 (0, chai_1.expect)(release === null || release === void 0 ? void 0 : release.title.toString()).to.eql('chore(main): release test-sample 1.0.0');
                 (0, chai_1.expect)(release === null || release === void 0 ? void 0 : release.headRefName).to.eql('release-please--branches--main--components--test-sample');
@@ -251,7 +296,12 @@ const sandbox = sinon.createSandbox();
                     sha: 'abc123',
                     notes: 'some notes',
                 };
-                const release = await strategy.buildReleasePullRequest(COMMITS_WITH_SNAPSHOT, latestRelease, false, manifest_1.DEFAULT_LABELS);
+                const release = await strategy.buildReleasePullRequest({
+                    commits: COMMITS_WITH_SNAPSHOT,
+                    latestRelease,
+                    draft: false,
+                    labels: manifest_1.DEFAULT_LABELS,
+                });
                 (0, chai_1.expect)((_a = release === null || release === void 0 ? void 0 : release.version) === null || _a === void 0 ? void 0 : _a.toString()).to.eql('2.3.4');
                 (0, chai_1.expect)(release === null || release === void 0 ? void 0 : release.title.toString()).to.eql('chore(main): release test-sample 2.3.4');
                 (0, chai_1.expect)(release === null || release === void 0 ? void 0 : release.headRefName).to.eql('release-please--branches--main--components--test-sample');
@@ -272,7 +322,12 @@ const sandbox = sinon.createSandbox();
                     sha: 'abc123',
                     notes: 'some notes',
                 };
-                const release = await strategy.buildReleasePullRequest(COMMITS_NO_SNAPSHOT, latestRelease, false, manifest_1.DEFAULT_LABELS);
+                const release = await strategy.buildReleasePullRequest({
+                    commits: COMMITS_NO_SNAPSHOT,
+                    latestRelease,
+                    draft: false,
+                    labels: manifest_1.DEFAULT_LABELS,
+                });
                 (0, chai_1.expect)((_a = release === null || release === void 0 ? void 0 : release.version) === null || _a === void 0 ? void 0 : _a.toString()).to.eql('2.3.4-SNAPSHOT');
                 (0, chai_1.expect)(release === null || release === void 0 ? void 0 : release.title.toString()).to.eql('chore(main): release test-sample 2.3.4-SNAPSHOT');
                 (0, chai_1.expect)(release === null || release === void 0 ? void 0 : release.headRefName).to.eql('release-please--branches--main--components--test-sample');

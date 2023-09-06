@@ -22,8 +22,8 @@ const SPECIAL_WORDS = ['gRPC', 'npm'];
  * of the generated CHANGELOG.
  */
 class SentenceCase extends plugin_1.ManifestPlugin {
-    constructor(github, targetBranch, repositoryConfig, specialWords, options = {}) {
-        super(github, targetBranch, repositoryConfig, options);
+    constructor(github, targetBranch, manifestPath, repositoryConfig, specialWords, options = {}) {
+        super(github, targetBranch, manifestPath, repositoryConfig, options);
         this.specialWords = new Set(specialWords ? [...specialWords] : SPECIAL_WORDS);
     }
     /**

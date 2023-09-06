@@ -77,7 +77,10 @@ const sandbox = sinon.createSandbox();
                 github,
             });
             const latestRelease = undefined;
-            const release = await strategy.buildReleasePullRequest(commits, latestRelease);
+            const release = await strategy.buildReleasePullRequest({
+                commits,
+                latestRelease,
+            });
             (0, chai_1.expect)((_a = release.version) === null || _a === void 0 ? void 0 : _a.toString()).to.eql(expectedVersion);
             snapshot((0, helpers_1.dateSafe)(release.body.toString()));
         });
@@ -93,7 +96,10 @@ const sandbox = sinon.createSandbox();
                 sha: 'abc123',
                 notes: 'some notes',
             };
-            const release = await strategy.buildReleasePullRequest(commits, latestRelease);
+            const release = await strategy.buildReleasePullRequest({
+                commits,
+                latestRelease,
+            });
             (0, chai_1.expect)((_a = release.version) === null || _a === void 0 ? void 0 : _a.toString()).to.eql(expectedVersion);
             snapshot((0, helpers_1.dateSafe)(release.body.toString()));
         });
@@ -109,13 +115,16 @@ const sandbox = sinon.createSandbox();
                 sha: 'abc123',
                 notes: 'some notes',
             };
-            const release = await strategy.buildReleasePullRequest([
-                {
-                    sha: 'def234',
-                    message: 'misc: some miscellaneous task',
-                    files: ['Client3/README.md'],
-                },
-            ], latestRelease);
+            const release = await strategy.buildReleasePullRequest({
+                commits: [
+                    {
+                        sha: 'def234',
+                        message: 'misc: some miscellaneous task',
+                        files: ['Client3/README.md'],
+                    },
+                ],
+                latestRelease,
+            });
             (0, chai_1.expect)((_a = release.version) === null || _a === void 0 ? void 0 : _a.toString()).to.eql(expectedVersion);
             snapshot((0, helpers_1.dateSafe)(release.body.toString()));
         });
@@ -127,7 +136,10 @@ const sandbox = sinon.createSandbox();
                 github,
             });
             const latestRelease = undefined;
-            const release = await strategy.buildReleasePullRequest(commits, latestRelease);
+            const release = await strategy.buildReleasePullRequest({
+                commits,
+                latestRelease,
+            });
             const updates = release.updates;
             (0, helpers_1.assertHasUpdate)(updates, 'CHANGELOG.md', changelog_1.Changelog);
             (0, helpers_1.assertHasUpdate)(updates, 'composer.json', root_composer_update_packages_1.RootComposerUpdatePackages);
@@ -138,7 +150,10 @@ const sandbox = sinon.createSandbox();
                 github,
             });
             const latestRelease = undefined;
-            const release = await strategy.buildReleasePullRequest(commits, latestRelease);
+            const release = await strategy.buildReleasePullRequest({
+                commits,
+                latestRelease,
+            });
             const updates = release.updates;
             (0, helpers_1.assertHasUpdate)(updates, 'Client1/VERSION', default_1.DefaultUpdater);
             (0, helpers_1.assertHasUpdate)(updates, 'Client2/VERSION', default_1.DefaultUpdater);
@@ -159,7 +174,10 @@ const sandbox = sinon.createSandbox();
             getFileStub
                 .withArgs('.git/VERSION', 'main')
                 .rejects(new errors_1.FileNotFoundError('.git/VERSION'));
-            const release = await strategy.buildReleasePullRequest(commits, latestRelease);
+            const release = await strategy.buildReleasePullRequest({
+                commits,
+                latestRelease,
+            });
             const updates = release.updates;
             (0, helpers_1.assertHasUpdate)(updates, 'Client1/VERSION', default_1.DefaultUpdater);
             (0, helpers_1.assertHasUpdate)(updates, 'Client2/VERSION', default_1.DefaultUpdater);
