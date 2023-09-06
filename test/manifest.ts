@@ -55,7 +55,6 @@ import * as nock from 'nock';
 import {LinkedVersions} from '../src/plugins/linked-versions';
 import {MavenWorkspace} from '../src/plugins/maven-workspace';
 import {GraphqlResponseError} from '@octokit/graphql';
-import {ReleasePullRequest} from '../src/release-pull-request';
 
 nock.disableNetConnect();
 
