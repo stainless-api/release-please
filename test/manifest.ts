@@ -55,6 +55,7 @@ import * as nock from 'nock';
 import {LinkedVersions} from '../src/plugins/linked-versions';
 import {MavenWorkspace} from '../src/plugins/maven-workspace';
 import {GraphqlResponseError} from '@octokit/graphql';
+import {ReleasePullRequest} from '../src/release-pull-request';
 
 nock.disableNetConnect();
 
@@ -1480,6 +1481,12 @@ describe('Manifest', () => {
             url: 'https://github.com/fake-owner/fake-repo/releases/tag/v1.0.0',
           },
         ]);
+        mockTags(sandbox, github, [
+          {
+            sha: 'abc123',
+            name: 'v1.0.0',
+          },
+        ]);
         mockCommits(sandbox, github, [
           {
             sha: 'def456',
@@ -1531,12 +1538,8 @@ describe('Manifest', () => {
       });
 
       it('should honour the manifestFile argument in Manifest.fromManifest', async () => {
-        mockTags(sandbox, github, []);
-        const getFileContentsStub = sandbox.stub(
-          github,
-          'getFileContentsOnBranch'
-        );
-        getFileContentsStub
+        const getFileContentsStub = sandbox
+          .stub(github, 'getFileContentsOnBranch')
           .withArgs('release-please-config.json', 'main')
           .resolves(
             buildGitHubFileContent(fixturesPath, 'manifest/config/simple.json')
@@ -1558,6 +1561,7 @@ describe('Manifest', () => {
         expect(pullRequests).lengthOf(1);
         const pullRequest = pullRequests[0];
         assertHasUpdate(pullRequest.updates, 'non/default/path/manifest.json');
+        sinon.assert.calledOnce(getFileContentsStub);
       });
 
       it('should create a draft pull request', async () => {
@@ -2451,7 +2455,7 @@ describe('Manifest', () => {
       expect(pullRequests[0].title.toString()).to.eql('chore(main): release v');
     });
 
-    it('should read latest version from manifest if no release tag found', async () => {
+    it('should report an error if no release tag found', async () => {
       mockReleases(sandbox, github, []);
       mockCommits(sandbox, github, [
         {
@@ -2482,20 +2486,77 @@ describe('Manifest', () => {
         'path/a': '1.2.3',
         'path/b': '2.3.4',
       };
-      sandbox
+      const getFileContentsOnBranchStub = sandbox
         .stub(github, 'getFileContentsOnBranch')
         .withArgs('release-please-config.json', 'main')
         .resolves(buildGitHubFileRaw(JSON.stringify(config)))
         .withArgs('.release-please-manifest.json', 'main')
         .resolves(buildGitHubFileRaw(JSON.stringify(versions)));
+
       const manifest = await Manifest.fromManifest(github, 'main');
-      const pullRequests = await manifest.buildPullRequests();
-      expect(pullRequests).lengthOf(1);
-      expect(pullRequests[0].body.releaseData).lengthOf(1);
-      expect(pullRequests[0].body.releaseData[0].component).to.eql('pkg1');
-      expect(pullRequests[0].body.releaseData[0].version?.toString()).to.eql(
-        '1.2.4'
-      );
+      try {
+        await manifest.buildPullRequests();
+      } catch (err: unknown) {
+        expect(err).to.be.instanceOf(Error);
+        snapshot((err as Error).message);
+      }
+
+      sinon.assert.calledOnce(getFileContentsOnBranchStub);
+    });
+
+    it('should not report an error if no github releases not found but tag found', async () => {
+      mockReleases(sandbox, github, []);
+      mockCommits(sandbox, github, [
+        {
+          sha: 'aaaaaa',
+          message: 'fix: some bugfix',
+          files: ['path/a/foo'],
+        },
+        {
+          sha: 'cccccc',
+          message: 'fix: some bugfix',
+          files: ['path/a/foo'],
+        },
+      ]);
+      mockTags(sandbox, github, [
+        {name: 'pkg1-v1.2.3', sha: 'commit1'},
+        {name: 'pkg2-v2.3.4', sha: 'commit2'},
+      ]);
+      const config = {
+        packages: {
+          'path/a': {
+            'release-type': 'simple',
+            component: 'pkg1',
+          },
+          'path/b': {
+            'release-type': 'simple',
+            component: 'pkg2',
+          },
+        },
+      };
+      const versions = {
+        'path/a': '1.2.3',
+        'path/b': '2.3.4',
+      };
+      const getFileContentsOnBranchStub = sandbox
+        .stub(github, 'getFileContentsOnBranch')
+        .withArgs('release-please-config.json', 'main')
+        .resolves(buildGitHubFileRaw(JSON.stringify(config)))
+        .withArgs('.release-please-manifest.json', 'main')
+        .resolves(buildGitHubFileRaw(JSON.stringify(versions)));
+
+      const manifest = await Manifest.fromManifest(github, 'main');
+
+      let didThrow = false;
+      try {
+        await manifest.buildPullRequests();
+      } catch (err: unknown) {
+        didThrow = true;
+        snapshot(err as {});
+      }
+      expect(didThrow).to.be.false;
+
+      sinon.assert.calledOnce(getFileContentsOnBranchStub);
     });
 
     it('should not update manifest if unpublished version is created', async () => {
@@ -2612,8 +2673,40 @@ describe('Manifest', () => {
     });
 
     it('should handle extra files', async () => {
-      mockReleases(sandbox, github, []);
-      mockTags(sandbox, github, []);
+      mockReleases(sandbox, github, [
+        {
+          id: 123456,
+          sha: 'commit1',
+          tagName: 'a-v1.1.0',
+          url: 'https://github.com/fake-owner/fake-repo/releases/tag/a-v1.1.0',
+        },
+        {
+          id: 123456,
+          sha: 'commit2',
+          tagName: 'b-v1.0.0',
+          url: 'https://github.com/fake-owner/fake-repo/releases/tag/b-v1.0.0',
+        },
+        {
+          id: 123456,
+          sha: 'commit3',
+          tagName: 'c-v1.0.1',
+          url: 'https://github.com/fake-owner/fake-repo/releases/tag/c-v1.0.1',
+        },
+      ]);
+      mockTags(sandbox, github, [
+        {
+          name: 'a-v1.1.0',
+          sha: 'commit1',
+        },
+        {
+          name: 'b-v1.0.0',
+          sha: 'commit2',
+        },
+        {
+          name: 'c-v1.0.1',
+          sha: 'commit3',
+        },
+      ]);
       mockCommits(sandbox, github, [
         {
           sha: 'aaaaaa',
@@ -3252,6 +3345,10 @@ describe('Manifest', () => {
           },
           {
             name: 'd-v3.0.0',
+            sha: 'abc123',
+          },
+          {
+            name: 'v3.0.0',
             sha: 'abc123',
           },
         ]);

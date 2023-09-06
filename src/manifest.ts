@@ -592,7 +592,7 @@ export class Manifest {
         releasesFound === 0
           ? 'none could be found'
           : `only found ${releasesFound} of them`
-      }. Hint: does the manifest points to versions for which no tag or github release exist? Was the tag deleted?`;
+      }. Hint: does the manifest points to versions for which no tag or github release exist? Have tags been deleted?`;
       if (this.bootstrapSha || this.lastReleaseSha) {
         this.logger.warn(errMessage);
       } else {

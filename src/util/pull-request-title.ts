@@ -52,7 +52,7 @@ export class PullRequestTitle {
       this.logger
     );
     if (this.pullRequestTitlePattern) {
-      this.logger.debug(
+      this.logger.trace(
         `Generated match pattern with custom PR title pattern. PR title pattern: '${this.pullRequestTitlePattern}', resulting pattern: '${this.matchPattern}'`
       );
     }

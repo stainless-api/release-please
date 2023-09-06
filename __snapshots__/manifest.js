@@ -163,3 +163,7 @@ For a better experience, it is recommended to use either rebase-merge or squash-
 
 _More technical details can be found at [stainless-api/release-please](https://github.com/stainless-api/release-please)_.
 `
+
+exports['Manifest buildPullRequests should report an error if no release tag found 1'] = `
+Expected to find 2 releases, but none could be found. Hint: does the manifest points to versions for which no tag or github release exist? Have tags been deleted?
+`
