@@ -54,10 +54,10 @@ describe('Elixir', () => {
       });
       sandbox.stub(github, 'findFilesByFilenameAndRef').resolves([]);
       const latestRelease = undefined;
-      const release = await strategy.buildReleasePullRequest(
+      const release = await strategy.buildReleasePullRequest({
         commits,
-        latestRelease
-      );
+        latestRelease,
+      });
       expect(release?.version?.toString()).to.eql(expectedVersion);
     });
     it('builds a release pull request', async () => {
@@ -72,10 +72,10 @@ describe('Elixir', () => {
         sha: 'abc123',
         notes: 'some notes',
       };
-      const release = await strategy.buildReleasePullRequest(
+      const release = await strategy.buildReleasePullRequest({
         commits,
-        latestRelease
-      );
+        latestRelease,
+      });
       expect(release?.version?.toString()).to.eql(expectedVersion);
     });
   });
@@ -87,10 +87,10 @@ describe('Elixir', () => {
         component: 'google-cloud-automl',
       });
       const latestRelease = undefined;
-      const release = await strategy.buildReleasePullRequest(
+      const release = await strategy.buildReleasePullRequest({
         commits,
-        latestRelease
-      );
+        latestRelease,
+      });
       const updates = release!.updates;
       assertHasUpdate(updates, 'CHANGELOG.md', Changelog);
       assertHasUpdate(updates, 'mix.exs', ElixirMixExs);

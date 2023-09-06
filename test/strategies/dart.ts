@@ -60,10 +60,10 @@ describe('Dart', () => {
       });
       sandbox.stub(github, 'findFilesByFilenameAndRef').resolves([]);
       const latestRelease = undefined;
-      const release = await strategy.buildReleasePullRequest(
+      const release = await strategy.buildReleasePullRequest({
         commits,
-        latestRelease
-      );
+        latestRelease,
+      });
       expect(release?.version?.toString()).to.eql(expectedVersion);
     });
     it('builds a release pull request', async () => {
@@ -79,10 +79,10 @@ describe('Dart', () => {
         sha: 'abc123',
         notes: 'some notes',
       };
-      const release = await strategy.buildReleasePullRequest(
+      const release = await strategy.buildReleasePullRequest({
         commits,
-        latestRelease
-      );
+        latestRelease,
+      });
       expect(release?.version?.toString()).to.eql(expectedVersion);
     });
     it('detects a default component', async () => {
@@ -108,10 +108,10 @@ describe('Dart', () => {
       getFileContentsStub
         .withArgs('pubspec.yaml', 'main')
         .resolves(buildGitHubFileContent(fixturesPath, 'pubspec.yaml'));
-      const pullRequest = await strategy.buildReleasePullRequest(
+      const pullRequest = await strategy.buildReleasePullRequest({
         commits,
-        latestRelease
-      );
+        latestRelease,
+      });
       expect(pullRequest?.version?.toString()).to.eql(expectedVersion);
     });
   });
@@ -133,10 +133,10 @@ describe('Dart', () => {
         sha: 'abc123',
         notes: 'some notes',
       };
-      const pullRequest = await strategy.buildReleasePullRequest(
+      const pullRequest = await strategy.buildReleasePullRequest({
         commits,
-        latestRelease
-      );
+        latestRelease,
+      });
       const updates = pullRequest!.updates;
       expect(updates).lengthOf(2);
       assertHasUpdate(updates, 'CHANGELOG.md', Changelog);

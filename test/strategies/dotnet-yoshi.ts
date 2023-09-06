@@ -71,10 +71,10 @@ describe('DotnetYoshi', () => {
         component: 'Google.Cloud.SecurityCenter.V1',
       });
       const latestRelease = undefined;
-      const pullRequest = await strategy.buildReleasePullRequest(
-        COMMITS,
-        latestRelease
-      );
+      const pullRequest = await strategy.buildReleasePullRequest({
+        commits: COMMITS,
+        latestRelease,
+      });
       expect(pullRequest!.version?.toString()).to.eql(expectedVersion);
       expect(pullRequest?.title.toString()).to.eql(expectedTitle);
       safeSnapshot(pullRequest!.body.toString());
@@ -93,10 +93,10 @@ describe('DotnetYoshi', () => {
         sha: 'abc123',
         notes: 'some notes',
       };
-      const pullRequest = await strategy.buildReleasePullRequest(
-        COMMITS,
-        latestRelease
-      );
+      const pullRequest = await strategy.buildReleasePullRequest({
+        commits: COMMITS,
+        latestRelease,
+      });
       expect(pullRequest!.version?.toString()).to.eql(expectedVersion);
       expect(pullRequest?.title.toString()).to.eql(expectedTitle);
       safeSnapshot(pullRequest!.body.toString());
@@ -115,10 +115,10 @@ describe('DotnetYoshi', () => {
         .withArgs('apis/apis.json', 'main')
         .resolves(buildGitHubFileContent(fixturesPath, 'apis.json'));
       const latestRelease = undefined;
-      const pullRequest = await strategy.buildReleasePullRequest(
-        COMMITS,
-        latestRelease
-      );
+      const pullRequest = await strategy.buildReleasePullRequest({
+        commits: COMMITS,
+        latestRelease,
+      });
       const updates = pullRequest!.updates;
       expect(updates).lengthOf(2);
       const changelogUpdate = assertHasUpdate(
@@ -141,10 +141,10 @@ describe('DotnetYoshi', () => {
         .withArgs('apis/apis.json', 'main')
         .resolves(buildGitHubFileContent(fixturesPath, 'apis.json'));
       const latestRelease = undefined;
-      const pullRequest = await strategy.buildReleasePullRequest(
-        COMMITS,
-        latestRelease
-      );
+      const pullRequest = await strategy.buildReleasePullRequest({
+        commits: COMMITS,
+        latestRelease,
+      });
       const updates = pullRequest!.updates;
       expect(updates).lengthOf(1);
       assertNoHasUpdate(

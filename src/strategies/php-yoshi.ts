@@ -29,6 +29,7 @@ import {BranchName} from '../util/branch-name';
 import {PullRequestBody} from '../util/pull-request-body';
 import {GitHubFileContents} from '@google-automations/git-file-utils';
 import {FileNotFoundError} from '../errors';
+import {PullRequest} from '../pull-request';
 
 const CHANGELOG_SECTIONS = [
   {type: 'feat', section: 'Features'},
@@ -64,12 +65,19 @@ export class PHPYoshi extends BaseStrategy {
       changelogSections: CHANGELOG_SECTIONS,
     });
   }
-  async buildReleasePullRequest(
-    commits: Commit[],
-    latestRelease?: Release,
-    draft?: boolean,
-    labels: string[] = []
-  ): Promise<ReleasePullRequest | undefined> {
+  async buildReleasePullRequest({
+    commits,
+    labels = [],
+    latestRelease,
+    draft,
+  }: {
+    commits: Commit[];
+    latestRelease?: Release;
+    draft?: boolean;
+    labels?: string[];
+    existingPullRequest?: PullRequest;
+    manifestPath?: string;
+  }): Promise<ReleasePullRequest | undefined> {
     const conventionalCommits = await this.postProcessCommits(
       parseConventionalCommits(commits, this.logger)
     );

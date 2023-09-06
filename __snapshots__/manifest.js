@@ -164,6 +164,68 @@ For a better experience, it is recommended to use either rebase-merge or squash-
 _More technical details can be found at [stainless-api/release-please](https://github.com/stainless-api/release-please)_.
 `
 
+exports['Manifest buildPullRequests should report issue via PR comment if labeled as custom version but version not found in title 1'] = `
+
+## Invalid version number in PR title
+
+:rotating_light: This Pull Request has the \`autorelease: custom version\` label but the version number cannot be found in the title. Instead the generated version \`0.2.4\` will be used.
+
+If you want to set a custom version be sure to use the [semantic versioning format](https://devhints.io/semver), e.g \`1.2.3\`.
+
+If you do not want to set a custom version and want  to get rid of this warning, remove the label \`autorelease: custom version\` from this Pull Request.
+
+`
+
+exports['Manifest buildPullRequests should use version from existing PR title if differs from release branch manifest 1'] = `
+
+## Release version edited manually
+
+The Pull Request version has been manually set to \`6.7.9-alpha.1\` and will be used for the release.
+
+If you instead want to use the version number \`1.0.1\` generated from conventional commits, just remove the label \`autorelease: custom version\` from this Pull Request.
+
+`
+
+exports['Manifest buildPullRequests should use version from existing PR title if differs from release branch manifest 2'] = `
+
+## Release version edited manually
+
+The Pull Request version has been manually set to \`7.8.9\` and will be used for the release.
+
+If you instead want to use the version number \`2.0.1\` generated from conventional commits, just remove the label \`autorelease: custom version\` from this Pull Request.
+
+`
+
+exports['Manifest buildPullRequests should use version from existing PR title if differs from release branch manifest 3'] = `
+
+## Release version edited manually
+
+The Pull Request version has been manually set to \`8.9.0\` and will be used for the release.
+
+If you instead want to use the version number \`3.0.1\` generated from conventional commits, just remove the label \`autorelease: custom version\` from this Pull Request.
+
+`
+
+exports['Manifest buildPullRequests should use version from existing PR title if differs from release branch manifest 4'] = `
+
+## Release version edited manually
+
+The Pull Request version has been manually set to \`9.0.1\` and will be used for the release.
+
+If you instead want to use the version number \`4.0.1\` generated from conventional commits, just remove the label \`autorelease: custom version\` from this Pull Request.
+
+`
+
+exports['Manifest buildPullRequests should warn end user via PR comment if version not found in title and not labeled as custom version 1'] = `
+
+## Invalid version number in PR title
+
+:warning: No version number can be found in the title, the generated version \`0.2.4\` will be used. Did you want to change the version for this release?
+
+To set a custom version be sure to use the [semantic versioning format](https://devhints.io/semver), e.g \`1.2.3\`.
+
+`
+
 exports['Manifest createReleases should throw when release branch is missing and changes-branch not in synced with target-branch 1'] = `
 Branch 'next' cannot be safely re-aligned with 'main', and will likely result in git conflicts when the next release PR is created. Hint: compare branches 'release-please--branches--main--changes--next', 'next', and 'main' for inconsistencies
 `
