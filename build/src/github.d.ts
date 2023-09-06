@@ -421,13 +421,18 @@ export declare class GitHub {
     private queryLockBranchProtectionRule;
     private mutateLockBranchProtectionRule;
     private createLockBranchProtectionRule;
+    isBranchSyncedWithPullRequestCommits(branchName: string, pullRequest: PullRequest): Promise<boolean>;
     /**
-     * Determines whether branch A is up-to-date with the latest commit of branch B.
-     * This function can be used to detect if branch B has received any new commits since branch A was created or last rebased.
+     * Determines whether branch A is up-to-date with the latest commits from branch B.
+     * This function can be used to detect if branch A has received any new commits since it was created or last rebased
+     * from branch B.
      *
      * @param {string} branchAName - The name of branch A, which is to be checked against the latest commit of branch B.
      * @param {string} branchBName - The name of branch B, against which branch A is to be compared.
-     * @returns {Promise<boolean>} Returns `true` if branch A is based on the latest commit of branch B, meaning no new commits have been made to B since A was branched from it. Returns `false` otherwise.
+     * @returns {Promise<boolean>} Returns `true` if branch B is ahead of branch A, meaning no new
+     * commits have been added to A since it was branched from B, or if branch A is identical to branch B. Returns `true`
+     * if branches are diverging, but all commits exclusive to A can be found in c ommits exclusive to B (e.g B contains
+     * all commits from A but different sha following a rebase + merge). Returns `false` otherwise.
      * @throws {Error} Throws an error if branch names are empty or if there is an issue with the comparison, such as API errors or network issues.
      */
     isBranchASyncedWithB(branchAName: string, branchBName: string): Promise<boolean>;

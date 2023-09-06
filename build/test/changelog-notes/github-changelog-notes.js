@@ -69,6 +69,7 @@ nock.disableNetConnect();
             changesBranch: 'main',
         };
         let github;
+        let req;
         beforeEach(async () => {
             github = await github_2.GitHub.create({
                 owner: 'fake-owner',
@@ -76,7 +77,7 @@ nock.disableNetConnect();
                 defaultBranch: 'main',
                 token: 'fake-token',
             });
-            nock('https://api.github.com/')
+            req = nock('https://api.github.com/')
                 .post('/repos/fake-owner/fake-repo/releases/generate-notes')
                 .reply(200, {
                 name: 'Release v1.0.0 is now available!',
@@ -88,6 +89,7 @@ nock.disableNetConnect();
             const notes = await changelogNotes.buildNotes(commits, notesOptions);
             (0, chai_1.expect)(notes).to.is.string;
             (0, helpers_1.safeSnapshot)(notes);
+            req.done();
         });
         (0, mocha_1.it)('should build parseable notes', async () => {
             var _a;
@@ -113,6 +115,7 @@ nock.disableNetConnect();
             (0, chai_1.expect)(parsedPullRequestBody).to.not.be.undefined;
             (0, chai_1.expect)(parsedPullRequestBody.releaseData).lengthOf(1);
             (0, chai_1.expect)((_a = parsedPullRequestBody.releaseData[0].version) === null || _a === void 0 ? void 0 : _a.toString()).to.eql('1.2.3');
+            req.done();
         });
     });
 });

@@ -342,7 +342,6 @@ export declare class Manifest {
      */
     private lockPullRequestsChangesBranch;
     private unlockPullRequestsChangesBranch;
-    private throwIfChangesBranchesRaceConditionDetected;
     private alignPullRequestsChangesBranch;
     private createReleasesForPullRequest;
     private createRelease;
