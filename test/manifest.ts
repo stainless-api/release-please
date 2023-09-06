@@ -2503,7 +2503,7 @@ describe('Manifest', () => {
       sinon.assert.calledOnce(getFileContentsOnBranchStub);
     });
 
-    it('should not report an error if no github releases not found but tag found', async () => {
+    it('should not report an error if github releases not found but tag found', async () => {
       mockReleases(sandbox, github, []);
       mockCommits(sandbox, github, [
         {
