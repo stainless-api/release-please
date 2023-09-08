@@ -17,9 +17,9 @@ import {Changelog} from '../updaters/changelog';
 // Terraform specific.
 import {ReadMe} from '../updaters/terraform/readme';
 import {ModuleVersion} from '../updaters/terraform/module-version';
+import {MetadataVersion} from '../updaters/terraform/metadata-version';
 import {BaseStrategy, BuildUpdatesOptions} from './base';
 import {Update} from '../update';
-import {Version} from '../version';
 
 export class TerraformModule extends BaseStrategy {
   protected async buildUpdates(
@@ -88,10 +88,23 @@ export class TerraformModule extends BaseStrategy {
         }),
       });
     });
-    return updates;
-  }
 
-  protected initialReleaseVersion(): Version {
-    return Version.parse('0.1.0');
+    // Update metadata.yaml to current candidate version.
+    const metadataFiles = await this.github.findFilesByFilenameAndRef(
+      'metadata.yaml',
+      this.targetBranch,
+      this.path
+    );
+
+    metadataFiles.forEach(path => {
+      updates.push({
+        path: this.addPath(path),
+        createIfMissing: false,
+        updater: new MetadataVersion({
+          version,
+        }),
+      });
+    });
+    return updates;
   }
 }

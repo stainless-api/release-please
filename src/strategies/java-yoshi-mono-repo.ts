@@ -313,10 +313,6 @@ export class JavaYoshiMonoRepo extends Java {
     }
     return versionsMap;
   }
-
-  protected initialReleaseVersion(): Version {
-    return Version.parse('0.1.0');
-  }
 }
 
 const VERSIONED_ARTIFACT_REGEX = /^.*-(v\d+[^-]*)$/;

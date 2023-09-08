@@ -20,7 +20,7 @@ import {Changelog} from '../updaters/changelog';
 import {KRMBlueprintVersion} from '../updaters/krm/krm-blueprint-version';
 import {BaseStrategy, BuildUpdatesOptions} from './base';
 import {Update} from '../update';
-import {VersionsMap, Version} from '../version';
+import {VersionsMap} from '../version';
 
 const KRMBlueprintAttribAnnotation = 'cnrm.cloud.google.com/blueprint';
 const hasKRMBlueprintAttrib = (content: string) =>
@@ -72,9 +72,5 @@ export class KRMBlueprint extends BaseStrategy {
       }
     }
     return updates;
-  }
-
-  protected initialReleaseVersion(): Version {
-    return Version.parse('0.1.0');
   }
 }
