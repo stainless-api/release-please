@@ -123,9 +123,11 @@ class Manifest {
      * @returns {Manifest}
      */
     static async fromManifest(github, targetBranch, configFile = exports.DEFAULT_RELEASE_PLEASE_CONFIG, manifestFile = exports.DEFAULT_RELEASE_PLEASE_MANIFEST, manifestOptionOverrides = {}, path, releaseAs) {
+        var _a;
+        const changesBranch = (_a = manifestOptionOverrides.changesBranch) !== null && _a !== void 0 ? _a : targetBranch;
         const [{ config: repositoryConfig, options: manifestOptions }, releasedVersions,] = await Promise.all([
-            parseConfig(github, configFile, targetBranch, path, releaseAs),
-            parseReleasedVersions(github, manifestFile, targetBranch),
+            parseConfig(github, configFile, changesBranch, path, releaseAs),
+            parseReleasedVersions(github, manifestFile, changesBranch),
         ]);
         return new Manifest(github, targetBranch, repositoryConfig, releasedVersions, {
             manifestPath: manifestFile,
@@ -362,7 +364,6 @@ class Manifest {
             const branchName = (await strategy.getBranchName()).toString();
             const existingPR = openPullRequests.find(pr => pr.headBranchName === branchName) ||
                 snoozedPullRequests.find(pr => pr.headBranchName === branchName);
-            this.logger.debug({ existingPR });
             const releasePullRequest = await strategy.buildReleasePullRequest({
                 commits: pathCommits,
                 latestRelease,

@@ -174,9 +174,6 @@ class JavaYoshi extends java_1.Java {
         }
         return versionsMap;
     }
-    initialReleaseVersion() {
-        return version_1.Version.parse('0.1.0');
-    }
 }
 exports.JavaYoshi = JavaYoshi;
 const VERSIONED_ARTIFACT_REGEX = /^.*-(v\d+[^-]*)$/;

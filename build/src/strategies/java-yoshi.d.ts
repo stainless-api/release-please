@@ -1,5 +1,5 @@
 import { Update } from '../update';
-import { Version, VersionsMap } from '../version';
+import { VersionsMap } from '../version';
 import { GitHubFileContents } from '@google-automations/git-file-utils';
 import { ConventionalCommit } from '../commit';
 import { Java, JavaBuildUpdatesOption } from './java';
@@ -16,5 +16,4 @@ export declare class JavaYoshi extends Java {
     protected getVersionsContent(): Promise<GitHubFileContents>;
     protected buildUpdates(options: JavaBuildUpdatesOption): Promise<Update[]>;
     protected updateVersionsMap(versionsMap: VersionsMap, conventionalCommits: ConventionalCommit[]): Promise<VersionsMap>;
-    protected initialReleaseVersion(): Version;
 }

@@ -453,7 +453,8 @@ class GitHub {
                 retry: {
                     doNotRetry: [
                         '403',
-                        '429', // Too Many Request
+                        '429',
+                        '404', // Not Found
                     ],
                 },
                 throttle: {

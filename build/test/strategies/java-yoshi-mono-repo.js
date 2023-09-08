@@ -51,7 +51,7 @@ const ISO_DATE_REGEX = /[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\.[
     (0, mocha_1.describe)('buildReleasePullRequest', () => {
         (0, mocha_1.it)('returns release PR changes with defaultInitialVersion', async () => {
             var _a;
-            const expectedVersion = '0.1.0';
+            const expectedVersion = '0.0.1';
             const strategy = new java_yoshi_mono_repo_1.JavaYoshiMonoRepo({
                 targetBranch: 'main',
                 github,

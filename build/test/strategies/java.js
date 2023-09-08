@@ -62,8 +62,8 @@ const sandbox = sinon.createSandbox();
                     draft: false,
                     labels: manifest_1.DEFAULT_LABELS,
                 });
-                (0, chai_1.expect)((_a = release === null || release === void 0 ? void 0 : release.version) === null || _a === void 0 ? void 0 : _a.toString()).to.eql('1.0.0');
-                (0, chai_1.expect)(release === null || release === void 0 ? void 0 : release.title.toString()).to.eql('chore(main): release 1.0.0');
+                (0, chai_1.expect)((_a = release === null || release === void 0 ? void 0 : release.version) === null || _a === void 0 ? void 0 : _a.toString()).to.eql('0.0.1');
+                (0, chai_1.expect)(release === null || release === void 0 ? void 0 : release.title.toString()).to.eql('chore(main): release 0.0.1');
                 (0, chai_1.expect)(release === null || release === void 0 ? void 0 : release.headRefName).to.eql('release-please--branches--main');
                 (0, chai_1.expect)(release === null || release === void 0 ? void 0 : release.draft).to.eql(false);
                 (0, chai_1.expect)(release === null || release === void 0 ? void 0 : release.labels).to.eql(manifest_1.DEFAULT_LABELS);
@@ -276,8 +276,8 @@ const sandbox = sinon.createSandbox();
                     draft: false,
                     labels: manifest_1.DEFAULT_LABELS,
                 });
-                (0, chai_1.expect)((_a = release === null || release === void 0 ? void 0 : release.version) === null || _a === void 0 ? void 0 : _a.toString()).to.eql('1.0.0');
-                (0, chai_1.expect)(release === null || release === void 0 ? void 0 : release.title.toString()).to.eql('chore(main): release test-sample 1.0.0');
+                (0, chai_1.expect)((_a = release === null || release === void 0 ? void 0 : release.version) === null || _a === void 0 ? void 0 : _a.toString()).to.eql('0.0.1');
+                (0, chai_1.expect)(release === null || release === void 0 ? void 0 : release.title.toString()).to.eql('chore(main): release test-sample 0.0.1');
                 (0, chai_1.expect)(release === null || release === void 0 ? void 0 : release.headRefName).to.eql('release-please--branches--main--components--test-sample');
                 (0, chai_1.expect)(release === null || release === void 0 ? void 0 : release.draft).to.eql(false);
                 (0, chai_1.expect)(release === null || release === void 0 ? void 0 : release.labels).to.eql(manifest_1.DEFAULT_LABELS);

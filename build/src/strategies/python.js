@@ -17,7 +17,6 @@ exports.Python = void 0;
 const base_1 = require("./base");
 const changelog_1 = require("../updaters/changelog");
 const changelog_json_1 = require("../updaters/changelog-json");
-const version_1 = require("../version");
 const setup_cfg_1 = require("../updaters/python/setup-cfg");
 const setup_py_1 = require("../updaters/python/setup-py");
 const pyproject_toml_1 = require("../updaters/python/pyproject-toml");
@@ -165,9 +164,6 @@ class Python extends base_1.BaseStrategy {
                 throw e;
             }
         }
-    }
-    initialReleaseVersion() {
-        return version_1.Version.parse('0.1.0');
     }
 }
 exports.Python = Python;

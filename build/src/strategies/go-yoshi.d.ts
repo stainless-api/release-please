@@ -10,5 +10,4 @@ export declare class GoYoshi extends BaseStrategy {
     protected postProcessCommits(commits: ConventionalCommit[]): Promise<ConventionalCommit[]>;
     getIgnoredSubModules(): Promise<Set<string>>;
     protected buildReleaseNotes(conventionalCommits: ConventionalCommit[], newVersion: Version, newVersionTag: TagName, latestRelease?: Release, commits?: Commit[]): Promise<string>;
-    protected initialReleaseVersion(): Version;
 }

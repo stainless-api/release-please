@@ -19,7 +19,6 @@ const changelog_1 = require("../updaters/changelog");
 // KRM specific.
 const krm_blueprint_version_1 = require("../updaters/krm/krm-blueprint-version");
 const base_1 = require("./base");
-const version_1 = require("../version");
 const KRMBlueprintAttribAnnotation = 'cnrm.cloud.google.com/blueprint';
 const hasKRMBlueprintAttrib = (content) => content.includes(KRMBlueprintAttribAnnotation);
 class KRMBlueprint extends base_1.BaseStrategy {
@@ -55,9 +54,6 @@ class KRMBlueprint extends base_1.BaseStrategy {
             }
         }
         return updates;
-    }
-    initialReleaseVersion() {
-        return version_1.Version.parse('0.1.0');
     }
 }
 exports.KRMBlueprint = KRMBlueprint;

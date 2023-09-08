@@ -16,7 +16,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.GoYoshi = void 0;
 const base_1 = require("./base");
 const changelog_1 = require("../updaters/changelog");
-const version_1 = require("../version");
 const version_go_1 = require("../updaters/go/version-go");
 const path_1 = require("path");
 const CHANGELOG_SECTIONS = [
@@ -155,9 +154,6 @@ class GoYoshi extends base_1.BaseStrategy {
     async buildReleaseNotes(conventionalCommits, newVersion, newVersionTag, latestRelease, commits) {
         const releaseNotes = await super.buildReleaseNotes(conventionalCommits, newVersion, newVersionTag, latestRelease, commits);
         return releaseNotes.replace(/, closes /g, ', refs ');
-    }
-    initialReleaseVersion() {
-        return version_1.Version.parse('0.1.0');
     }
 }
 exports.GoYoshi = GoYoshi;

@@ -19,8 +19,8 @@ const changelog_1 = require("../updaters/changelog");
 // Terraform specific.
 const readme_1 = require("../updaters/terraform/readme");
 const module_version_1 = require("../updaters/terraform/module-version");
+const metadata_version_1 = require("../updaters/terraform/metadata-version");
 const base_1 = require("./base");
-const version_1 = require("../version");
 class TerraformModule extends base_1.BaseStrategy {
     async buildUpdates(options) {
         const updates = [];
@@ -67,10 +67,18 @@ class TerraformModule extends base_1.BaseStrategy {
                 }),
             });
         });
+        // Update metadata.yaml to current candidate version.
+        const metadataFiles = await this.github.findFilesByFilenameAndRef('metadata.yaml', this.targetBranch, this.path);
+        metadataFiles.forEach(path => {
+            updates.push({
+                path: this.addPath(path),
+                createIfMissing: false,
+                updater: new metadata_version_1.MetadataVersion({
+                    version,
+                }),
+            });
+        });
         return updates;
-    }
-    initialReleaseVersion() {
-        return version_1.Version.parse('0.1.0');
     }
 }
 exports.TerraformModule = TerraformModule;

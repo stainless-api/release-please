@@ -48,7 +48,7 @@ const expoFixturesPath = './test/fixtures/strategies/expo';
     (0, mocha_1.describe)('buildReleasePullRequest', () => {
         (0, mocha_1.it)('returns release PR changes with defaultInitialVersion', async () => {
             var _a;
-            const expectedVersion = '1.0.0';
+            const expectedVersion = '0.0.1';
             const getFileContentsStub = sandbox.stub(github, 'getFileContentsOnBranch');
             getFileContentsStub
                 .withArgs('package.json', 'main')

@@ -461,7 +461,7 @@ If you instead want to use the version number \`${newVersion}\` generated from c
         if (this.initialVersion) {
             return version_1.Version.parse(this.initialVersion);
         }
-        return version_1.Version.parse('1.0.0');
+        return version_1.Version.parse('0.0.1');
     }
     /**
      * Adds a given file path to the strategy path.

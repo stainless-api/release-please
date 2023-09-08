@@ -21,7 +21,6 @@ const cargo_toml_1 = require("../updaters/rust/cargo-toml");
 const cargo_lock_1 = require("../updaters/rust/cargo-lock");
 const common_1 = require("../updaters/rust/common");
 const base_1 = require("./base");
-const version_1 = require("../version");
 class Rust extends base_1.BaseStrategy {
     async buildUpdates(options) {
         var _a, _b, _c;
@@ -110,9 +109,6 @@ class Rust extends base_1.BaseStrategy {
             updater: new cargo_lock_1.CargoLock(versionsMap),
         });
         return updates;
-    }
-    initialReleaseVersion() {
-        return version_1.Version.parse('0.1.0');
     }
     async getDefaultPackageName() {
         var _a;

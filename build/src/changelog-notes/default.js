@@ -68,9 +68,10 @@ class DefaultChangelogNotes {
                 hash: commit.sha,
             };
         });
-        return conventionalChangelogWriter
+        const result = conventionalChangelogWriter
             .parseArray(changelogCommits, context, preset.writerOpts)
             .trim();
+        return result;
     }
 }
 exports.DefaultChangelogNotes = DefaultChangelogNotes;

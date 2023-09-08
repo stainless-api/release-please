@@ -248,9 +248,6 @@ class JavaYoshiMonoRepo extends java_1.Java {
         }
         return versionsMap;
     }
-    initialReleaseVersion() {
-        return version_1.Version.parse('0.1.0');
-    }
 }
 exports.JavaYoshiMonoRepo = JavaYoshiMonoRepo;
 const VERSIONED_ARTIFACT_REGEX = /^.*-(v\d+[^-]*)$/;

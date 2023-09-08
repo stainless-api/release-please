@@ -45,7 +45,7 @@ const fixturesPath = './test/fixtures/strategies/krm-blueprint';
     (0, mocha_1.describe)('buildReleasePullRequest', () => {
         (0, mocha_1.it)('returns release PR changes with defaultInitialVersion', async () => {
             var _a;
-            const expectedVersion = '0.1.0';
+            const expectedVersion = '0.0.1';
             const strategy = new krm_blueprint_1.KRMBlueprint({
                 targetBranch: 'main',
                 github,

@@ -52,8 +52,8 @@ const COMMITS = [
         });
         (0, mocha_1.it)('returns release PR changes with defaultInitialVersion', async () => {
             var _a;
-            const expectedVersion = '1.0.0';
-            const expectedTitle = 'Release Google.Cloud.SecurityCenter.V1 version 1.0.0';
+            const expectedVersion = '0.0.1';
+            const expectedTitle = 'Release Google.Cloud.SecurityCenter.V1 version 0.0.1';
             const strategy = new dotnet_yoshi_1.DotnetYoshi({
                 targetBranch: 'main',
                 github,

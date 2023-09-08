@@ -49,7 +49,7 @@ const COMMITS = [
     (0, mocha_1.describe)('buildReleasePullRequest', () => {
         (0, mocha_1.it)('returns release PR changes with defaultInitialVersion', async () => {
             var _a;
-            const expectedVersion = '0.1.0';
+            const expectedVersion = '0.0.1';
             const strategy = new java_yoshi_1.JavaYoshi({
                 targetBranch: 'main',
                 github,

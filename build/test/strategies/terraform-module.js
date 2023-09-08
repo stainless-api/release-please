@@ -24,6 +24,7 @@ const version_1 = require("../../src/version");
 const changelog_1 = require("../../src/updaters/changelog");
 const readme_1 = require("../../src/updaters/terraform/readme");
 const module_version_1 = require("../../src/updaters/terraform/module-version");
+const metadata_version_1 = require("../../src/updaters/terraform/metadata-version");
 const sandbox = sinon.createSandbox();
 const COMMITS = [
     ...(0, helpers_1.buildMockConventionalCommit)('fix(deps): update dependency com.google.cloud:google-cloud-storage to v1.120.0'),
@@ -45,7 +46,7 @@ const COMMITS = [
     (0, mocha_1.describe)('buildReleasePullRequest', () => {
         (0, mocha_1.it)('returns release PR changes with defaultInitialVersion', async () => {
             var _a;
-            const expectedVersion = '0.1.0';
+            const expectedVersion = '0.0.1';
             const strategy = new terraform_module_1.TerraformModule({
                 targetBranch: 'main',
                 github,
@@ -115,6 +116,9 @@ const COMMITS = [
             findFilesStub
                 .withArgs('versions.tf.tmpl', 'main', '.')
                 .resolves(['path1/versions.tf.tmpl', 'path2/versions.tf.tmpl']);
+            findFilesStub
+                .withArgs('metadata.yaml', 'main', '.')
+                .resolves(['path1/metadata.yaml', 'path2/metadata.yaml']);
             const latestRelease = undefined;
             const release = await strategy.buildReleasePullRequest({
                 commits: COMMITS,
@@ -129,6 +133,8 @@ const COMMITS = [
             (0, helpers_1.assertHasUpdate)(updates, 'path2/versions.tf', module_version_1.ModuleVersion);
             (0, helpers_1.assertHasUpdate)(updates, 'path1/versions.tf.tmpl', module_version_1.ModuleVersion);
             (0, helpers_1.assertHasUpdate)(updates, 'path2/versions.tf.tmpl', module_version_1.ModuleVersion);
+            (0, helpers_1.assertHasUpdate)(updates, 'path1/metadata.yaml', metadata_version_1.MetadataVersion);
+            (0, helpers_1.assertHasUpdate)(updates, 'path2/metadata.yaml', metadata_version_1.MetadataVersion);
         });
     });
 });

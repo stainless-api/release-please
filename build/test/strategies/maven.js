@@ -58,7 +58,7 @@ const COMMITS = [
                 commits: COMMITS,
                 latestRelease: undefined,
             });
-            (0, chai_1.expect)((_a = release === null || release === void 0 ? void 0 : release.version) === null || _a === void 0 ? void 0 : _a.toString()).to.eql('1.0.0');
+            (0, chai_1.expect)((_a = release === null || release === void 0 ? void 0 : release.version) === null || _a === void 0 ? void 0 : _a.toString()).to.eql('0.0.1');
             const updates = release.updates;
             (0, helpers_1.assertHasUpdate)(updates, 'CHANGELOG.md', changelog_1.Changelog);
             (0, helpers_1.assertHasUpdates)(updates, 'pom.xml', pom_xml_1.PomXml, java_released_1.JavaReleased, generic_1.Generic);

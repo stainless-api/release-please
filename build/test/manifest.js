@@ -126,14 +126,25 @@ function pullRequestBody(path) {
             (0, chai_1.expect)(Object.keys(manifest.repositoryConfig)).lengthOf(8);
             (0, chai_1.expect)(Object.keys(manifest.releasedVersions)).lengthOf(8);
         });
+        (0, mocha_1.it)('should fetch config and manifest from changes-branch when specified', async () => {
+            const getFileContentsStub = sandbox.stub(github, 'getFileContentsOnBranch');
+            getFileContentsStub
+                .withArgs('release-please-config.json', 'next')
+                .resolves((0, helpers_1.buildGitHubFileContent)(fixturesPath, 'manifest/config/config.json'))
+                .withArgs('.release-please-manifest.json', 'next')
+                .resolves((0, helpers_1.buildGitHubFileContent)(fixturesPath, 'manifest/versions/versions.json'));
+            const manifest = await manifest_1.Manifest.fromManifest(github, github.repository.defaultBranch, undefined, undefined, { changesBranch: 'next' });
+            (0, chai_1.expect)(Object.keys(manifest.repositoryConfig)).lengthOf(8);
+            (0, chai_1.expect)(Object.keys(manifest.releasedVersions)).lengthOf(8);
+        });
         (0, mocha_1.it)('should limit manifest loading to the given path', async () => {
             const getFileContentsStub = sandbox.stub(github, 'getFileContentsOnBranch');
             getFileContentsStub
-                .withArgs('release-please-config.json', 'main')
+                .withArgs('release-please-config.json', 'next')
                 .resolves((0, helpers_1.buildGitHubFileContent)(fixturesPath, 'manifest/config/config.json'))
-                .withArgs('.release-please-manifest.json', 'main')
+                .withArgs('.release-please-manifest.json', 'next')
                 .resolves((0, helpers_1.buildGitHubFileContent)(fixturesPath, 'manifest/versions/versions.json'));
-            const manifest = await manifest_1.Manifest.fromManifest(github, github.repository.defaultBranch, undefined, undefined, undefined, 'packages/gcf-utils');
+            const manifest = await manifest_1.Manifest.fromManifest(github, github.repository.defaultBranch, undefined, undefined, { changesBranch: 'next' }, 'packages/gcf-utils');
             (0, chai_1.expect)(Object.keys(manifest.repositoryConfig)).lengthOf(1);
             (0, chai_1.expect)(manifest.repositoryConfig['packages/gcf-utils'].releaseType).to.eql('node');
             (0, chai_1.expect)(Object.keys(manifest.releasedVersions)).lengthOf(8);
@@ -141,11 +152,11 @@ function pullRequestBody(path) {
         (0, mocha_1.it)('should override release-as with the given argument', async () => {
             const getFileContentsStub = sandbox.stub(github, 'getFileContentsOnBranch');
             getFileContentsStub
-                .withArgs('release-please-config.json', 'main')
+                .withArgs('release-please-config.json', 'next')
                 .resolves((0, helpers_1.buildGitHubFileContent)(fixturesPath, 'manifest/config/config.json'))
-                .withArgs('.release-please-manifest.json', 'main')
+                .withArgs('.release-please-manifest.json', 'next')
                 .resolves((0, helpers_1.buildGitHubFileContent)(fixturesPath, 'manifest/versions/versions.json'));
-            const manifest = await manifest_1.Manifest.fromManifest(github, github.repository.defaultBranch, undefined, undefined, undefined, 'packages/gcf-utils', '12.34.56');
+            const manifest = await manifest_1.Manifest.fromManifest(github, github.repository.defaultBranch, undefined, undefined, { changesBranch: 'next' }, 'packages/gcf-utils', '12.34.56');
             (0, chai_1.expect)(Object.keys(manifest.repositoryConfig)).lengthOf(1);
             (0, chai_1.expect)(manifest.repositoryConfig['packages/gcf-utils'].releaseAs).to.eql('12.34.56');
             (0, chai_1.expect)(Object.keys(manifest.releasedVersions)).lengthOf(8);
@@ -153,44 +164,44 @@ function pullRequestBody(path) {
         (0, mocha_1.it)('should read the default release-type from manifest', async () => {
             const getFileContentsStub = sandbox.stub(github, 'getFileContentsOnBranch');
             getFileContentsStub
-                .withArgs('release-please-config.json', 'main')
+                .withArgs('release-please-config.json', 'next')
                 .resolves((0, helpers_1.buildGitHubFileContent)(fixturesPath, 'manifest/config/root-release-type.json'))
-                .withArgs('.release-please-manifest.json', 'main')
+                .withArgs('.release-please-manifest.json', 'next')
                 .resolves((0, helpers_1.buildGitHubFileContent)(fixturesPath, 'manifest/versions/versions.json'));
-            const manifest = await manifest_1.Manifest.fromManifest(github, github.repository.defaultBranch);
+            const manifest = await manifest_1.Manifest.fromManifest(github, github.repository.defaultBranch, undefined, undefined, { changesBranch: 'next' });
             (0, chai_1.expect)(manifest.repositoryConfig['.'].releaseType).to.eql('java-yoshi');
             (0, chai_1.expect)(manifest.repositoryConfig['node-package'].releaseType).to.eql('node');
         });
         (0, mocha_1.it)('should read custom pull request title patterns from manifest', async () => {
             const getFileContentsStub = sandbox.stub(github, 'getFileContentsOnBranch');
             getFileContentsStub
-                .withArgs('release-please-config.json', 'main')
+                .withArgs('release-please-config.json', 'next')
                 .resolves((0, helpers_1.buildGitHubFileContent)(fixturesPath, 'manifest/config/group-pr-title-pattern.json'))
-                .withArgs('.release-please-manifest.json', 'main')
+                .withArgs('.release-please-manifest.json', 'next')
                 .resolves((0, helpers_1.buildGitHubFileContent)(fixturesPath, 'manifest/versions/versions.json'));
-            const manifest = await manifest_1.Manifest.fromManifest(github, github.repository.defaultBranch);
+            const manifest = await manifest_1.Manifest.fromManifest(github, github.repository.defaultBranch, undefined, undefined, { changesBranch: 'next' });
             (0, chai_1.expect)(manifest['groupPullRequestTitlePattern']).to.eql('chore${scope}: release${component} v${version}');
             (0, chai_1.expect)(manifest.repositoryConfig['packages/cron-utils'].pullRequestTitlePattern).to.eql('chore${scope}: send it v${version}');
         });
         (0, mocha_1.it)('should read custom tag separator from manifest', async () => {
             const getFileContentsStub = sandbox.stub(github, 'getFileContentsOnBranch');
             getFileContentsStub
-                .withArgs('release-please-config.json', 'main')
+                .withArgs('release-please-config.json', 'next')
                 .resolves((0, helpers_1.buildGitHubFileContent)(fixturesPath, 'manifest/config/tag-separator.json'))
-                .withArgs('.release-please-manifest.json', 'main')
+                .withArgs('.release-please-manifest.json', 'next')
                 .resolves((0, helpers_1.buildGitHubFileContent)(fixturesPath, 'manifest/versions/versions.json'));
-            const manifest = await manifest_1.Manifest.fromManifest(github, github.repository.defaultBranch);
+            const manifest = await manifest_1.Manifest.fromManifest(github, github.repository.defaultBranch, undefined, undefined, { changesBranch: 'next' });
             (0, chai_1.expect)(manifest.repositoryConfig['.'].tagSeparator).to.eql('-');
             (0, chai_1.expect)(manifest.repositoryConfig['packages/bot-config-utils'].tagSeparator).to.eql('/');
         });
         (0, mocha_1.it)('should read extra files from manifest', async () => {
             const getFileContentsStub = sandbox.stub(github, 'getFileContentsOnBranch');
             getFileContentsStub
-                .withArgs('release-please-config.json', 'main')
+                .withArgs('release-please-config.json', 'next')
                 .resolves((0, helpers_1.buildGitHubFileContent)(fixturesPath, 'manifest/config/extra-files.json'))
-                .withArgs('.release-please-manifest.json', 'main')
+                .withArgs('.release-please-manifest.json', 'next')
                 .resolves((0, helpers_1.buildGitHubFileContent)(fixturesPath, 'manifest/versions/versions.json'));
-            const manifest = await manifest_1.Manifest.fromManifest(github, github.repository.defaultBranch);
+            const manifest = await manifest_1.Manifest.fromManifest(github, github.repository.defaultBranch, undefined, undefined, { changesBranch: 'next' });
             (0, chai_1.expect)(manifest.repositoryConfig['.'].extraFiles).to.eql([
                 'default.txt',
                 {
@@ -211,11 +222,11 @@ function pullRequestBody(path) {
         (0, mocha_1.it)('should read custom include component in tag from manifest', async () => {
             const getFileContentsStub = sandbox.stub(github, 'getFileContentsOnBranch');
             getFileContentsStub
-                .withArgs('release-please-config.json', 'main')
+                .withArgs('release-please-config.json', 'next')
                 .resolves((0, helpers_1.buildGitHubFileContent)(fixturesPath, 'manifest/config/include-component-in-tag.json'))
-                .withArgs('.release-please-manifest.json', 'main')
+                .withArgs('.release-please-manifest.json', 'next')
                 .resolves((0, helpers_1.buildGitHubFileContent)(fixturesPath, 'manifest/versions/versions.json'));
-            const manifest = await manifest_1.Manifest.fromManifest(github, github.repository.defaultBranch);
+            const manifest = await manifest_1.Manifest.fromManifest(github, github.repository.defaultBranch, undefined, undefined, { changesBranch: 'next' });
             (0, chai_1.expect)(manifest.repositoryConfig['.'].includeComponentInTag).to.be.false;
             (0, chai_1.expect)(manifest.repositoryConfig['packages/bot-config-utils']
                 .includeComponentInTag).to.be.true;
@@ -223,22 +234,22 @@ function pullRequestBody(path) {
         (0, mocha_1.it)('should read custom include v in tag from manifest', async () => {
             const getFileContentsStub = sandbox.stub(github, 'getFileContentsOnBranch');
             getFileContentsStub
-                .withArgs('release-please-config.json', 'main')
+                .withArgs('release-please-config.json', 'next')
                 .resolves((0, helpers_1.buildGitHubFileContent)(fixturesPath, 'manifest/config/include-v-in-tag.json'))
-                .withArgs('.release-please-manifest.json', 'main')
+                .withArgs('.release-please-manifest.json', 'next')
                 .resolves((0, helpers_1.buildGitHubFileContent)(fixturesPath, 'manifest/versions/versions.json'));
-            const manifest = await manifest_1.Manifest.fromManifest(github, github.repository.defaultBranch);
+            const manifest = await manifest_1.Manifest.fromManifest(github, github.repository.defaultBranch, undefined, undefined, { changesBranch: 'next' });
             (0, chai_1.expect)(manifest.repositoryConfig['.'].includeVInTag).to.be.false;
             (0, chai_1.expect)(manifest.repositoryConfig['packages/bot-config-utils'].includeVInTag).to.be.true;
         });
         (0, mocha_1.it)('should read custom labels from manifest', async () => {
             const getFileContentsStub = sandbox.stub(github, 'getFileContentsOnBranch');
             getFileContentsStub
-                .withArgs('release-please-config.json', 'main')
+                .withArgs('release-please-config.json', 'next')
                 .resolves((0, helpers_1.buildGitHubFileContent)(fixturesPath, 'manifest/config/labels.json'))
-                .withArgs('.release-please-manifest.json', 'main')
+                .withArgs('.release-please-manifest.json', 'next')
                 .resolves((0, helpers_1.buildGitHubFileContent)(fixturesPath, 'manifest/versions/versions.json'));
-            const manifest = await manifest_1.Manifest.fromManifest(github, github.repository.defaultBranch);
+            const manifest = await manifest_1.Manifest.fromManifest(github, github.repository.defaultBranch, undefined, undefined, { changesBranch: 'next' });
             (0, chai_1.expect)(manifest['labels']).to.deep.equal(['custom: pending']);
             (0, chai_1.expect)(manifest['releaseLabels']).to.deep.equal(['custom: tagged']);
             (0, chai_1.expect)(manifest['prereleaseLabels']).to.deep.equal([
@@ -248,11 +259,11 @@ function pullRequestBody(path) {
         (0, mocha_1.it)('should read extra labels from manifest', async () => {
             const getFileContentsStub = sandbox.stub(github, 'getFileContentsOnBranch');
             getFileContentsStub
-                .withArgs('release-please-config.json', 'main')
+                .withArgs('release-please-config.json', 'next')
                 .resolves((0, helpers_1.buildGitHubFileContent)(fixturesPath, 'manifest/config/extra-labels.json'))
-                .withArgs('.release-please-manifest.json', 'main')
+                .withArgs('.release-please-manifest.json', 'next')
                 .resolves((0, helpers_1.buildGitHubFileContent)(fixturesPath, 'manifest/versions/versions.json'));
-            const manifest = await manifest_1.Manifest.fromManifest(github, github.repository.defaultBranch);
+            const manifest = await manifest_1.Manifest.fromManifest(github, github.repository.defaultBranch, undefined, undefined, { changesBranch: 'next' });
             (0, chai_1.expect)(manifest.repositoryConfig['.'].extraLabels).to.deep.equal([
                 'lang: java',
             ]);
@@ -263,11 +274,11 @@ function pullRequestBody(path) {
         (0, mocha_1.it)('should read exclude paths from manifest', async () => {
             const getFileContentsStub = sandbox.stub(github, 'getFileContentsOnBranch');
             getFileContentsStub
-                .withArgs('release-please-config.json', 'main')
+                .withArgs('release-please-config.json', 'next')
                 .resolves((0, helpers_1.buildGitHubFileContent)(fixturesPath, 'manifest/config/exclude-paths.json'))
-                .withArgs('.release-please-manifest.json', 'main')
+                .withArgs('.release-please-manifest.json', 'next')
                 .resolves((0, helpers_1.buildGitHubFileContent)(fixturesPath, 'manifest/versions/versions.json'));
-            const manifest = await manifest_1.Manifest.fromManifest(github, github.repository.defaultBranch);
+            const manifest = await manifest_1.Manifest.fromManifest(github, github.repository.defaultBranch, undefined, undefined, { changesBranch: 'next' });
             (0, chai_1.expect)(manifest.repositoryConfig['.'].excludePaths).to.deep.equal([
                 'path-root-ignore',
             ]);
@@ -278,11 +289,11 @@ function pullRequestBody(path) {
         (0, mocha_1.it)('should build simple plugins from manifest', async () => {
             const getFileContentsStub = sandbox.stub(github, 'getFileContentsOnBranch');
             getFileContentsStub
-                .withArgs('release-please-config.json', 'main')
+                .withArgs('release-please-config.json', 'next')
                 .resolves((0, helpers_1.buildGitHubFileContent)(fixturesPath, 'manifest/config/plugins.json'))
-                .withArgs('.release-please-manifest.json', 'main')
+                .withArgs('.release-please-manifest.json', 'next')
                 .resolves((0, helpers_1.buildGitHubFileContent)(fixturesPath, 'manifest/versions/versions.json'));
-            const manifest = await manifest_1.Manifest.fromManifest(github, github.repository.defaultBranch);
+            const manifest = await manifest_1.Manifest.fromManifest(github, github.repository.defaultBranch, undefined, undefined, { changesBranch: 'next' });
             (0, chai_1.expect)(manifest.plugins).lengthOf(2);
             (0, chai_1.expect)(manifest.plugins[0]).instanceOf(node_workspace_1.NodeWorkspace);
             (0, chai_1.expect)(manifest.plugins[1]).instanceOf(cargo_workspace_1.CargoWorkspace);
@@ -290,11 +301,11 @@ function pullRequestBody(path) {
         (0, mocha_1.it)('should build complex plugins from manifest', async () => {
             const getFileContentsStub = sandbox.stub(github, 'getFileContentsOnBranch');
             getFileContentsStub
-                .withArgs('release-please-config.json', 'main')
+                .withArgs('release-please-config.json', 'next')
                 .resolves((0, helpers_1.buildGitHubFileContent)(fixturesPath, 'manifest/config/complex-plugins.json'))
-                .withArgs('.release-please-manifest.json', 'main')
+                .withArgs('.release-please-manifest.json', 'next')
                 .resolves((0, helpers_1.buildGitHubFileContent)(fixturesPath, 'manifest/versions/versions.json'));
-            const manifest = await manifest_1.Manifest.fromManifest(github, github.repository.defaultBranch);
+            const manifest = await manifest_1.Manifest.fromManifest(github, github.repository.defaultBranch, undefined, undefined, { changesBranch: 'next' });
             (0, chai_1.expect)(manifest.plugins).lengthOf(1);
             (0, chai_1.expect)(manifest.plugins[0]).instanceOf(linked_versions_1.LinkedVersions);
             const plugin = manifest.plugins[0];
@@ -304,11 +315,11 @@ function pullRequestBody(path) {
         (0, mocha_1.it)('should build maven-workspace from manifest', async () => {
             const getFileContentsStub = sandbox.stub(github, 'getFileContentsOnBranch');
             getFileContentsStub
-                .withArgs('release-please-config.json', 'main')
+                .withArgs('release-please-config.json', 'next')
                 .resolves((0, helpers_1.buildGitHubFileContent)(fixturesPath, 'manifest/config/maven-workspace-plugins.json'))
-                .withArgs('.release-please-manifest.json', 'main')
+                .withArgs('.release-please-manifest.json', 'next')
                 .resolves((0, helpers_1.buildGitHubFileContent)(fixturesPath, 'manifest/versions/versions.json'));
-            const manifest = await manifest_1.Manifest.fromManifest(github, github.repository.defaultBranch);
+            const manifest = await manifest_1.Manifest.fromManifest(github, github.repository.defaultBranch, undefined, undefined, { changesBranch: 'next' });
             (0, chai_1.expect)(manifest.plugins).lengthOf(1);
             (0, chai_1.expect)(manifest.plugins[0]).instanceOf(maven_workspace_1.MavenWorkspace);
             const plugin = manifest.plugins[0];
@@ -317,89 +328,89 @@ function pullRequestBody(path) {
         (0, mocha_1.it)('should configure search depth from manifest', async () => {
             const getFileContentsStub = sandbox.stub(github, 'getFileContentsOnBranch');
             getFileContentsStub
-                .withArgs('release-please-config.json', 'main')
+                .withArgs('release-please-config.json', 'next')
                 .resolves((0, helpers_1.buildGitHubFileContent)(fixturesPath, 'manifest/config/search-depth.json'))
-                .withArgs('.release-please-manifest.json', 'main')
+                .withArgs('.release-please-manifest.json', 'next')
                 .resolves((0, helpers_1.buildGitHubFileContent)(fixturesPath, 'manifest/versions/versions.json'));
-            const manifest = await manifest_1.Manifest.fromManifest(github, github.repository.defaultBranch);
+            const manifest = await manifest_1.Manifest.fromManifest(github, github.repository.defaultBranch, undefined, undefined, { changesBranch: 'next' });
             (0, chai_1.expect)(manifest.releaseSearchDepth).to.eql(10);
             (0, chai_1.expect)(manifest.commitSearchDepth).to.eql(50);
         });
         (0, mocha_1.it)('should read changelog host from manifest', async () => {
             const getFileContentsStub = sandbox.stub(github, 'getFileContentsOnBranch');
             getFileContentsStub
-                .withArgs('release-please-config.json', 'main')
+                .withArgs('release-please-config.json', 'next')
                 .resolves((0, helpers_1.buildGitHubFileContent)(fixturesPath, 'manifest/config/changelog-host.json'))
-                .withArgs('.release-please-manifest.json', 'main')
+                .withArgs('.release-please-manifest.json', 'next')
                 .resolves((0, helpers_1.buildGitHubFileContent)(fixturesPath, 'manifest/versions/versions.json'));
-            const manifest = await manifest_1.Manifest.fromManifest(github, github.repository.defaultBranch);
+            const manifest = await manifest_1.Manifest.fromManifest(github, github.repository.defaultBranch, undefined, undefined, { changesBranch: 'next' });
             (0, chai_1.expect)(manifest.repositoryConfig['.'].changelogHost).to.eql('https://example.com');
             (0, chai_1.expect)(manifest.repositoryConfig['packages/bot-config-utils'].changelogHost).to.eql('https://override.example.com');
         });
         (0, mocha_1.it)('should read changelog type from manifest', async () => {
             const getFileContentsStub = sandbox.stub(github, 'getFileContentsOnBranch');
             getFileContentsStub
-                .withArgs('release-please-config.json', 'main')
+                .withArgs('release-please-config.json', 'next')
                 .resolves((0, helpers_1.buildGitHubFileContent)(fixturesPath, 'manifest/config/changelog-type.json'))
-                .withArgs('.release-please-manifest.json', 'main')
+                .withArgs('.release-please-manifest.json', 'next')
                 .resolves((0, helpers_1.buildGitHubFileContent)(fixturesPath, 'manifest/versions/versions.json'));
-            const manifest = await manifest_1.Manifest.fromManifest(github, github.repository.defaultBranch);
+            const manifest = await manifest_1.Manifest.fromManifest(github, github.repository.defaultBranch, undefined, undefined, { changesBranch: 'next' });
             (0, chai_1.expect)(manifest.repositoryConfig['.'].changelogType).to.eql('github');
             (0, chai_1.expect)(manifest.repositoryConfig['packages/bot-config-utils'].changelogType).to.eql('default');
         });
         (0, mocha_1.it)('should read changelog path from manifest', async () => {
             const getFileContentsStub = sandbox.stub(github, 'getFileContentsOnBranch');
             getFileContentsStub
-                .withArgs('release-please-config.json', 'main')
+                .withArgs('release-please-config.json', 'next')
                 .resolves((0, helpers_1.buildGitHubFileContent)(fixturesPath, 'manifest/config/changelog-path.json'))
-                .withArgs('.release-please-manifest.json', 'main')
+                .withArgs('.release-please-manifest.json', 'next')
                 .resolves((0, helpers_1.buildGitHubFileContent)(fixturesPath, 'manifest/versions/versions.json'));
-            const manifest = await manifest_1.Manifest.fromManifest(github, github.repository.defaultBranch);
+            const manifest = await manifest_1.Manifest.fromManifest(github, github.repository.defaultBranch, undefined, undefined, { changesBranch: 'next' });
             (0, chai_1.expect)(manifest.repositoryConfig['.'].changelogPath).to.eql('docs/foo.md');
             (0, chai_1.expect)(manifest.repositoryConfig['packages/bot-config-utils'].changelogPath).to.eql('docs/bar.md');
         });
         (0, mocha_1.it)('should read versioning type from manifest', async () => {
             const getFileContentsStub = sandbox.stub(github, 'getFileContentsOnBranch');
             getFileContentsStub
-                .withArgs('release-please-config.json', 'main')
+                .withArgs('release-please-config.json', 'next')
                 .resolves((0, helpers_1.buildGitHubFileContent)(fixturesPath, 'manifest/config/versioning.json'))
-                .withArgs('.release-please-manifest.json', 'main')
+                .withArgs('.release-please-manifest.json', 'next')
                 .resolves((0, helpers_1.buildGitHubFileContent)(fixturesPath, 'manifest/versions/versions.json'));
-            const manifest = await manifest_1.Manifest.fromManifest(github, github.repository.defaultBranch);
+            const manifest = await manifest_1.Manifest.fromManifest(github, github.repository.defaultBranch, undefined, undefined, { changesBranch: 'next' });
             (0, chai_1.expect)(manifest.repositoryConfig['.'].versioning).to.eql('always-bump-patch');
             (0, chai_1.expect)(manifest.repositoryConfig['packages/bot-config-utils'].versioning).to.eql('default');
         });
         (0, mocha_1.it)('should throw a configuration error for a missing manifest config', async () => {
             const getFileContentsStub = sandbox.stub(github, 'getFileContentsOnBranch');
             getFileContentsStub
-                .withArgs('release-please-config.json', 'main')
+                .withArgs('release-please-config.json', 'next')
                 .rejects(new errors_1.FileNotFoundError('.release-please-config.json'))
-                .withArgs('.release-please-manifest.json', 'main')
+                .withArgs('.release-please-manifest.json', 'next')
                 .resolves((0, helpers_1.buildGitHubFileContent)(fixturesPath, 'manifest/versions/versions.json'));
             await assert.rejects(async () => {
-                await manifest_1.Manifest.fromManifest(github, github.repository.defaultBranch);
+                await manifest_1.Manifest.fromManifest(github, github.repository.defaultBranch, undefined, undefined, { changesBranch: 'next' });
             }, errors_1.ConfigurationError);
         });
         (0, mocha_1.it)('should throw a configuration error for a missing manifest versions file', async () => {
             const getFileContentsStub = sandbox.stub(github, 'getFileContentsOnBranch');
             getFileContentsStub
-                .withArgs('release-please-config.json', 'main')
+                .withArgs('release-please-config.json', 'next')
                 .resolves((0, helpers_1.buildGitHubFileContent)(fixturesPath, 'manifest/config/config.json'))
-                .withArgs('.release-please-manifest.json', 'main')
+                .withArgs('.release-please-manifest.json', 'next')
                 .rejects(new errors_1.FileNotFoundError('.release-please-manifest.json'));
             await assert.rejects(async () => {
-                await manifest_1.Manifest.fromManifest(github, github.repository.defaultBranch);
+                await manifest_1.Manifest.fromManifest(github, github.repository.defaultBranch, undefined, undefined, { changesBranch: 'next' });
             }, errors_1.ConfigurationError);
         });
         (0, mocha_1.it)('should throw a configuration error for a malformed manifest config', async () => {
             const getFileContentsStub = sandbox.stub(github, 'getFileContentsOnBranch');
             getFileContentsStub
-                .withArgs('release-please-config.json', 'main')
+                .withArgs('release-please-config.json', 'next')
                 .resolves((0, helpers_1.buildGitHubFileRaw)('{"malformed json"'))
-                .withArgs('.release-please-manifest.json', 'main')
+                .withArgs('.release-please-manifest.json', 'next')
                 .resolves((0, helpers_1.buildGitHubFileContent)(fixturesPath, 'manifest/versions/versions.json'));
             await assert.rejects(async () => {
-                await manifest_1.Manifest.fromManifest(github, github.repository.defaultBranch);
+                await manifest_1.Manifest.fromManifest(github, github.repository.defaultBranch, undefined, undefined, { changesBranch: 'next' });
             }, e => {
                 console.log(e);
                 return e instanceof errors_1.ConfigurationError && e.message.includes('parse');
@@ -408,12 +419,12 @@ function pullRequestBody(path) {
         (0, mocha_1.it)('should throw a configuration error for a malformed manifest config', async () => {
             const getFileContentsStub = sandbox.stub(github, 'getFileContentsOnBranch');
             getFileContentsStub
-                .withArgs('release-please-config.json', 'main')
+                .withArgs('release-please-config.json', 'next')
                 .resolves((0, helpers_1.buildGitHubFileContent)(fixturesPath, 'manifest/config/config.json'))
-                .withArgs('.release-please-manifest.json', 'main')
+                .withArgs('.release-please-manifest.json', 'next')
                 .resolves((0, helpers_1.buildGitHubFileRaw)('{"malformed json"'));
             await assert.rejects(async () => {
-                await manifest_1.Manifest.fromManifest(github, github.repository.defaultBranch);
+                await manifest_1.Manifest.fromManifest(github, github.repository.defaultBranch, undefined, undefined, { changesBranch: 'next' });
             }, e => {
                 console.log(e);
                 return e instanceof errors_1.ConfigurationError && e.message.includes('parse');
@@ -1030,11 +1041,11 @@ function pullRequestBody(path) {
                 (0, helpers_1.mockTags)(sandbox, github, []);
                 const getFileContentsStub = sandbox.stub(github, 'getFileContentsOnBranch');
                 getFileContentsStub
-                    .withArgs('release-please-config.json', 'main')
+                    .withArgs('release-please-config.json', 'next')
                     .resolves((0, helpers_1.buildGitHubFileContent)(fixturesPath, 'manifest/config/simple.json'))
-                    .withArgs('non/default/path/manifest.json', 'main')
+                    .withArgs('non/default/path/manifest.json', 'next')
                     .resolves((0, helpers_1.buildGitHubFileContent)(fixturesPath, 'manifest/versions/simple.json'));
-                const manifest = await manifest_1.Manifest.fromManifest(github, 'main', undefined, 'non/default/path/manifest.json');
+                const manifest = await manifest_1.Manifest.fromManifest(github, 'main', undefined, 'non/default/path/manifest.json', { changesBranch: 'next' });
                 const pullRequests = await manifest.buildPullRequests([], []);
                 (0, chai_1.expect)(pullRequests).lengthOf(1);
                 const pullRequest = pullRequests[0];
@@ -1407,11 +1418,11 @@ function pullRequestBody(path) {
             };
             sandbox
                 .stub(github, 'getFileContentsOnBranch')
-                .withArgs('release-please-config.json', 'main')
+                .withArgs('release-please-config.json', 'next')
                 .resolves((0, helpers_1.buildGitHubFileRaw)(JSON.stringify(config)))
-                .withArgs('.release-please-manifest.json', 'main')
+                .withArgs('.release-please-manifest.json', 'next')
                 .resolves((0, helpers_1.buildGitHubFileRaw)(JSON.stringify(versions)));
-            const manifest = await manifest_1.Manifest.fromManifest(github, 'main');
+            const manifest = await manifest_1.Manifest.fromManifest(github, 'main', undefined, undefined, { changesBranch: 'next' });
             const pullRequests = await manifest.buildPullRequests([], []);
             (0, chai_1.expect)(pullRequests).lengthOf(2);
             (0, chai_1.expect)((_a = pullRequests[0].version) === null || _a === void 0 ? void 0 : _a.toString()).to.eql('1.0.1');
@@ -1500,11 +1511,11 @@ function pullRequestBody(path) {
             };
             sandbox
                 .stub(github, 'getFileContentsOnBranch')
-                .withArgs('release-please-config.json', 'main')
+                .withArgs('release-please-config.json', 'next')
                 .resolves((0, helpers_1.buildGitHubFileRaw)(JSON.stringify(config)))
-                .withArgs('.release-please-manifest.json', 'main')
+                .withArgs('.release-please-manifest.json', 'next')
                 .resolves((0, helpers_1.buildGitHubFileRaw)(JSON.stringify(versions)));
-            const manifest = await manifest_1.Manifest.fromManifest(github, 'main');
+            const manifest = await manifest_1.Manifest.fromManifest(github, 'main', undefined, undefined, { changesBranch: 'next' });
             const pullRequests = await manifest.buildPullRequests([], []);
             (0, chai_1.expect)(pullRequests).lengthOf(2);
             (0, chai_1.expect)((_a = pullRequests[0].version) === null || _a === void 0 ? void 0 : _a.toString()).to.eql('3.3.3');
@@ -1644,9 +1655,9 @@ function pullRequestBody(path) {
             };
             const getFileContentsOnBranchStub = sandbox
                 .stub(github, 'getFileContentsOnBranch')
-                .withArgs('release-please-config.json', 'main')
+                .withArgs('release-please-config.json', 'next')
                 .resolves((0, helpers_1.buildGitHubFileRaw)(JSON.stringify(config)))
-                .withArgs('.release-please-manifest.json', 'main')
+                .withArgs('.release-please-manifest.json', 'next')
                 .resolves((0, helpers_1.buildGitHubFileRaw)(JSON.stringify({
                 'path/a': '1.0.0',
                 'path/b': '2.0.0',
@@ -1821,9 +1832,9 @@ version = "3.0.0"
             };
             const getFileContentsOnBranchStub = sandbox
                 .stub(github, 'getFileContentsOnBranch')
-                .withArgs('release-please-config.json', 'main')
+                .withArgs('release-please-config.json', 'next')
                 .resolves((0, helpers_1.buildGitHubFileRaw)(JSON.stringify(config)))
-                .withArgs('.release-please-manifest.json', 'main')
+                .withArgs('.release-please-manifest.json', 'next')
                 .resolves((0, helpers_1.buildGitHubFileRaw)(JSON.stringify({
                 'path/a': '1.0.0',
                 'path/b': '0.2.3',
@@ -1923,9 +1934,9 @@ version = "3.0.0"
             };
             const getFileContentsOnBranchStub = sandbox
                 .stub(github, 'getFileContentsOnBranch')
-                .withArgs('release-please-config.json', 'main')
+                .withArgs('release-please-config.json', 'next')
                 .resolves((0, helpers_1.buildGitHubFileRaw)(JSON.stringify(config)))
-                .withArgs('.release-please-manifest.json', 'main')
+                .withArgs('.release-please-manifest.json', 'next')
                 .resolves((0, helpers_1.buildGitHubFileRaw)(JSON.stringify({
                 'path/a': '1.0.0',
                 'path/b': '0.2.3',
@@ -2034,9 +2045,9 @@ version = "3.0.0"
             };
             const getFileContentsOnBranchStub = sandbox
                 .stub(github, 'getFileContentsOnBranch')
-                .withArgs('release-please-config.json', 'main')
+                .withArgs('release-please-config.json', 'next')
                 .resolves((0, helpers_1.buildGitHubFileRaw)(JSON.stringify(config)))
-                .withArgs('.release-please-manifest.json', 'main')
+                .withArgs('.release-please-manifest.json', 'next')
                 .resolves((0, helpers_1.buildGitHubFileRaw)(JSON.stringify({
                 'path/a': '1.0.0',
                 'path/b': '0.2.3',
@@ -2113,14 +2124,14 @@ version = "3.0.0"
             };
             sandbox
                 .stub(github, 'getFileContentsOnBranch')
-                .withArgs('release-please-config.json', 'main')
+                .withArgs('release-please-config.json', 'next')
                 .resolves((0, helpers_1.buildGitHubFileRaw)(JSON.stringify(config)))
-                .withArgs('.release-please-manifest.json', 'main')
+                .withArgs('.release-please-manifest.json', 'next')
                 .resolves((0, helpers_1.buildGitHubFileRaw)(JSON.stringify(versions)));
-            const manifest = await manifest_1.Manifest.fromManifest(github, 'main');
+            const manifest = await manifest_1.Manifest.fromManifest(github, 'main', undefined, undefined, { changesBranch: 'next' });
             const pullRequests = await manifest.buildPullRequests([], []);
             (0, chai_1.expect)(pullRequests).lengthOf(1);
-            (0, chai_1.expect)((_a = pullRequests[0].version) === null || _a === void 0 ? void 0 : _a.toString()).to.eql('1.0.0');
+            (0, chai_1.expect)((_a = pullRequests[0].version) === null || _a === void 0 ? void 0 : _a.toString()).to.eql('0.0.1');
         });
         (0, mocha_1.it)('should allow specifying a last release sha', async () => {
             var _a;
@@ -2206,14 +2217,14 @@ version = "3.0.0"
             };
             sandbox
                 .stub(github, 'getFileContentsOnBranch')
-                .withArgs('release-please-config.json', 'main')
+                .withArgs('release-please-config.json', 'next')
                 .resolves((0, helpers_1.buildGitHubFileRaw)(JSON.stringify(config)))
-                .withArgs('.release-please-manifest.json', 'main')
+                .withArgs('.release-please-manifest.json', 'next')
                 .resolves((0, helpers_1.buildGitHubFileRaw)(JSON.stringify(versions)));
-            const manifest = await manifest_1.Manifest.fromManifest(github, 'main');
+            const manifest = await manifest_1.Manifest.fromManifest(github, 'main', undefined, undefined, { changesBranch: 'next' });
             const pullRequests = await manifest.buildPullRequests([], []);
             (0, chai_1.expect)(pullRequests).lengthOf(1);
-            (0, chai_1.expect)((_a = pullRequests[0].version) === null || _a === void 0 ? void 0 : _a.toString()).to.eql('1.0.0');
+            (0, chai_1.expect)((_a = pullRequests[0].version) === null || _a === void 0 ? void 0 : _a.toString()).to.eql('0.0.1');
         });
         (0, mocha_1.it)('should allow customizing pull request title with root package', async () => {
             (0, helpers_1.mockReleases)(sandbox, github, [
@@ -2442,11 +2453,11 @@ version = "3.0.0"
             };
             sandbox
                 .stub(github, 'getFileContentsOnBranch')
-                .withArgs('release-please-config.json', 'main')
+                .withArgs('release-please-config.json', 'next')
                 .resolves((0, helpers_1.buildGitHubFileRaw)(JSON.stringify(config)))
-                .withArgs('.release-please-manifest.json', 'main')
+                .withArgs('.release-please-manifest.json', 'next')
                 .resolves((0, helpers_1.buildGitHubFileRaw)(JSON.stringify(versions)));
-            const manifest = await manifest_1.Manifest.fromManifest(github, 'main');
+            const manifest = await manifest_1.Manifest.fromManifest(github, 'main', undefined, undefined, { changesBranch: 'next' });
             const pullRequests = await manifest.buildPullRequests([], []);
             (0, chai_1.expect)(pullRequests).lengthOf(1);
             (0, chai_1.expect)(pullRequests[0].body.releaseData).lengthOf(1);
