@@ -191,7 +191,7 @@ export declare const SNOOZE_LABEL = "autorelease: snooze";
 export declare const DEFAULT_PRERELEASE_LABELS: string[];
 export declare const DEFAULT_CUSTOM_VERSION_LABEL = "autorelease: custom version";
 export declare const MANIFEST_PULL_REQUEST_TITLE_PATTERN = "chore: release ${branch}";
-interface CreatedRelease extends GitHubRelease {
+export interface CreatedRelease extends GitHubRelease {
     id: number;
     path: string;
     version: string;
