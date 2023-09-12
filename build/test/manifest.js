@@ -4180,8 +4180,8 @@ version = "3.0.0"
                     sha: 'abc123',
                 },
             ]);
-            const getFileContentsStub = sandbox.stub(github, 'getFileContentsOnBranch');
-            getFileContentsStub
+            const getFileContentsStub = sandbox
+                .stub(github, 'getFileContentsOnBranch')
                 .withArgs('package.json', 'main')
                 .resolves((0, helpers_1.buildGitHubFileRaw)(JSON.stringify({ name: '@google-cloud/release-brancher' })));
             const manifest = new manifest_1.Manifest(github, 'main', {
@@ -4202,6 +4202,7 @@ version = "3.0.0"
             (0, chai_1.expect)(releases[0].name).to.eql('release-brancher: v1.3.1');
             (0, chai_1.expect)(releases[0].draft).to.be.undefined;
             (0, chai_1.expect)(releases[0].prerelease).to.be.undefined;
+            sinon.assert.calledOnce(getFileContentsStub);
         });
         (0, mocha_1.it)('should handle a multiple manifest release', async () => {
             mockPullRequests(github, [], [
@@ -4894,6 +4895,9 @@ version = "3.0.0"
                 .resolves();
             const lockBranchStub = sandbox.stub(github, 'lockBranch').resolves();
             const unlockBranchStub = sandbox.stub(github, 'unlockBranch').resolves();
+            const waitForReleaseToBeListedStub = sandbox
+                .stub(github, 'waitForReleaseToBeListed')
+                .resolves();
             const manifest = new manifest_1.Manifest(github, 'main', {
                 '.': {
                     releaseType: 'node',
@@ -4910,6 +4914,7 @@ version = "3.0.0"
             sinon.assert.calledOnce(commentStub);
             sinon.assert.calledOnceWithExactly(addLabelsStub, ['autorelease: tagged'], 1234);
             sinon.assert.calledOnceWithExactly(removeLabelsStub, ['autorelease: pending'], 1234);
+            sinon.assert.calledOnceWithExactly(waitForReleaseToBeListedStub, sinon.match.has('tagName', 'release-brancher-v1.3.1'));
             sinon.assert.calledOnce(lockBranchStub);
             sinon.assert.calledOnce(unlockBranchStub);
         });
@@ -4931,8 +4936,8 @@ version = "3.0.0"
                     sha: 'abc123',
                 },
             ]);
-            const getFileContentsStub = sandbox.stub(github, 'getFileContentsOnBranch');
-            getFileContentsStub
+            const getFileContentsStub = sandbox
+                .stub(github, 'getFileContentsOnBranch')
                 .withArgs('packages/bot-config-utils/package.json', 'main')
                 .resolves((0, helpers_1.buildGitHubFileRaw)(JSON.stringify({ name: '@google-automations/bot-config-utils' })))
                 .withArgs('packages/label-utils/package.json', 'main')
@@ -4951,6 +4956,9 @@ version = "3.0.0"
             const addLabelsStub = sandbox.stub(github, 'addIssueLabels').resolves();
             const removeLabelsStub = sandbox
                 .stub(github, 'removeIssueLabels')
+                .resolves();
+            const waitForReleaseToBeListedStub = sandbox
+                .stub(github, 'waitForReleaseToBeListed')
                 .resolves();
             const lockBranchStub = sandbox.stub(github, 'lockBranch').resolves();
             const unlockBranchStub = sandbox.stub(github, 'unlockBranch').resolves();
@@ -4994,8 +5002,13 @@ version = "3.0.0"
             sinon.assert.callCount(commentStub, 4);
             sinon.assert.calledOnceWithExactly(addLabelsStub, ['autorelease: tagged'], 1234);
             sinon.assert.calledOnceWithExactly(removeLabelsStub, ['autorelease: pending'], 1234);
+            sinon.assert.calledWith(waitForReleaseToBeListedStub, sinon.match.has('tagName', 'bot-config-utils-v3.2.0'));
+            sinon.assert.calledWith(waitForReleaseToBeListedStub, sinon.match.has('tagName', 'label-utils-v1.1.0'));
+            sinon.assert.calledWith(waitForReleaseToBeListedStub, sinon.match.has('tagName', 'object-selector-v1.1.0'));
+            sinon.assert.calledWith(waitForReleaseToBeListedStub, sinon.match.has('tagName', 'datastore-lock-v2.1.0'));
             sinon.assert.calledOnce(lockBranchStub);
             sinon.assert.calledOnce(unlockBranchStub);
+            sinon.assert.calledOnce(getFileContentsStub);
         });
         (0, mocha_1.it)('should handle a single standalone release', async () => {
             mockPullRequests(github, [], [
@@ -5027,6 +5040,9 @@ version = "3.0.0"
                 { id: 123456, sha: 'abc123', tagName: 'v3.2.7' },
             ]);
             const commentStub = sandbox.stub(github, 'commentOnIssue').resolves();
+            const waitForReleaseToBeListedStub = sandbox
+                .stub(github, 'waitForReleaseToBeListed')
+                .resolves();
             const releases = await manifest.createReleases();
             (0, chai_1.expect)(releases).lengthOf(1);
             (0, chai_1.expect)(releases[0].tagName).to.eql('v3.2.7');
@@ -5036,6 +5052,7 @@ version = "3.0.0"
             sinon.assert.calledOnce(commentStub);
             sinon.assert.calledOnceWithExactly(addLabelsStub, ['autorelease: tagged'], 1234);
             sinon.assert.calledOnceWithExactly(removeLabelsStub, ['autorelease: pending'], 1234);
+            sinon.assert.calledWith(waitForReleaseToBeListedStub, sinon.match.has('tagName', 'v3.2.7'));
             sinon.assert.calledOnce(lockBranchStub);
             sinon.assert.calledOnce(unlockBranchStub);
         });
@@ -5064,6 +5081,9 @@ version = "3.0.0"
             const removeLabelsStub = sandbox
                 .stub(github, 'removeIssueLabels')
                 .resolves();
+            const waitForReleaseToBeListedStub = sandbox
+                .stub(github, 'waitForReleaseToBeListed')
+                .resolves();
             const lockBranchStub = sandbox.stub(github, 'lockBranch').resolves();
             const unlockBranchStub = sandbox.stub(github, 'unlockBranch').resolves();
             const manifest = new manifest_1.Manifest(github, 'main', {
@@ -5085,6 +5105,7 @@ version = "3.0.0"
             sinon.assert.calledOnce(commentStub);
             sinon.assert.calledOnceWithExactly(addLabelsStub, ['some-tagged-label'], 1234);
             sinon.assert.calledOnceWithExactly(removeLabelsStub, ['some-pull-request-label'], 1234);
+            sinon.assert.calledWith(waitForReleaseToBeListedStub, sinon.match.has('tagName', 'release-brancher-v1.3.1'));
             sinon.assert.calledOnce(lockBranchStub);
             sinon.assert.calledOnce(unlockBranchStub);
         });
@@ -5118,6 +5139,9 @@ version = "3.0.0"
             const removeLabelsStub = sandbox
                 .stub(github, 'removeIssueLabels')
                 .resolves();
+            const waitForReleaseToBeListedStub = sandbox
+                .stub(github, 'waitForReleaseToBeListed')
+                .resolves();
             const lockBranchStub = sandbox.stub(github, 'lockBranch').resolves();
             const unlockBranchStub = sandbox.stub(github, 'unlockBranch').resolves();
             const manifest = new manifest_1.Manifest(github, 'main', {
@@ -5141,6 +5165,7 @@ version = "3.0.0"
             sinon.assert.calledOnce(commentStub);
             sinon.assert.calledOnceWithExactly(addLabelsStub, ['autorelease: tagged'], 1234);
             sinon.assert.calledOnceWithExactly(removeLabelsStub, ['autorelease: pending'], 1234);
+            sinon.assert.calledWith(waitForReleaseToBeListedStub, sinon.match.has('tagName', 'release-brancher-v1.3.1'));
             sinon.assert.calledOnce(lockBranchStub);
             sinon.assert.calledOnce(unlockBranchStub);
         });
@@ -5174,6 +5199,9 @@ version = "3.0.0"
             const removeLabelsStub = sandbox
                 .stub(github, 'removeIssueLabels')
                 .resolves();
+            const waitForReleaseToBeListedStub = sandbox
+                .stub(github, 'waitForReleaseToBeListed')
+                .resolves();
             const lockBranchStub = sandbox.stub(github, 'lockBranch').resolves();
             const unlockBranchStub = sandbox.stub(github, 'unlockBranch').resolves();
             const manifest = new manifest_1.Manifest(github, 'main', {
@@ -5197,6 +5225,7 @@ version = "3.0.0"
             sinon.assert.calledOnce(commentStub);
             sinon.assert.calledOnceWithExactly(addLabelsStub, ['autorelease: tagged', 'autorelease: pre-release'], 1234);
             sinon.assert.calledOnceWithExactly(removeLabelsStub, ['autorelease: pending'], 1234);
+            sinon.assert.calledWith(waitForReleaseToBeListedStub, sinon.match.has('tagName', 'release-brancher-v1.3.1-beta1'));
             sinon.assert.calledOnce(lockBranchStub);
             sinon.assert.calledOnce(unlockBranchStub);
         });
@@ -5230,6 +5259,9 @@ version = "3.0.0"
             const removeLabelsStub = sandbox
                 .stub(github, 'removeIssueLabels')
                 .resolves();
+            const waitForReleaseToBeListedStub = sandbox
+                .stub(github, 'waitForReleaseToBeListed')
+                .resolves();
             const lockBranchStub = sandbox.stub(github, 'lockBranch').resolves();
             const unlockBranchStub = sandbox.stub(github, 'unlockBranch').resolves();
             const manifest = new manifest_1.Manifest(github, 'main', {
@@ -5253,6 +5285,7 @@ version = "3.0.0"
             sinon.assert.calledOnce(commentStub);
             sinon.assert.calledOnceWithExactly(addLabelsStub, ['autorelease: tagged'], 1234);
             sinon.assert.calledOnceWithExactly(removeLabelsStub, ['autorelease: pending'], 1234);
+            sinon.assert.calledWith(waitForReleaseToBeListedStub, sinon.match.has('tagName', 'release-brancher-v1.3.1'));
             sinon.assert.calledOnce(lockBranchStub);
             sinon.assert.calledOnce(unlockBranchStub);
         });
@@ -5286,6 +5319,9 @@ version = "3.0.0"
             const removeLabelsStub = sandbox
                 .stub(github, 'removeIssueLabels')
                 .resolves();
+            const waitForReleaseToBeListedStub = sandbox
+                .stub(github, 'waitForReleaseToBeListed')
+                .resolves();
             const lockBranchStub = sandbox.stub(github, 'lockBranch').resolves();
             const unlockBranchStub = sandbox.stub(github, 'unlockBranch').resolves();
             const manifest = new manifest_1.Manifest(github, 'main', {
@@ -5308,6 +5344,7 @@ version = "3.0.0"
             sinon.assert.calledOnce(commentStub);
             sinon.assert.calledOnceWithExactly(addLabelsStub, ['autorelease: tagged', 'autorelease: pre-release'], 1234);
             sinon.assert.calledOnceWithExactly(removeLabelsStub, ['autorelease: pending'], 1234);
+            sinon.assert.calledWith(waitForReleaseToBeListedStub, sinon.match.has('tagName', 'release-brancher-v1.3.1'));
             sinon.assert.calledOnce(lockBranchStub);
             sinon.assert.calledOnce(unlockBranchStub);
         });
@@ -5355,6 +5392,9 @@ version = "3.0.0"
             const removeLabelsStub = sandbox
                 .stub(github, 'removeIssueLabels')
                 .resolves();
+            const waitForReleaseToBeListedStub = sandbox
+                .stub(github, 'waitForReleaseToBeListed')
+                .resolves();
             const lockBranchStub = sandbox.stub(github, 'lockBranch').resolves();
             const unlockBranchStub = sandbox.stub(github, 'unlockBranch').resolves();
             const manifest = new manifest_1.Manifest(github, 'main', {
@@ -5393,6 +5433,9 @@ version = "3.0.0"
             sinon.assert.callCount(commentStub, 3);
             sinon.assert.calledOnceWithExactly(addLabelsStub, ['autorelease: tagged'], 1234);
             sinon.assert.calledOnceWithExactly(removeLabelsStub, ['autorelease: pending'], 1234);
+            sinon.assert.calledWith(waitForReleaseToBeListedStub, sinon.match.has('tagName', 'label-utils-v1.1.0'));
+            sinon.assert.calledWith(waitForReleaseToBeListedStub, sinon.match.has('tagName', 'object-selector-v1.1.0'));
+            sinon.assert.calledWith(waitForReleaseToBeListedStub, sinon.match.has('tagName', 'datastore-lock-v2.1.0'));
             sinon.assert.calledOnce(lockBranchStub);
             sinon.assert.calledOnce(unlockBranchStub);
         });
@@ -5509,6 +5552,9 @@ version = "3.0.0"
             const removeLabelsStub = sandbox
                 .stub(github, 'removeIssueLabels')
                 .resolves();
+            const waitForReleaseToBeListedStub = sandbox
+                .stub(github, 'waitForReleaseToBeListed')
+                .resolves();
             const unlockBranchStub = sandbox.stub(github, 'unlockBranch').resolves();
             // make the lock branch fail with the relevant permission error
             sandbox.replace(github, 'lockBranch', async () => {
@@ -5551,6 +5597,7 @@ version = "3.0.0"
             sinon.assert.calledOnce(commentStub);
             sinon.assert.calledOnceWithExactly(addLabelsStub, ['autorelease: tagged'], 1234);
             sinon.assert.calledOnceWithExactly(removeLabelsStub, ['autorelease: pending'], 1234);
+            sinon.assert.calledWith(waitForReleaseToBeListedStub, sinon.match.has('tagName', 'release-brancher-v1.3.1'));
             // ensure we don't try to update permissions rules again given the lock failed
             sinon.assert.notCalled(unlockBranchStub);
         });
@@ -5578,6 +5625,9 @@ version = "3.0.0"
             const addLabelsStub = sandbox.stub(github, 'addIssueLabels').resolves();
             const removeLabelsStub = sandbox
                 .stub(github, 'removeIssueLabels')
+                .resolves();
+            const waitForReleaseToBeListedStub = sandbox
+                .stub(github, 'waitForReleaseToBeListed')
                 .resolves();
             const unlockBranchStub = sandbox.stub(github, 'unlockBranch').resolves();
             // make the lock branch fail with the relevant permission error
@@ -5619,6 +5669,7 @@ version = "3.0.0"
             sinon.assert.calledOnce(commentStub);
             sinon.assert.calledOnceWithExactly(addLabelsStub, ['autorelease: tagged'], 1234);
             sinon.assert.calledOnceWithExactly(removeLabelsStub, ['autorelease: pending'], 1234);
+            sinon.assert.calledWith(waitForReleaseToBeListedStub, sinon.match.has('tagName', 'release-brancher-v1.3.1'));
             // ensure we don't try to update permissions rules again given the lock failed
             sinon.assert.notCalled(unlockBranchStub);
         });
@@ -5628,7 +5679,7 @@ version = "3.0.0"
                     headBranchName: 'release-please--branches--main--changes--next',
                     baseBranchName: 'main',
                     number: 1234,
-                    title: 'chore: release main',
+                    title: 'chore: release main v1.3.1',
                     body: pullRequestBody('release-notes/single-manifest.txt'),
                     labels: ['autorelease: pending'],
                     files: [],
@@ -5646,6 +5697,12 @@ version = "3.0.0"
             const addLabelsStub = sandbox.stub(github, 'addIssueLabels').resolves();
             const removeLabelsStub = sandbox
                 .stub(github, 'removeIssueLabels')
+                .resolves();
+            const waitForReleaseToBeListedStub = sandbox
+                .stub(github, 'waitForReleaseToBeListed')
+                .resolves();
+            const waitForFileToBeUpToDateOnBranch = sandbox
+                .stub(github, 'waitForFileToBeUpToDateOnBranch')
                 .resolves();
             const lockBranchStub = sandbox.stub(github, 'lockBranch').resolves();
             const unlockBranchStub = sandbox.stub(github, 'unlockBranch').resolves();
@@ -5673,6 +5730,12 @@ version = "3.0.0"
             sinon.assert.calledOnce(commentStub);
             sinon.assert.calledOnceWithExactly(addLabelsStub, ['autorelease: tagged'], 1234);
             sinon.assert.calledOnceWithExactly(removeLabelsStub, ['autorelease: pending'], 1234);
+            sinon.assert.calledWith(waitForReleaseToBeListedStub, sinon.match.has('tagName', 'release-brancher-v1.3.1'));
+            sinon.assert.calledWith(waitForFileToBeUpToDateOnBranch, {
+                branch: 'next',
+                filePath: '.release-please-manifest.json',
+                checkFileStatus: sinon.match.func,
+            });
             sinon.assert.calledOnce(isBranchSyncedWithPullRequestCommitsStub);
             sinon.assert.calledOnce(alignBranchWithAnotherStub);
             sinon.assert.calledOnce(lockBranchStub);
@@ -5702,6 +5765,9 @@ version = "3.0.0"
             const addLabelsStub = sandbox.stub(github, 'addIssueLabels').resolves();
             const removeLabelsStub = sandbox
                 .stub(github, 'removeIssueLabels')
+                .resolves();
+            const waitForReleaseToBeListedStub = sandbox
+                .stub(github, 'waitForReleaseToBeListed')
                 .resolves();
             const lockBranchStub = sandbox.stub(github, 'lockBranch').resolves();
             const unlockBranchStub = sandbox.stub(github, 'unlockBranch').resolves();
@@ -5755,6 +5821,7 @@ version = "3.0.0"
             sinon.assert.calledOnce(commentStub);
             sinon.assert.calledOnceWithExactly(addLabelsStub, ['autorelease: tagged'], 1234);
             sinon.assert.calledOnceWithExactly(removeLabelsStub, ['autorelease: pending'], 1234);
+            sinon.assert.calledWith(waitForReleaseToBeListedStub, sinon.match.has('tagName', 'release-brancher-v1.3.1'));
             sinon.assert.calledOnce(isBranchSyncedWithPullRequestCommitsStub);
             sinon.assert.calledOnce(isBranchASyncedWithBStub);
             sinon.assert.notCalled(alignBranchWithAnotherStub);
@@ -5785,6 +5852,9 @@ version = "3.0.0"
             const addLabelsStub = sandbox.stub(github, 'addIssueLabels').resolves();
             const removeLabelsStub = sandbox
                 .stub(github, 'removeIssueLabels')
+                .resolves();
+            const waitForReleaseToBeListedStub = sandbox
+                .stub(github, 'waitForReleaseToBeListed')
                 .resolves();
             const lockBranchStub = sandbox.stub(github, 'lockBranch').resolves();
             const unlockBranchStub = sandbox.stub(github, 'unlockBranch').resolves();
@@ -5842,6 +5912,7 @@ version = "3.0.0"
             sinon.assert.calledOnce(commentStub);
             sinon.assert.calledOnceWithExactly(addLabelsStub, ['autorelease: tagged'], 1234);
             sinon.assert.calledOnceWithExactly(removeLabelsStub, ['autorelease: pending'], 1234);
+            sinon.assert.calledWith(waitForReleaseToBeListedStub, sinon.match.has('tagName', 'release-brancher-v1.3.1'));
             sinon.assert.calledOnce(isBranchSyncedWithPullRequestCommitsStub);
             sinon.assert.calledOnce(isBranchASyncedWithBStub);
             sinon.assert.notCalled(alignBranchWithAnotherStub);

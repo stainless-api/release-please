@@ -344,6 +344,7 @@ export declare class Manifest {
     private lockPullRequestsChangesBranch;
     private unlockPullRequestsChangesBranch;
     private alignPullRequestsChangesBranch;
+    private alignPullRequestChangesBranch;
     private createReleasesForPullRequest;
     private createRelease;
     private getStrategiesByPath;

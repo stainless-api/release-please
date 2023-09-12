@@ -447,6 +447,20 @@ export declare class GitHub {
     alignBranchWithAnother(sourceBranchName: string, targetBranchName: string): Promise<void>;
     getLabels(): Promise<string[]>;
     createLabels(labels: string[]): Promise<void>;
+    /**
+     * Waits for a GitHub release to be listed by repeatedly polling the GitHub API.
+     */
+    waitForReleaseToBeListed({ tagName, id }: GitHubRelease): Promise<void>;
+    /**
+     * Waits for a file in a given branch to meet a specified condition, checking up to 10 times.*
+     * @throws Will throw the last returned error if
+     **/
+    waitForFileToBeUpToDateOnBranch({ branch, filePath, checkFileStatus, }: {
+        branch: string;
+        filePath: string;
+        checkFileStatus: (fileContent: string) => boolean;
+    }): Promise<void>;
+    invalidateFileCache(): void;
 }
 export declare const sleepInMs: (ms: number) => Promise<unknown>;
 export {};

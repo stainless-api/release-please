@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.isOctokitGraphqlResponseError = exports.isOctokitRequestError = exports.FileNotFoundError = exports.DuplicateReleaseError = exports.AuthError = exports.GitHubAPIError = exports.MissingRequiredFileError = exports.ConfigurationError = void 0;
+exports.AggregateError = exports.isOctokitGraphqlResponseError = exports.isOctokitRequestError = exports.FileNotFoundError = exports.DuplicateReleaseError = exports.AuthError = exports.GitHubAPIError = exports.MissingRequiredFileError = exports.ConfigurationError = void 0;
 class ConfigurationError extends Error {
     constructor(message, releaserName, repository) {
         super(`${releaserName} (${repository}): ${message}`);
@@ -121,4 +121,13 @@ function isOctokitGraphqlResponseError(error) {
     return false;
 }
 exports.isOctokitGraphqlResponseError = isOctokitGraphqlResponseError;
+class AggregateError extends Error {
+    constructor(errors, message) {
+        const prefix = message !== null && message !== void 0 ? message : 'AggregateError';
+        super(`${prefix}: ${errors.map(err => `\n  - ${err.message}`)}`);
+        this.errors = errors;
+        Object.setPrototypeOf(this, new.target.prototype);
+    }
+}
+exports.AggregateError = AggregateError;
 //# sourceMappingURL=index.js.map

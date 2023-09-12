@@ -60,4 +60,8 @@ export declare function isOctokitRequestError(error: unknown): error is RequestE
  * @returns A boolean indicating whether the error is a GraphqlResponseError.
  */
 export declare function isOctokitGraphqlResponseError(error: unknown): error is GraphqlResponseError<unknown>;
+export declare class AggregateError extends Error {
+    errors: Error[];
+    constructor(errors: Error[], message?: string);
+}
 export {};
