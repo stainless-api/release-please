@@ -41,6 +41,7 @@ import {
   ConfigurationError,
   isOctokitRequestError,
   isOctokitGraphqlResponseError,
+  AggregateError,
 } from './errors';
 import {ManifestPlugin} from './plugin';
 import {
@@ -856,6 +857,8 @@ export class Manifest {
    * @returns {PullRequest[]} Pull request numbers of release pull requests
    */
   async createPullRequests(): Promise<(PullRequest | undefined)[]> {
+    this.github.invalidateFileCache();
+
     // register all possible labels to make them available to users through GitHub label dropdown
     await this.registerLabels();
 
@@ -1181,6 +1184,8 @@ export class Manifest {
    * @returns {GitHubRelease[]} List of created GitHub releases
    */
   async createReleases(): Promise<(CreatedRelease | undefined)[]> {
+    this.github.invalidateFileCache();
+
     const releasesByPullRequest: Record<number, CandidateRelease[]> = {};
     const pullRequestsByNumber: Record<number, PullRequest> = {};
 
@@ -1290,72 +1295,117 @@ export class Manifest {
   }
 
   private async alignPullRequestsChangesBranch(pullRequests: PullRequest[]) {
+    const errors: Error[] = [];
     for (const pr of pullRequests) {
-      const branchName = BranchName.parse(pr.headBranchName);
-      // we only care about pull requests with an associated changes-branch
-      if (!branchName?.changesBranch) {
-        continue;
-      }
-      this.logger.info(
-        `Aligning branches for PR #${pr.number}, changes branch ${branchName.changesBranch} to be aligned with ${this.targetBranch}`
-      );
-
-      let safeToRealign = false;
-
       try {
-        this.logger.debug(
-          `Checking if PR commits are in sync with '${branchName.changesBranch}'...`
-        );
-        if (
-          await this.github.isBranchSyncedWithPullRequestCommits(
-            branchName.changesBranch,
-            pr
-          )
-        ) {
-          this.logger.debug(
-            'PR commits and changes branch in sync, safe to re-align'
-          );
-          safeToRealign = true;
-        }
+        await this.alignPullRequestChangesBranch(pr);
       } catch (err: unknown) {
-        // if a branch of commit cannot be found it is likely the PR commits information aren't in a reliable state, in
-        // this case just ignore and continue with the next check
-        if (isOctokitRequestError(err) && err.status === 404) {
-          this.logger.debug(
-            `Could not compare commits from PR and '${branchName.changesBranch}' due to a branch or commit not found. Continue with the next check`
-          );
-        } else {
-          throw err;
-        }
+        errors.push(err as Error);
       }
-
-      // then check if changes-branch has already been synced with the base branch, in which case we don't need to do
-      // anything
-      if (
-        !safeToRealign &&
-        (await this.github.isBranchASyncedWithB(
-          branchName.changesBranch,
-          this.targetBranch
-        ))
-      ) {
-        this.logger.debug(
-          `Checking if ${branchName.changesBranch} is synced with ${this.targetBranch}...`
-        );
-        this.logger.debug('Branches already in sync, no need to re-align');
-        continue;
-      }
-
-      if (!safeToRealign) {
-        throw new Error(
-          `Branch '${branchName.changesBranch}' cannot be safely re-aligned with '${this.targetBranch}', and will likely result in git conflicts when the next release PR is created. Hint: compare branches '${pr.headBranchName}', '${branchName.changesBranch}', and '${this.targetBranch}' for inconsistencies`
-        );
-      }
-
-      await this.github.alignBranchWithAnother(
-        branchName.changesBranch,
-        this.targetBranch
+    }
+    if (errors.length > 0) {
+      throw new AggregateError(
+        errors,
+        'Errors when aligning pull requests branches'
       );
     }
+  }
+
+  private async alignPullRequestChangesBranch(pr: PullRequest) {
+    const branchName = BranchName.parse(pr.headBranchName);
+
+    // we only care about pull requests with an associated changes-branch
+    if (!branchName?.changesBranch) {
+      return;
+    }
+    this.logger.info(
+      `Aligning branches for PR #${pr.number}, changes branch ${branchName.changesBranch} to be aligned with ${this.targetBranch}`
+    );
+
+    let safeToRealign = false;
+
+    try {
+      this.logger.debug(
+        `Checking if PR commits are in sync with '${branchName.changesBranch}'...`
+      );
+      if (
+        await this.github.isBranchSyncedWithPullRequestCommits(
+          branchName.changesBranch,
+          pr
+        )
+      ) {
+        this.logger.debug(
+          'PR commits and changes branch in sync, safe to re-align'
+        );
+        safeToRealign = true;
+      }
+    } catch (err: unknown) {
+      // if a branch of commit cannot be found it is likely the PR commits information aren't in a reliable state, in
+      // this case just ignore and continue with the next check
+      if (isOctokitRequestError(err) && err.status === 404) {
+        this.logger.debug(
+          `Could not compare commits from PR and '${branchName.changesBranch}' due to a branch or commit not found. Continue with the next check`
+        );
+      } else {
+        throw err;
+      }
+    }
+
+    // then check if changes-branch has already been synced with the base branch, in which case we don't need to do
+    // anything
+    if (
+      !safeToRealign &&
+      (await this.github.isBranchASyncedWithB(
+        branchName.changesBranch,
+        this.targetBranch
+      ))
+    ) {
+      this.logger.debug(
+        `Checking if ${branchName.changesBranch} is synced with ${this.targetBranch}...`
+      );
+      this.logger.debug('Branches already in sync, no need to re-align');
+      return;
+    }
+
+    if (!safeToRealign) {
+      throw new Error(
+        `Branch '${branchName.changesBranch}' cannot be safely re-aligned with '${this.targetBranch}', and will likely result in git conflicts when the next release PR is created. Hint: compare branches '${pr.headBranchName}', '${branchName.changesBranch}', and '${this.targetBranch}' for inconsistencies`
+      );
+    }
+
+    await this.github.alignBranchWithAnother(
+      branchName.changesBranch,
+      this.targetBranch
+    );
+
+    // updating git branches isn't always instant and can take a bit of time to propagate throughout github systems,
+    // it is safer to wait a little bit before doing anything else
+    const version = PullRequestTitle.parse(pr.title)?.getVersion();
+    if (!version) {
+      this.logger.warn(
+        `PR #${pr.number} title missing a version number: '${pr.title}'`
+      );
+      return;
+    }
+    await this.github.waitForFileToBeUpToDateOnBranch({
+      branch: branchName.changesBranch,
+      filePath: this.manifestPath,
+      checkFileStatus: fileContent => {
+        const json = JSON.parse(fileContent) as Record<string, unknown>;
+        if (!json) {
+          return false;
+        }
+        const path = branchName.getComponent() || '.';
+        const val = json[path];
+        if (typeof val !== 'string') {
+          this.logger.error(
+            `Value of manifest file ${this.manifestPath} at key '${path}' was not a string. value=${val}`
+          );
+          return false;
+        }
+        return val === version.toString();
+      },
+    });
   }
 
   private async createReleasesForPullRequest(
@@ -1422,6 +1472,8 @@ export class Manifest {
       draft: release.draft,
       prerelease: release.prerelease,
     });
+
+    await this.github.waitForReleaseToBeListed(githubRelease);
 
     // comment on pull request
     const comment = `:robot: Release is at ${githubRelease.url} :sunflower:`;

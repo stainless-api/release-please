@@ -2221,6 +2221,106 @@ export class GitHub {
       });
     }
   }
+
+  /**
+   * Waits for a GitHub release to be listed by repeatedly polling the GitHub API.
+   */
+  async waitForReleaseToBeListed({tagName, id}: GitHubRelease) {
+    for (let attempt = 0; attempt < 10; attempt++) {
+      this.logger.debug(
+        `Checking if release ${tagName} is listed on GitHub (attempt ${
+          attempt + 1
+        })...`
+      );
+
+      const releases = await this.octokit.repos.listReleases({
+        owner: this.repository.owner,
+        repo: this.repository.repo,
+        page: 1,
+        per_page: 10,
+      });
+      let found = false;
+      for (const release of releases.data) {
+        if (release.id === id) {
+          found = true;
+          break;
+        }
+      }
+      if (found) {
+        this.logger.debug(`Release ${tagName} listed on GitHub`);
+        return;
+      }
+
+      await sleepInMs(500 * attempt);
+    }
+
+    this.logger.warn(`Release ${tagName} is not yet listed on GitHub`);
+  }
+
+  /**
+   * Waits for a file in a given branch to meet a specified condition, checking up to 10 times.*
+   * @throws Will throw the last returned error if
+   **/
+  async waitForFileToBeUpToDateOnBranch({
+    branch,
+    filePath,
+    checkFileStatus,
+  }: {
+    branch: string;
+    filePath: string;
+    checkFileStatus: (fileContent: string) => boolean;
+  }) {
+    const maxAttempts = 10;
+
+    let notFoundError: FileNotFoundError | undefined = undefined;
+    for (let attempt = 0; attempt < maxAttempts; attempt++) {
+      this.logger.debug(
+        `Checking if file ${filePath} on branch ${branch} is up to date on GitHub (attempt ${
+          attempt + 1
+        })...`
+      );
+
+      // ensure we are fetching from github directly and update the cache once we find the file to be up to date
+      this.invalidateFileCache();
+
+      notFoundError = undefined;
+      try {
+        const file = await this.getFileContentsOnBranch(filePath, branch);
+        const upToDate = checkFileStatus(file.parsedContent);
+        if (upToDate) {
+          this.logger.debug(
+            `File ${filePath} on branch ${branch} seems up to date on GitHub`
+          );
+          return;
+        }
+      } catch (e: unknown) {
+        // other errors are already retried by octokit-plugin-retry
+        if (e instanceof FileNotFoundError) {
+          notFoundError = e;
+          this.logger.warn(
+            `Failed to fetch ${filePath} on branch ${branch}`,
+            notFoundError
+          );
+        } else {
+          throw e;
+        }
+      }
+      await sleepInMs(500 * attempt);
+    }
+    if (notFoundError) {
+      throw notFoundError;
+    }
+
+    // cache should be invalidated again to be sure we remove the last item we fetched
+    this.invalidateFileCache();
+    this.logger.warn(
+      `File ${filePath} on branch ${branch} is not up to date yet on GitHub`
+    );
+  }
+
+  invalidateFileCache() {
+    this.fileCache = new RepositoryFileCache(this.octokit, this.repository);
+  }
 }
 
 /**
