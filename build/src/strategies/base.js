@@ -178,7 +178,7 @@ class BaseStrategy {
         // If they don't match, assume the PR title has been edited by an end user to set the version.
         if (existingPullRequest) {
             this.logger.info(`PR already exists for ${existingPullRequest.headBranchName}, checking if PR title edited to set custom version`);
-            const existingPRTitleVersion = (_a = pull_request_title_1.PullRequestTitle.parse(existingPullRequest.title)) === null || _a === void 0 ? void 0 : _a.getVersion();
+            const existingPRTitleVersion = (_a = pull_request_title_1.PullRequestTitle.parse(existingPullRequest.title, this.pullRequestTitlePattern, this.logger)) === null || _a === void 0 ? void 0 : _a.getVersion();
             const hasCustomVersionLabel = existingPullRequest.labels.find(label => label === manifest_1.DEFAULT_CUSTOM_VERSION_LABEL);
             if (!existingPRTitleVersion && hasCustomVersionLabel) {
                 // report problem to end user

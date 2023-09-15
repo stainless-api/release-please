@@ -770,7 +770,7 @@ class Manifest {
         }
     }
     async alignPullRequestChangesBranch(pr) {
-        var _a;
+        var _a, _b;
         const branchName = branch_name_1.BranchName.parse(pr.headBranchName);
         // we only care about pull requests with an associated changes-branch
         if (!(branchName === null || branchName === void 0 ? void 0 : branchName.changesBranch)) {
@@ -809,7 +809,7 @@ class Manifest {
         await this.github.alignBranchWithAnother(branchName.changesBranch, this.targetBranch);
         // updating git branches isn't always instant and can take a bit of time to propagate throughout github systems,
         // it is safer to wait a little bit before doing anything else
-        const version = (_a = pull_request_title_1.PullRequestTitle.parse(pr.title)) === null || _a === void 0 ? void 0 : _a.getVersion();
+        const version = (_b = pull_request_title_1.PullRequestTitle.parse(pr.title, (_a = this.repositoryConfig[branchName.getComponent() || '.']) === null || _a === void 0 ? void 0 : _a.pullRequestTitlePattern, this.logger)) === null || _b === void 0 ? void 0 : _b.getVersion();
         if (!version) {
             this.logger.warn(`PR #${pr.number} title missing a version number: '${pr.title}'`);
             return;
