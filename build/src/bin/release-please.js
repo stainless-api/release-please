@@ -138,6 +138,16 @@ function pullRequestOptions(yargs) {
         .option('signoff', {
         describe: 'Add Signed-off-by line at the end of the commit log message using the user and email provided. (format "Name <email@example.com>").',
         type: 'string',
+    })
+        .option('reviewers', {
+        describe: 'Github usernames that should be assigned as reviewers to the release pull request',
+        type: 'string',
+        coerce(arg) {
+            if (arg) {
+                return arg.split(',');
+            }
+            return arg;
+        },
     });
 }
 function pullRequestStrategyOptions(yargs) {
@@ -316,6 +326,7 @@ const createReleasePullRequestCommand = {
                 versionFile: argv.versionFile,
                 includeComponentInTag: argv.monorepoTags,
                 includeVInTag: argv.includeVInTags,
+                reviewers: argv.reviewers,
             }, extractManifestOptions(argv), argv.path);
         }
         else {
@@ -621,6 +632,9 @@ function extractManifestOptions(argv) {
     }
     if ('fork' in argv && argv.fork !== undefined) {
         manifestOptions.fork = argv.fork;
+    }
+    if ('reviewers' in argv && argv.reviewers) {
+        manifestOptions.reviewers = argv.reviewers;
     }
     if (argv.label !== undefined) {
         let labels = argv.label.split(',');

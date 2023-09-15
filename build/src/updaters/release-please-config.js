@@ -15,7 +15,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ReleasePleaseConfig = void 0;
 const json_stringify_1 = require("../util/json-stringify");
-const SCHEMA_URL = 'https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json';
+const SCHEMA_URL = 'https://raw.githubusercontent.com/stainless-api/release-please/main/schemas/config.json';
 class ReleasePleaseConfig {
     constructor(path, config) {
         this.path = path;
@@ -69,7 +69,7 @@ function releaserConfigToJsonConfig(config) {
         'tag-separator': config.tagSeparator,
         'extra-files': config.extraFiles,
         'version-file': config.versionFile,
-        'snapshot-label': (_d = config.snapshotLabels) === null || _d === void 0 ? void 0 : _d.join(','), // Java-only
+        'snapshot-label': (_d = config.snapshotLabels) === null || _d === void 0 ? void 0 : _d.join(','), // Java-only,
     };
     return jsonConfig;
 }

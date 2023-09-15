@@ -252,6 +252,7 @@ class GitHub {
                 files: [],
             }, baseBranch, refBranch, message, releasePullRequest.updates, {
                 fork: options === null || options === void 0 ? void 0 : options.fork,
+                reviewers: options === null || options === void 0 ? void 0 : options.reviewers,
                 existingPrNumber: number,
             });
             const response = await this.octokit.pulls.update({

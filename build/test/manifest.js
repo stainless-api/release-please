@@ -256,6 +256,16 @@ function pullRequestBody(path) {
                 'custom: pre-release',
             ]);
         });
+        (0, mocha_1.it)('should read reviewers from manifest', async () => {
+            const getFileContentsStub = sandbox.stub(github, 'getFileContentsOnBranch');
+            getFileContentsStub
+                .withArgs('release-please-config.json', 'next')
+                .resolves((0, helpers_1.buildGitHubFileContent)(fixturesPath, 'manifest/config/reviewers.json'))
+                .withArgs('.release-please-manifest.json', 'next')
+                .resolves((0, helpers_1.buildGitHubFileContent)(fixturesPath, 'manifest/versions/versions.json'));
+            const manifest = await manifest_1.Manifest.fromManifest(github, github.repository.defaultBranch, undefined, undefined, { changesBranch: 'next' });
+            (0, chai_1.expect)(manifest['reviewers']).to.deep.equal(['sam', 'frodo']);
+        });
         (0, mocha_1.it)('should read extra labels from manifest', async () => {
             const getFileContentsStub = sandbox.stub(github, 'getFileContentsOnBranch');
             getFileContentsStub

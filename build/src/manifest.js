@@ -70,7 +70,7 @@ class Manifest {
      *   Defaults to `[autorelease: pre-release]`
      */
     constructor(github, targetBranch, repositoryConfig, releasedVersions, manifestOptions) {
-        var _a, _b;
+        var _a, _b, _c;
         this.repository = github.repository;
         this.github = github;
         this.targetBranch = targetBranch;
@@ -82,6 +82,7 @@ class Manifest {
         this.separatePullRequests =
             (_a = manifestOptions === null || manifestOptions === void 0 ? void 0 : manifestOptions.separatePullRequests) !== null && _a !== void 0 ? _a : Object.keys(repositoryConfig).length === 1;
         this.fork = (manifestOptions === null || manifestOptions === void 0 ? void 0 : manifestOptions.fork) || false;
+        this.reviewers = (_b = manifestOptions === null || manifestOptions === void 0 ? void 0 : manifestOptions.reviewers) !== null && _b !== void 0 ? _b : [];
         this.signoffUser = manifestOptions === null || manifestOptions === void 0 ? void 0 : manifestOptions.signoff;
         this.releaseLabels =
             (manifestOptions === null || manifestOptions === void 0 ? void 0 : manifestOptions.releaseLabels) || exports.DEFAULT_RELEASE_LABELS;
@@ -102,7 +103,7 @@ class Manifest {
             (manifestOptions === null || manifestOptions === void 0 ? void 0 : manifestOptions.releaseSearchDepth) || DEFAULT_RELEASE_SEARCH_DEPTH;
         this.commitSearchDepth =
             (manifestOptions === null || manifestOptions === void 0 ? void 0 : manifestOptions.commitSearchDepth) || DEFAULT_COMMIT_SEARCH_DEPTH;
-        this.logger = (_b = manifestOptions === null || manifestOptions === void 0 ? void 0 : manifestOptions.logger) !== null && _b !== void 0 ? _b : logger_1.logger;
+        this.logger = (_c = manifestOptions === null || manifestOptions === void 0 ? void 0 : manifestOptions.logger) !== null && _c !== void 0 ? _c : logger_1.logger;
         this.plugins = ((manifestOptions === null || manifestOptions === void 0 ? void 0 : manifestOptions.plugins) || []).map(pluginType => (0, factory_1.buildPlugin)({
             type: pluginType,
             github: this.github,
@@ -560,6 +561,7 @@ class Manifest {
         }, this.targetBranch, this.changesBranch, message, pullRequest.updates, {
             fork: this.fork,
             draft: pullRequest.draft,
+            reviewers: this.reviewers,
         });
         return newPullRequest;
     }
@@ -573,6 +575,7 @@ class Manifest {
         }
         const updatedPullRequest = await this.github.updatePullRequest(existing.number, pullRequest, this.targetBranch, this.changesBranch, {
             fork: this.fork,
+            reviewers: this.reviewers,
             signoffUser: this.signoffUser,
             pullRequestOverflowHandler: this.pullRequestOverflowHandler,
         });
@@ -972,6 +975,7 @@ function extractReleaserConfig(config) {
         skipSnapshot: config['skip-snapshot'],
         initialVersion: config['initial-version'],
         excludePaths: config['exclude-paths'],
+        reviewers: config.reviewers,
     };
 }
 /**
@@ -1000,7 +1004,6 @@ async function parseConfig(github, configFile, branch, onlyPath, releaseAs) {
     const configReleaseLabel = config['release-label'];
     const configPreReleaseLabel = config['prerelease-label'];
     const configSnapshotLabel = config['snapshot-label'];
-    const configExtraLabel = config['extra-label'];
     const manifestOptions = {
         bootstrapSha: config['bootstrap-sha'],
         lastReleaseSha: config['last-release-sha'],
@@ -1012,10 +1015,10 @@ async function parseConfig(github, configFile, branch, onlyPath, releaseAs) {
         releaseLabels: configReleaseLabel === null || configReleaseLabel === void 0 ? void 0 : configReleaseLabel.split(','),
         prereleaseLabels: configPreReleaseLabel === null || configPreReleaseLabel === void 0 ? void 0 : configPreReleaseLabel.split(','),
         snapshotLabels: configSnapshotLabel === null || configSnapshotLabel === void 0 ? void 0 : configSnapshotLabel.split(','),
-        extraLabels: configExtraLabel === null || configExtraLabel === void 0 ? void 0 : configExtraLabel.split(','),
         releaseSearchDepth: config['release-search-depth'],
         commitSearchDepth: config['commit-search-depth'],
         sequentialCalls: config['sequential-calls'],
+        reviewers: config.reviewers,
     };
     return { config: repositoryConfig, options: manifestOptions };
 }
@@ -1186,7 +1189,7 @@ async function latestReleaseVersion(github, branchToScan, releaseFilter, config,
     return candidateTagVersion.sort((a, b) => b.compare(a))[0];
 }
 function mergeReleaserConfig(defaultConfig, pathConfig) {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _0, _1, _2;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _0, _1, _2, _3;
     return {
         releaseType: (_b = (_a = pathConfig.releaseType) !== null && _a !== void 0 ? _a : defaultConfig.releaseType) !== null && _b !== void 0 ? _b : 'node',
         bumpMinorPreMajor: (_c = pathConfig.bumpMinorPreMajor) !== null && _c !== void 0 ? _c : defaultConfig.bumpMinorPreMajor,
@@ -1214,6 +1217,7 @@ function mergeReleaserConfig(defaultConfig, pathConfig) {
         initialVersion: (_0 = pathConfig.initialVersion) !== null && _0 !== void 0 ? _0 : defaultConfig.initialVersion,
         extraLabels: (_1 = pathConfig.extraLabels) !== null && _1 !== void 0 ? _1 : defaultConfig.extraLabels,
         excludePaths: (_2 = pathConfig.excludePaths) !== null && _2 !== void 0 ? _2 : defaultConfig.excludePaths,
+        reviewers: (_3 = pathConfig.reviewers) !== null && _3 !== void 0 ? _3 : defaultConfig.reviewers,
     };
 }
 /**

@@ -72,6 +72,7 @@ export interface ReleaserConfig {
     snapshotLabels?: string[];
     skipSnapshot?: boolean;
     excludePaths?: string[];
+    reviewers?: string[];
 }
 export interface CandidateReleasePullRequest {
     path: string;
@@ -113,6 +114,7 @@ interface ReleaserConfigJson {
     'skip-snapshot'?: boolean;
     'initial-version'?: string;
     'exclude-paths'?: string[];
+    reviewers?: string[];
 }
 export interface ManifestOptions {
     bootstrapSha?: string;
@@ -121,6 +123,7 @@ export interface ManifestOptions {
     separatePullRequests?: boolean;
     plugins?: PluginType[];
     fork?: boolean;
+    reviewers?: string[];
     signoff?: string;
     manifestPath?: string;
     labels?: string[];
@@ -208,6 +211,7 @@ export declare class Manifest {
     readonly changesBranch: string;
     private separatePullRequests;
     readonly fork: boolean;
+    private reviewers;
     private signoffUser?;
     private labels;
     private skipLabeling?;

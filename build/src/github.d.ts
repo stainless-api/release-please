@@ -82,12 +82,18 @@ export type ChangeSet = Map<string, FileDiff>;
 interface CreatePullRequestOptions {
     fork?: boolean;
     draft?: boolean;
-    reviewers?: [string];
+    reviewers?: string[];
     /**
      * If the number of an existing pull request is passed, its HEAD branch and attributes (title, labels, etc) will be
      * updated instead of creating a new pull request.
      */
     existingPrNumber?: number;
+}
+interface UpdatePullRequestOptions {
+    signoffUser?: string;
+    fork?: boolean;
+    reviewers?: string[];
+    pullRequestOverflowHandler?: PullRequestOverflowHandler;
 }
 export declare class GitHub {
     readonly repository: Repository;
@@ -314,11 +320,7 @@ export declare class GitHub {
      * @param {PullRequestOverflowHandler} options.pullRequestOverflowHandler Optional.
      *   Handles extra large pull request body messages.
      */
-    updatePullRequest: (number: number, releasePullRequest: ReleasePullRequest, baseBranch: string, refBranch: string, options?: {
-        signoffUser?: string | undefined;
-        fork?: boolean | undefined;
-        pullRequestOverflowHandler?: PullRequestOverflowHandler | undefined;
-    } | undefined) => Promise<PullRequest>;
+    updatePullRequest: (number: number, releasePullRequest: ReleasePullRequest, baseBranch: string, refBranch: string, options?: UpdatePullRequestOptions | undefined) => Promise<PullRequest>;
     /**
      * Given a set of proposed updates, build a changeset to suggest.
      *
