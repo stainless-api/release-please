@@ -66,6 +66,21 @@ class Version {
         const buildPart = this.build ? `+${this.build}` : '';
         return `${this.major}.${this.minor}.${this.patch}${preReleasePart}${buildPart}`;
     }
+    compareBump(other) {
+        if (this.major !== other.major) {
+            return 'major';
+        }
+        if (this.minor !== other.minor) {
+            return 'minor';
+        }
+        if (this.patch !== other.patch) {
+            return 'patch';
+        }
+        if (this.build !== other.build) {
+            return 'build';
+        }
+        return 'none';
+    }
 }
 exports.Version = Version;
 //# sourceMappingURL=version.js.map

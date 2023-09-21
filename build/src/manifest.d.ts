@@ -1,5 +1,5 @@
 import { ChangelogSection } from './changelog-notes';
-import { GitHub, GitHubRelease } from './github';
+import { GitHub, GitHubRelease, MergeMethod } from './github';
 import { Version } from './version';
 import { PullRequest } from './pull-request';
 import { Logger } from './util/logger';
@@ -124,6 +124,7 @@ export interface ManifestOptions {
     plugins?: PluginType[];
     fork?: boolean;
     reviewers?: string[];
+    autoMerge?: AutoMergeOption;
     signoff?: string;
     manifestPath?: string;
     labels?: string[];
@@ -202,6 +203,24 @@ export interface CreatedRelease extends GitHubRelease {
     minor: number;
     patch: number;
 }
+/**
+ * Option to control when to auto-merge release PRs. If no filter have been provided, never auto-merge. If both
+ * conventionalCommitFilter and versionBumpFilter are provided we take the intersection (AND operation).
+ */
+export type AutoMergeOption = {
+    mergeMethod: MergeMethod;
+    /**
+     * Only auto merge if all conventional commits of the PR match the filter
+     */
+    conventionalCommitFilter?: {
+        type: string;
+        scope?: string;
+    }[];
+    /**
+     * Only auto merge if the version bump match the filter
+     */
+    versionBumpFilter?: ('major' | 'minor' | 'patch' | 'build')[];
+};
 export declare class Manifest {
     private repository;
     private github;
@@ -212,6 +231,7 @@ export declare class Manifest {
     private separatePullRequests;
     readonly fork: boolean;
     private reviewers;
+    private autoMerge?;
     private signoffUser?;
     private labels;
     private skipLabeling?;
@@ -353,5 +373,10 @@ export declare class Manifest {
     private createRelease;
     private getStrategiesByPath;
     private getPathsByComponent;
+    /**
+     * Only return the auto-merge option if the release PR match filters. If no filter provided, do not auto merge. If
+     * multiple filters are provided we take the intersection (AND operation).
+     */
+    pullRequestAutoMergeOption(pullRequest: ReleasePullRequest): AutoMergeOption | undefined;
 }
 export {};

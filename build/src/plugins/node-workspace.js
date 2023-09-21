@@ -203,6 +203,7 @@ class NodeWorkspace extends workspace_1.WorkspacePlugin {
             headRefName: branch_name_1.BranchName.ofTargetBranch(this.targetBranch, this.changesBranch).toString(),
             version,
             draft: false,
+            conventionalCommits: [],
         };
         return {
             path: updatedPackage.location,

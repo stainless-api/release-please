@@ -25,6 +25,7 @@ export interface GitHubOptions {
     octokitAPIs: OctokitAPIs;
     logger?: Logger;
     useGraphql?: boolean;
+    graphqlRetries?: number;
 }
 interface ProxyOption {
     host: string;
@@ -43,6 +44,7 @@ interface GitHubCreateOptions {
     useGraphql?: boolean;
     retries?: number;
     throttlingRetries?: number;
+    graphqlRetries?: number;
 }
 type CommitFilter = (commit: Commit) => boolean;
 interface CommitIteratorOptions {
@@ -79,10 +81,14 @@ interface FileDiff {
     readonly originalContent: string | null;
 }
 export type ChangeSet = Map<string, FileDiff>;
+export type MergeMethod = 'merge' | 'squash' | 'rebase';
 interface CreatePullRequestOptions {
     fork?: boolean;
     draft?: boolean;
     reviewers?: string[];
+    autoMerge?: {
+        mergeMethod: MergeMethod;
+    };
     /**
      * If the number of an existing pull request is passed, its HEAD branch and attributes (title, labels, etc) will be
      * updated instead of creating a new pull request.
@@ -93,6 +99,9 @@ interface UpdatePullRequestOptions {
     signoffUser?: string;
     fork?: boolean;
     reviewers?: string[];
+    autoMerge?: {
+        mergeMethod: MergeMethod;
+    };
     pullRequestOverflowHandler?: PullRequestOverflowHandler;
 }
 export declare class GitHub {
@@ -103,6 +112,7 @@ export declare class GitHub {
     private fileCache;
     private logger;
     private useGraphql;
+    private graphqlRetries;
     private constructor();
     static createDefaultAgent(baseUrl: string, defaultProxy?: ProxyOption): import("https-proxy-agent/dist/agent").default | import("http-proxy-agent/dist/agent").default | undefined;
     /**
@@ -276,21 +286,6 @@ export declare class GitHub {
      */
     findFilesByGlobAndRef: (glob: string, ref: string, prefix?: string | undefined) => Promise<string[]>;
     /**
-     * Open a pull request
-     *
-     * @deprecated This logic is handled by the Manifest class now as it
-     *   can be more complicated if the release notes are too big
-     * @param {ReleasePullRequest} releasePullRequest Pull request data to update
-     * @param {string} targetBranch The base branch of the pull request
-     * @param {GitHubPR} options The pull request options
-     * @throws {GitHubAPIError} on an API error
-     */
-    createReleasePullRequest(releasePullRequest: ReleasePullRequest, targetBranch: string, changesBranch: string, options?: {
-        signoffUser?: string;
-        fork?: boolean;
-        skipLabeling?: boolean;
-    }): Promise<PullRequest>;
-    /**
      * Open a pull request and its release branch
      *
      * @param {PullRequest} pullRequest Pull request data to update
@@ -463,6 +458,9 @@ export declare class GitHub {
         checkFileStatus: (fileContent: string) => boolean;
     }): Promise<void>;
     invalidateFileCache(): void;
+    private queryPullRequestId;
+    private mutatePullRequestEnableAutoMerge;
+    private enablePullRequestAutoMerge;
 }
 export declare const sleepInMs: (ms: number) => Promise<unknown>;
 export {};

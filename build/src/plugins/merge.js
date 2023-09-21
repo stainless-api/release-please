@@ -77,6 +77,7 @@ class Merge extends plugin_1.ManifestPlugin {
             labels: Array.from(labels),
             headRefName: (_a = this.headBranchName) !== null && _a !== void 0 ? _a : branch_name_1.BranchName.ofTargetBranch(this.targetBranch, this.changesBranch).toString(),
             draft: !candidates.some(candidate => !candidate.pullRequest.draft),
+            conventionalCommits: candidates.flatMap(c => c.pullRequest.conventionalCommits),
         };
         const releaseTypes = new Set(candidates.map(candidate => candidate.config.releaseType));
         const releaseType = releaseTypes.size === 1 ? releaseTypes.values().next().value : 'simple';

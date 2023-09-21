@@ -61,6 +61,7 @@ const fixturesPath = './test/fixtures/release-notes';
                 updates: [],
                 draft: false,
                 headRefName: 'my-head-branch',
+                conventionalCommits: [],
             }, 'next', 50);
             snapshot(newContents);
             sinon.assert.calledOnce(createFileStub);
@@ -73,6 +74,7 @@ const fixturesPath = './test/fixtures/release-notes';
                 updates: [],
                 draft: false,
                 headRefName: 'my-head-branch',
+                conventionalCommits: [],
             }, 'next');
             (0, chai_1.expect)(newContents).to.eql(body.toString());
         });

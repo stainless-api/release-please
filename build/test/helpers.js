@@ -214,6 +214,7 @@ function buildMockCandidatePullRequest(path, releaseType, versionString, options
             version,
             draft: (_d = options.draft) !== null && _d !== void 0 ? _d : false,
             group: options.group,
+            conventionalCommits: [],
         },
         config: {
             releaseType,

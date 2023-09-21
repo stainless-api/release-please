@@ -109,8 +109,10 @@ class Java extends base_1.BaseStrategy {
             labels: [...labels, ...this.extraLabels],
             headRefName: branchName.toString(),
             version: newVersion,
+            previousVersion: latestRelease === null || latestRelease === void 0 ? void 0 : latestRelease.tag.version,
             draft: draft !== null && draft !== void 0 ? draft : false,
             group: 'snapshot',
+            conventionalCommits: [],
         };
     }
     isPublishedVersion(version) {

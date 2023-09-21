@@ -83,6 +83,7 @@ class Manifest {
             (_a = manifestOptions === null || manifestOptions === void 0 ? void 0 : manifestOptions.separatePullRequests) !== null && _a !== void 0 ? _a : Object.keys(repositoryConfig).length === 1;
         this.fork = (manifestOptions === null || manifestOptions === void 0 ? void 0 : manifestOptions.fork) || false;
         this.reviewers = (_b = manifestOptions === null || manifestOptions === void 0 ? void 0 : manifestOptions.reviewers) !== null && _b !== void 0 ? _b : [];
+        this.autoMerge = manifestOptions === null || manifestOptions === void 0 ? void 0 : manifestOptions.autoMerge;
         this.signoffUser = manifestOptions === null || manifestOptions === void 0 ? void 0 : manifestOptions.signoff;
         this.releaseLabels =
             (manifestOptions === null || manifestOptions === void 0 ? void 0 : manifestOptions.releaseLabels) || exports.DEFAULT_RELEASE_LABELS;
@@ -562,6 +563,7 @@ class Manifest {
             fork: this.fork,
             draft: pullRequest.draft,
             reviewers: this.reviewers,
+            autoMerge: this.pullRequestAutoMergeOption(pullRequest),
         });
         return newPullRequest;
     }
@@ -578,6 +580,7 @@ class Manifest {
             reviewers: this.reviewers,
             signoffUser: this.signoffUser,
             pullRequestOverflowHandler: this.pullRequestOverflowHandler,
+            autoMerge: this.pullRequestAutoMergeOption(pullRequest),
         });
         return updatedPullRequest;
     }
@@ -592,6 +595,7 @@ class Manifest {
             fork: this.fork,
             signoffUser: this.signoffUser,
             pullRequestOverflowHandler: this.pullRequestOverflowHandler,
+            autoMerge: this.pullRequestAutoMergeOption(pullRequest),
         });
         // TODO: consider leaving the snooze label
         await this.github.removeIssueLabels([exports.SNOOZE_LABEL], snoozed.number);
@@ -932,6 +936,43 @@ class Manifest {
             }
         }
         return this._pathsByComponent;
+    }
+    /**
+     * Only return the auto-merge option if the release PR match filters. If no filter provided, do not auto merge. If
+     * multiple filters are provided we take the intersection (AND operation).
+     */
+    pullRequestAutoMergeOption(pullRequest) {
+        const { versionBumpFilter, conventionalCommitFilter } = this.autoMerge || {};
+        // if the version bump do not match any provided filter value, do not auto-merge
+        const applyVersionBumpFilter = () => {
+            const versionBump = pullRequest.version &&
+                pullRequest.previousVersion &&
+                pullRequest.version.compareBump(pullRequest.previousVersion);
+            return (versionBump && (versionBumpFilter === null || versionBumpFilter === void 0 ? void 0 : versionBumpFilter.find(filter => versionBump === filter)));
+        };
+        // given two sets of type:scope items, if any item from commitSet isn't in filterSet do not auto-merge
+        const applyConventionalCommitFilter = () => {
+            if (pullRequest.conventionalCommits.length === 0) {
+                return false;
+            }
+            const filterSet = new Set(conventionalCommitFilter.map(filter => `${filter.type}:${filter.scope ? filter.scope : '*'}`));
+            for (const commit of pullRequest.conventionalCommits) {
+                if (!filterSet.has(`${commit.type}:${commit.scope}`) &&
+                    !filterSet.has(`${commit.type}:*`)) {
+                    return false;
+                }
+            }
+            return true;
+        };
+        const selected = (conventionalCommitFilter === null || conventionalCommitFilter === void 0 ? void 0 : conventionalCommitFilter.length) && (versionBumpFilter === null || versionBumpFilter === void 0 ? void 0 : versionBumpFilter.length)
+            ? applyConventionalCommitFilter() && applyVersionBumpFilter()
+            : (conventionalCommitFilter === null || conventionalCommitFilter === void 0 ? void 0 : conventionalCommitFilter.length)
+                ? applyConventionalCommitFilter()
+                : (versionBumpFilter === null || versionBumpFilter === void 0 ? void 0 : versionBumpFilter.length)
+                    ? applyVersionBumpFilter()
+                    : // no filter provided
+                        false;
+        return selected ? this.autoMerge : undefined;
     }
 }
 exports.Manifest = Manifest;

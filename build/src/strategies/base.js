@@ -259,7 +259,9 @@ If you instead want to use the version number \`${newVersion}\` generated from c
             labels: [...labels, ...this.extraLabels],
             headRefName: (await this.getBranchName()).toString(),
             version: newVersion,
+            previousVersion: latestRelease === null || latestRelease === void 0 ? void 0 : latestRelease.tag.version,
             draft: draft !== null && draft !== void 0 ? draft : false,
+            conventionalCommits,
         };
     }
     // Helper to convert extra files with globs to the file paths to add

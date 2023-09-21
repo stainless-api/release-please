@@ -30,11 +30,10 @@ const assert_1 = require("assert");
 const pull_request_body_1 = require("../src/util/pull-request-body");
 const pull_request_title_1 = require("../src/util/pull-request-title");
 const codeSuggesterCommitAndPush = require("code-suggester/build/src/github/commit-and-push");
-const codeSuggesterLabels = require("code-suggester/build/src/github/labels");
-const raw_content_1 = require("../src/updaters/raw-content");
 const https_proxy_agent_1 = require("https-proxy-agent");
 const http_proxy_agent_1 = require("http-proxy-agent");
 const helpers_1 = require("./helpers");
+const graphql_1 = require("@octokit/graphql");
 const fixturesPath = './test/fixtures';
 const sandbox = sinon.createSandbox();
 (0, mocha_1.describe)('GitHub', () => {
@@ -55,6 +54,9 @@ const sandbox = sinon.createSandbox();
             owner: 'fake',
             repo: 'fake',
             defaultBranch: 'main',
+            graphqlRetries: 0,
+            retries: 0,
+            throttlingRetries: 0,
         });
         // This shared nock will take care of some common requests.
         req = getNock();
@@ -781,144 +783,6 @@ const sandbox = sinon.createSandbox();
             (0, chai_1.expect)(notes).to.eql('##Changes in Release v1.0.0 ... ##Contributors @monalisa');
         });
     });
-    (0, mocha_1.describe)('createReleasePullRequest', () => {
-        (0, mocha_1.beforeEach)(() => {
-            req
-                .post('/repos/fake/fake/pulls', body => {
-                snapshot(body);
-                return true;
-            })
-                .reply(200, {
-                id: 123,
-                number: 1,
-            });
-            sandbox
-                .stub(github, 'forkBranch') // eslint-disable-line @typescript-eslint/no-explicit-any
-                .resolves('the-pull-request-branch-sha');
-            sandbox.stub(codeSuggesterLabels, 'addLabels').resolves();
-        });
-        (0, mocha_1.it)('should update file', async () => {
-            const commitAndPushStub = sandbox
-                .stub(codeSuggesterCommitAndPush, 'commitAndPush')
-                .resolves();
-            sandbox
-                .stub(github, 'getFileContentsOnBranch')
-                .withArgs('existing-file', 'main')
-                .resolves({
-                sha: 'abc123',
-                content: 'somecontent',
-                parsedContent: 'somecontent',
-                mode: '100644',
-            });
-            sandbox.stub(github, 'getPullRequest').withArgs(1).resolves({
-                title: 'created title',
-                headBranchName: 'release-please--branches--main',
-                baseBranchName: 'main',
-                number: 1,
-                body: 'some body',
-                labels: [],
-                files: [],
-            });
-            const pullRequest = await github.createReleasePullRequest({
-                title: pull_request_title_1.PullRequestTitle.ofTargetBranch('main', 'main'),
-                body: new pull_request_body_1.PullRequestBody([]),
-                labels: [],
-                headRefName: 'release-please--branches--main',
-                draft: false,
-                updates: [
-                    {
-                        path: 'existing-file',
-                        createIfMissing: false,
-                        updater: new raw_content_1.RawContent('some content'),
-                    },
-                ],
-            }, 'main', 'main');
-            req.done();
-            (0, chai_1.expect)(pullRequest.number).to.eql(1);
-            sinon.assert.calledOnce(commitAndPushStub);
-            const changes = commitAndPushStub.getCall(0).args[2];
-            (0, chai_1.expect)(changes).to.not.be.undefined;
-            (0, chai_1.expect)(changes.size).to.eql(1);
-            (0, chai_1.expect)(changes.get('existing-file')).to.not.be.undefined;
-        });
-        (0, mocha_1.it)('should handle missing files', async () => {
-            const commitAndPushStub = sandbox
-                .stub(codeSuggesterCommitAndPush, 'commitAndPush')
-                .resolves();
-            sandbox
-                .stub(github, 'getFileContentsOnBranch')
-                .withArgs('missing-file', 'main')
-                .rejects(new errors_1.FileNotFoundError('missing-file'));
-            sandbox.stub(github, 'getPullRequest').withArgs(1).resolves({
-                title: 'created title',
-                headBranchName: 'release-please--branches--main',
-                baseBranchName: 'main',
-                number: 1,
-                body: 'some body',
-                labels: [],
-                files: [],
-            });
-            const pullRequest = await github.createReleasePullRequest({
-                title: pull_request_title_1.PullRequestTitle.ofTargetBranch('main', 'main'),
-                body: new pull_request_body_1.PullRequestBody([]),
-                labels: [],
-                headRefName: 'release-please--branches--main',
-                draft: false,
-                updates: [
-                    {
-                        path: 'missing-file',
-                        createIfMissing: false,
-                        updater: new raw_content_1.RawContent('some content'),
-                    },
-                ],
-            }, 'main', 'main');
-            req.done();
-            (0, chai_1.expect)(pullRequest.number).to.eql(1);
-            sinon.assert.calledOnce(commitAndPushStub);
-            const changes = commitAndPushStub.getCall(0).args[2];
-            (0, chai_1.expect)(changes).to.not.be.undefined;
-            (0, chai_1.expect)(changes.size).to.eql(0);
-        });
-        (0, mocha_1.it)('should create missing file', async () => {
-            const commitAndPushStub = sandbox
-                .stub(codeSuggesterCommitAndPush, 'commitAndPush')
-                .resolves();
-            sandbox
-                .stub(github, 'getFileContentsOnBranch')
-                .withArgs('missing-file', 'main')
-                .rejects(new errors_1.FileNotFoundError('missing-file'));
-            sandbox.stub(github, 'getPullRequest').withArgs(1).resolves({
-                title: 'created title',
-                headBranchName: 'release-please--branches--main',
-                baseBranchName: 'main',
-                number: 1,
-                body: 'some body',
-                labels: [],
-                files: [],
-            });
-            const pullRequest = await github.createReleasePullRequest({
-                title: pull_request_title_1.PullRequestTitle.ofTargetBranch('main', 'main'),
-                body: new pull_request_body_1.PullRequestBody([]),
-                labels: [],
-                headRefName: 'release-please--branches--main',
-                draft: false,
-                updates: [
-                    {
-                        path: 'missing-file',
-                        createIfMissing: true,
-                        updater: new raw_content_1.RawContent('some content'),
-                    },
-                ],
-            }, 'main', 'main');
-            req.done();
-            (0, chai_1.expect)(pullRequest.number).to.eql(1);
-            sinon.assert.calledOnce(commitAndPushStub);
-            const changes = commitAndPushStub.getCall(0).args[2];
-            (0, chai_1.expect)(changes).to.not.be.undefined;
-            (0, chai_1.expect)(changes.size).to.eql(1);
-            (0, chai_1.expect)(changes.get('missing-file')).to.not.be.undefined;
-        });
-    });
     (0, mocha_1.describe)('createFileOnNewBranch', () => {
         (0, mocha_1.it)('forks a new branch if the branch does not exist', async () => {
             req = req
@@ -1032,11 +896,187 @@ const sandbox = sinon.createSandbox();
                 headRefName: 'release-please--branches--main--changes--next',
                 draft: false,
                 updates: [],
+                conventionalCommits: [],
             };
             await github.updatePullRequest(123, pullRequest, 'main', 'next');
             sinon.assert.calledOnce(forkBranchStub);
             sinon.assert.calledOnce(commitAndPushStub);
             sinon.assert.calledOnce(getPullRequestStub);
+            req.done();
+        });
+        (0, mocha_1.it)('handles auto-merge option', async () => {
+            const forkBranchStub = sandbox
+                .stub(github, 'forkBranch') // eslint-disable-line @typescript-eslint/no-explicit-any
+                .withArgs('release-please--branches--main--changes--next', 'next')
+                .resolves('the-pull-request-branch-sha');
+            const commitAndPushStub = sandbox
+                .stub(codeSuggesterCommitAndPush, 'commitAndPush')
+                .withArgs(sinon.match.any, 'the-pull-request-branch-sha', sinon.match.any, sinon.match.has('branch', 'release-please--branches--main--changes--next'), sinon.match.string, true)
+                .resolves();
+            const getPullRequestStub = sandbox
+                .stub(github, 'getPullRequest')
+                .withArgs(123)
+                .resolves({
+                title: 'updated-title',
+                headBranchName: 'release-please--branches--main--changes--next',
+                baseBranchName: 'main',
+                number: 123,
+                body: 'updated body',
+                labels: [],
+                files: [],
+            });
+            req
+                .patch('/repos/fake/fake/pulls/123')
+                .reply(200, {
+                number: 123,
+                title: 'updated-title',
+                body: 'updated body',
+                labels: [],
+                head: {
+                    ref: 'release-please--branches--main--changes--next',
+                },
+                base: {
+                    ref: 'main',
+                },
+            })
+                .post('/graphql', body => {
+                snapshot(body);
+                (0, chai_1.expect)(body.query).to.contain('query pullRequestId');
+                (0, chai_1.expect)(body.variables).to.eql({
+                    owner: 'fake',
+                    repo: 'fake',
+                    pullRequestNumber: 123,
+                });
+                return true;
+            })
+                .reply(200, {
+                data: {
+                    repository: {
+                        pullRequest: {
+                            id: 'someIdForPR123',
+                        },
+                    },
+                },
+            })
+                .post('/graphql', body => {
+                snapshot(body);
+                (0, chai_1.expect)(body.query).to.contain('mutation mutateEnableAutoMerge');
+                (0, chai_1.expect)(body.variables).to.eql({
+                    pullRequestId: 'someIdForPR123',
+                    mergeMethod: 'REBASE',
+                });
+                return true;
+            })
+                .reply(200, {});
+            const pullRequest = {
+                title: pull_request_title_1.PullRequestTitle.ofTargetBranch('main', 'next'),
+                body: new pull_request_body_1.PullRequestBody((0, helpers_1.mockReleaseData)(1000), {
+                    useComponents: true,
+                }),
+                labels: [],
+                headRefName: 'release-please--branches--main--changes--next',
+                draft: false,
+                updates: [],
+                conventionalCommits: [],
+            };
+            await github.updatePullRequest(123, pullRequest, 'main', 'next', {
+                autoMerge: { mergeMethod: 'rebase' },
+            });
+            sinon.assert.calledOnce(forkBranchStub);
+            sinon.assert.calledOnce(commitAndPushStub);
+            sinon.assert.calledOnce(getPullRequestStub);
+            req.done();
+        });
+        (0, mocha_1.it)('merges release PR directly when an auto-merge given but PR in "clean status"', async () => {
+            const forkBranchStub = sandbox
+                .stub(github, 'forkBranch') // eslint-disable-line @typescript-eslint/no-explicit-any
+                .withArgs('release-please--branches--main--changes--next', 'next')
+                .resolves('the-pull-request-branch-sha');
+            const commitAndPushStub = sandbox
+                .stub(codeSuggesterCommitAndPush, 'commitAndPush')
+                .withArgs(sinon.match.any, 'the-pull-request-branch-sha', sinon.match.any, sinon.match.has('branch', 'release-please--branches--main--changes--next'), sinon.match.string, true)
+                .resolves();
+            const getPullRequestStub = sandbox
+                .stub(github, 'getPullRequest')
+                .withArgs(123)
+                .resolves({
+                title: 'updated-title',
+                headBranchName: 'release-please--branches--main--changes--next',
+                baseBranchName: 'main',
+                number: 123,
+                body: 'updated body',
+                labels: [],
+                files: [],
+            });
+            const mutatePullRequestEnableAutoMergeStub = sandbox
+                .stub(github, 'mutatePullRequestEnableAutoMerge') // eslint-disable-line @typescript-eslint/no-explicit-any
+                .throws(new graphql_1.GraphqlResponseError({ method: 'GET', url: '/foo/bar' }, {}, {
+                data: {},
+                errors: [
+                    {
+                        type: 'UNPROCESSABLE',
+                        message: '["Pull request Pull request is in clean status"]',
+                        path: ['foo'],
+                        extensions: {},
+                        locations: [{ line: 123, column: 456 }],
+                    },
+                ],
+            }));
+            req
+                .patch('/repos/fake/fake/pulls/123')
+                .reply(200, {
+                number: 123,
+                title: 'updated-title',
+                body: 'updated body',
+                labels: [],
+                head: {
+                    ref: 'release-please--branches--main--changes--next',
+                },
+                base: {
+                    ref: 'main',
+                },
+            })
+                .post('/graphql', body => {
+                snapshot(body);
+                (0, chai_1.expect)(body.query).to.contain('query pullRequestId');
+                (0, chai_1.expect)(body.variables).to.eql({
+                    owner: 'fake',
+                    repo: 'fake',
+                    pullRequestNumber: 123,
+                });
+                return true;
+            })
+                .reply(200, {
+                data: {
+                    repository: {
+                        pullRequest: {
+                            id: 'someIdForPR123',
+                        },
+                    },
+                },
+            })
+                .put('/repos/fake/fake/pulls/123/merge', {
+                merge_method: 'rebase',
+            })
+                .reply(200);
+            const pullRequest = {
+                title: pull_request_title_1.PullRequestTitle.ofTargetBranch('main', 'next'),
+                body: new pull_request_body_1.PullRequestBody((0, helpers_1.mockReleaseData)(1000), {
+                    useComponents: true,
+                }),
+                labels: [],
+                headRefName: 'release-please--branches--main--changes--next',
+                draft: false,
+                updates: [],
+                conventionalCommits: [],
+            };
+            await github.updatePullRequest(123, pullRequest, 'main', 'next', {
+                autoMerge: { mergeMethod: 'rebase' },
+            });
+            sinon.assert.calledOnce(forkBranchStub);
+            sinon.assert.calledOnce(commitAndPushStub);
+            sinon.assert.calledOnce(getPullRequestStub);
+            sinon.assert.calledOnce(mutatePullRequestEnableAutoMergeStub);
             req.done();
         });
         (0, mocha_1.it)('handles a PR body that is too big', async () => {
@@ -1077,6 +1117,7 @@ const sandbox = sinon.createSandbox();
                 headRefName: 'release-please--branches--main',
                 draft: false,
                 updates: [],
+                conventionalCommits: [],
             };
             const pullRequestOverflowHandler = new helpers_1.MockPullRequestOverflowHandler();
             const handleOverflowStub = sandbox
@@ -1090,6 +1131,183 @@ const sandbox = sinon.createSandbox();
             sinon.assert.calledOnce(forkBranchStub);
             sinon.assert.calledOnce(getPullRequestStub);
             req.done();
+        });
+    });
+    (0, mocha_1.describe)('createPullRequest', () => {
+        (0, mocha_1.it)('handles auto-merge option', async () => {
+            const forkBranchStub = sandbox
+                .stub(github, 'forkBranch') // eslint-disable-line @typescript-eslint/no-explicit-any
+                .withArgs('release-please--branches--main--changes--next', 'next')
+                .resolves('the-pull-request-branch-sha');
+            const commitAndPushStub = sandbox
+                .stub(codeSuggesterCommitAndPush, 'commitAndPush')
+                .withArgs(sinon.match.any, 'the-pull-request-branch-sha', sinon.match.any, sinon.match.has('branch', 'release-please--branches--main--changes--next'), sinon.match.string, true)
+                .resolves();
+            const getPullRequestStub = sandbox
+                .stub(github, 'getPullRequest')
+                .withArgs(123)
+                .resolves({
+                title: 'updated-title',
+                headBranchName: 'release-please--branches--main--changes--next',
+                baseBranchName: 'main',
+                number: 123,
+                body: 'updated body',
+                labels: [],
+                files: [],
+            });
+            req
+                .post('/repos/fake/fake/pulls')
+                .reply(200, {
+                number: 123,
+                title: 'create pr title',
+                body: 'created pr body',
+                labels: [],
+                head: {
+                    ref: 'release-please--branches--main--changes--next',
+                },
+                base: {
+                    ref: 'main',
+                },
+            })
+                .post('/graphql', body => {
+                snapshot(body);
+                (0, chai_1.expect)(body.query).to.contain('query pullRequestId');
+                (0, chai_1.expect)(body.variables).to.eql({
+                    owner: 'fake',
+                    repo: 'fake',
+                    pullRequestNumber: 123,
+                });
+                return true;
+            })
+                .reply(200, {
+                data: {
+                    repository: {
+                        pullRequest: {
+                            id: 'someIdForPR123',
+                        },
+                    },
+                },
+            })
+                .post('/graphql', body => {
+                snapshot(body);
+                (0, chai_1.expect)(body.query).to.contain('mutation mutateEnableAutoMerge');
+                (0, chai_1.expect)(body.variables).to.eql({
+                    pullRequestId: 'someIdForPR123',
+                    mergeMethod: 'REBASE',
+                });
+                return true;
+            })
+                .reply(200, {});
+            const pullRequest = {
+                title: pull_request_title_1.PullRequestTitle.ofTargetBranch('main', 'next').toString(),
+                body: new pull_request_body_1.PullRequestBody((0, helpers_1.mockReleaseData)(1000), {
+                    useComponents: true,
+                }).toString(),
+                labels: [],
+                headBranchName: 'release-please--branches--main--changes--next',
+                baseBranchName: 'main',
+                number: 123,
+                files: [],
+            };
+            await github.createPullRequest(pullRequest, 'main', 'next', 'some changes', [], {
+                autoMerge: { mergeMethod: 'rebase' },
+            });
+            req.done();
+            sinon.assert.calledOnce(forkBranchStub);
+            sinon.assert.calledOnce(commitAndPushStub);
+            sinon.assert.calledOnce(getPullRequestStub);
+        });
+        (0, mocha_1.it)('merges release PR directly when an auto-merge given but PR in "clean status"', async () => {
+            const forkBranchStub = sandbox
+                .stub(github, 'forkBranch') // eslint-disable-line @typescript-eslint/no-explicit-any
+                .withArgs('release-please--branches--main--changes--next', 'next')
+                .resolves('the-pull-request-branch-sha');
+            const commitAndPushStub = sandbox
+                .stub(codeSuggesterCommitAndPush, 'commitAndPush')
+                .withArgs(sinon.match.any, 'the-pull-request-branch-sha', sinon.match.any, sinon.match.has('branch', 'release-please--branches--main--changes--next'), sinon.match.string, true)
+                .resolves();
+            const getPullRequestStub = sandbox
+                .stub(github, 'getPullRequest')
+                .withArgs(123)
+                .resolves({
+                title: 'updated-title',
+                headBranchName: 'release-please--branches--main--changes--next',
+                baseBranchName: 'main',
+                number: 123,
+                body: 'updated body',
+                labels: [],
+                files: [],
+            });
+            const mutatePullRequestEnableAutoMergeStub = sandbox
+                .stub(github, 'mutatePullRequestEnableAutoMerge') // eslint-disable-line @typescript-eslint/no-explicit-any
+                .throws(new graphql_1.GraphqlResponseError({ method: 'GET', url: '/foo/bar' }, {}, {
+                data: {},
+                errors: [
+                    {
+                        type: 'UNPROCESSABLE',
+                        message: '["Pull request Pull request is in clean status"]',
+                        path: ['foo'],
+                        extensions: {},
+                        locations: [{ line: 123, column: 456 }],
+                    },
+                ],
+            }));
+            req
+                .post('/repos/fake/fake/pulls')
+                .reply(200, {
+                number: 123,
+                title: 'create pr title',
+                body: 'created pr body',
+                labels: [],
+                head: {
+                    ref: 'release-please--branches--main--changes--next',
+                },
+                base: {
+                    ref: 'main',
+                },
+            })
+                .post('/graphql', body => {
+                snapshot(body);
+                (0, chai_1.expect)(body.query).to.contain('query pullRequestId');
+                (0, chai_1.expect)(body.variables).to.eql({
+                    owner: 'fake',
+                    repo: 'fake',
+                    pullRequestNumber: 123,
+                });
+                return true;
+            })
+                .reply(200, {
+                data: {
+                    repository: {
+                        pullRequest: {
+                            id: 'someIdForPR123',
+                        },
+                    },
+                },
+            })
+                .put('/repos/fake/fake/pulls/123/merge', {
+                merge_method: 'rebase',
+            })
+                .reply(200);
+            const pullRequest = {
+                title: pull_request_title_1.PullRequestTitle.ofTargetBranch('main', 'next').toString(),
+                body: new pull_request_body_1.PullRequestBody((0, helpers_1.mockReleaseData)(1000), {
+                    useComponents: true,
+                }).toString(),
+                labels: [],
+                headBranchName: 'release-please--branches--main--changes--next',
+                baseBranchName: 'main',
+                number: 123,
+                files: [],
+            };
+            await github.createPullRequest(pullRequest, 'main', 'next', 'some changes', [], {
+                autoMerge: { mergeMethod: 'rebase' },
+            });
+            req.done();
+            sinon.assert.calledOnce(forkBranchStub);
+            sinon.assert.calledOnce(commitAndPushStub);
+            sinon.assert.calledOnce(getPullRequestStub);
+            sinon.assert.calledOnce(mutatePullRequestEnableAutoMergeStub);
         });
     });
     (0, mocha_1.describe)('isBranchASyncedWithB', () => {

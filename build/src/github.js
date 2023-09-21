@@ -35,7 +35,7 @@ const plugin_retry_1 = require("@octokit/plugin-retry");
 const plugin_throttling_1 = require("@octokit/plugin-throttling");
 class GitHub {
     constructor(options) {
-        var _a, _b;
+        var _a, _b, _c;
         /**
          * Get the list of file paths modified in a given commit.
          *
@@ -67,7 +67,7 @@ class GitHub {
         });
         this.graphqlRequest = wrapAsync(async (opts, options) => {
             var _a;
-            let maxRetries = (_a = options === null || options === void 0 ? void 0 : options.maxRetries) !== null && _a !== void 0 ? _a : 5;
+            let maxRetries = (_a = options === null || options === void 0 ? void 0 : options.maxRetries) !== null && _a !== void 0 ? _a : this.graphqlRetries;
             let seconds = 1;
             while (maxRetries >= 0) {
                 try {
@@ -180,8 +180,19 @@ class GitHub {
                 repo: this.repository.repo,
                 owner: this.repository.owner,
             }, pullRequestNumber, pullRequest.labels);
+            // attempt to enable auto-merge
+            let directlyMerged = false;
+            if (options === null || options === void 0 ? void 0 : options.autoMerge) {
+                try {
+                    const result = await this.enablePullRequestAutoMerge(pullRequestNumber, options.autoMerge.mergeMethod);
+                    directlyMerged = result === 'direct-merged';
+                }
+                catch (e) {
+                    this.logger.error((0, errors_1.isOctokitGraphqlResponseError)(e) ? e.errors || [] : e, 'Failed to enable auto merge. Continuing.');
+                }
+            }
             // assign reviewers
-            if (options === null || options === void 0 ? void 0 : options.reviewers) {
+            if (!directlyMerged && (options === null || options === void 0 ? void 0 : options.reviewers)) {
                 try {
                     await this.octokit.pulls.requestReviewers({
                         owner: this.repository.owner,
@@ -191,7 +202,7 @@ class GitHub {
                     });
                 }
                 catch (error) {
-                    console.log(`Failed to add reviewers. Continuing anyway: ${(0, errors_1.isOctokitRequestError)(error) ? error.message : error}`);
+                    this.logger.error((0, errors_1.isOctokitRequestError)(error) ? error.message : error, 'Failed to add reviewers. Continuing.');
                 }
             }
             return await this.getPullRequest(pullRequestNumber);
@@ -254,6 +265,7 @@ class GitHub {
                 fork: options === null || options === void 0 ? void 0 : options.fork,
                 reviewers: options === null || options === void 0 ? void 0 : options.reviewers,
                 existingPrNumber: number,
+                autoMerge: options === null || options === void 0 ? void 0 : options.autoMerge,
             });
             const response = await this.octokit.pulls.update({
                 owner: this.repository.owner,
@@ -395,6 +407,7 @@ class GitHub {
         this.fileCache = new git_file_utils_1.RepositoryFileCache(this.octokit, this.repository);
         this.logger = (_a = options.logger) !== null && _a !== void 0 ? _a : logger_2.logger;
         this.useGraphql = (_b = options.useGraphql) !== null && _b !== void 0 ? _b : true;
+        this.graphqlRetries = (_c = options.graphqlRetries) !== null && _c !== void 0 ? _c : 5;
         // required to be able to rely on functions from code-suggester
         (0, logger_1.setupLogger)(this.logger);
     }
@@ -507,6 +520,7 @@ class GitHub {
             octokitAPIs: apis,
             logger,
             useGraphql: options.useGraphql,
+            graphqlRetries: options.graphqlRetries,
         };
         return new GitHub(opts);
     }
@@ -1114,37 +1128,6 @@ class GitHub {
         return JSON.parse(content.parsedContent);
     }
     /**
-     * Open a pull request
-     *
-     * @deprecated This logic is handled by the Manifest class now as it
-     *   can be more complicated if the release notes are too big
-     * @param {ReleasePullRequest} releasePullRequest Pull request data to update
-     * @param {string} targetBranch The base branch of the pull request
-     * @param {GitHubPR} options The pull request options
-     * @throws {GitHubAPIError} on an API error
-     */
-    async createReleasePullRequest(releasePullRequest, targetBranch, changesBranch, options) {
-        let message = releasePullRequest.title.toString();
-        if (options === null || options === void 0 ? void 0 : options.signoffUser) {
-            message = (0, signoff_commit_message_1.signoffCommitMessage)(message, options.signoffUser);
-        }
-        const pullRequestLabels = (options === null || options === void 0 ? void 0 : options.skipLabeling)
-            ? []
-            : releasePullRequest.labels;
-        return await this.createPullRequest({
-            headBranchName: releasePullRequest.headRefName,
-            baseBranchName: targetBranch,
-            number: -1,
-            title: releasePullRequest.title.toString(),
-            body: releasePullRequest.body.toString().slice(0, MAX_ISSUE_BODY_SIZE),
-            labels: pullRequestLabels,
-            files: [],
-        }, targetBranch, changesBranch, message, releasePullRequest.updates, {
-            fork: options === null || options === void 0 ? void 0 : options.fork,
-            draft: releasePullRequest.draft,
-        });
-    }
-    /**
      * Given a set of proposed updates, build a changeset to suggest.
      *
      * @param {Update[]} updates The proposed updates
@@ -1664,6 +1647,85 @@ class GitHub {
     }
     invalidateFileCache() {
         this.fileCache = new git_file_utils_1.RepositoryFileCache(this.octokit, this.repository);
+    }
+    async queryPullRequestId(pullRequestNumber) {
+        var _a, _b;
+        const query = `query pullRequestId($owner: String!, $repo: String!, $pullRequestNumber: Int!) {
+        repository(name: $repo, owner: $owner) {
+          pullRequest(number: $pullRequestNumber) {
+            id
+          }
+        }
+      }`;
+        const response = await this.graphqlRequest({
+            query,
+            owner: this.repository.owner,
+            repo: this.repository.repo,
+            pullRequestNumber,
+        });
+        this.logger.debug(response, 'queryPullrequestId');
+        const id = (_b = (_a = response === null || response === void 0 ? void 0 : response.repository) === null || _a === void 0 ? void 0 : _a.pullRequest) === null || _b === void 0 ? void 0 : _b.id;
+        if (id) {
+            return id;
+        }
+        return undefined;
+    }
+    async mutatePullRequestEnableAutoMerge(pullRequestId, mergeMethod) {
+        const mutation = `mutation mutateEnableAutoMerge($pullRequestId: ID!, $mergeMethod: PullRequestMergeMethod) {
+      enablePullRequestAutoMerge(
+        input: {pullRequestId: $pullRequestId, mergeMethod: $mergeMethod}
+      ) {
+        pullRequest {
+          autoMergeRequest{
+            authorEmail,
+            commitBody,
+            commitHeadline,
+            enabledAt,
+            enabledBy {
+              login
+            },
+            mergeMethod,
+            pullRequest{
+              id
+            }
+          }
+        }
+      }
+    }`;
+        const response = await this.graphqlRequest({
+            query: mutation,
+            pullRequestId,
+            mergeMethod: mergeMethod.toUpperCase(),
+        });
+        this.logger.debug({ response }, 'mutatePullrequestEnableAutoMerge');
+    }
+    async enablePullRequestAutoMerge(pullRequestNumber, mergeMethod) {
+        this.logger.debug('Enable PR auto-merge');
+        const prId = await this.queryPullRequestId(pullRequestNumber);
+        if (!prId) {
+            throw new Error(`No id found for pull request ${pullRequestNumber}`);
+        }
+        try {
+            await this.mutatePullRequestEnableAutoMerge(prId, mergeMethod);
+            return 'auto-merged';
+        }
+        catch (e) {
+            if ((0, errors_1.isOctokitGraphqlResponseError)(e) &&
+                (e.errors || []).find(err => err.type === 'UNPROCESSABLE' &&
+                    err.message.includes('Pull request is in clean status'))) {
+                this.logger.debug('PR can be merged directly, do it instead of via GitHub auto-merge');
+                await this.octokit.pulls.merge({
+                    owner: this.repository.owner,
+                    repo: this.repository.repo,
+                    pull_number: pullRequestNumber,
+                    merge_method: mergeMethod,
+                });
+                return 'direct-merged';
+            }
+            else {
+                throw e;
+            }
+        }
     }
 }
 exports.GitHub = GitHub;
