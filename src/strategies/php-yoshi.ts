@@ -214,7 +214,9 @@ export class PHPYoshi extends BaseStrategy {
       labels: [...labels, ...this.extraLabels],
       headRefName: branchName.toString(),
       version: newVersion,
+      previousVersion: latestRelease?.tag.version,
       draft: draft ?? false,
+      conventionalCommits,
     };
   }
 

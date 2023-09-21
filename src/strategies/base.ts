@@ -471,7 +471,9 @@ If you instead want to use the version number \`${newVersion}\` generated from c
       labels: [...labels, ...this.extraLabels],
       headRefName: (await this.getBranchName()).toString(),
       version: newVersion,
+      previousVersion: latestRelease?.tag.version,
       draft: draft ?? false,
+      conventionalCommits,
     };
   }
 

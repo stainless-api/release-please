@@ -411,6 +411,32 @@ exports['GitHub commitsSince paginates through commits 1'] = [
   }
 ]
 
+exports['GitHub createPullRequest handles auto-merge option 1'] = {
+  "query": "query pullRequestId($owner: String!, $repo: String!, $pullRequestNumber: Int!) {\n        repository(name: $repo, owner: $owner) {\n          pullRequest(number: $pullRequestNumber) {\n            id\n          }\n        }\n      }",
+  "variables": {
+    "owner": "fake",
+    "repo": "fake",
+    "pullRequestNumber": 123
+  }
+}
+
+exports['GitHub createPullRequest handles auto-merge option 2'] = {
+  "query": "mutation mutateEnableAutoMerge($pullRequestId: ID!, $mergeMethod: PullRequestMergeMethod) {\n      enablePullRequestAutoMerge(\n        input: {pullRequestId: $pullRequestId, mergeMethod: $mergeMethod}\n      ) {\n        pullRequest {\n          autoMergeRequest{\n            authorEmail,\n            commitBody,\n            commitHeadline,\n            enabledAt,\n            enabledBy {\n              login\n            },\n            mergeMethod,\n            pullRequest{\n              id\n            }\n          }\n        }\n      }\n    }",
+  "variables": {
+    "pullRequestId": "someIdForPR123",
+    "mergeMethod": "REBASE"
+  }
+}
+
+exports['GitHub createPullRequest merges release PR directly when an auto-merge given but PR in "clean status" 1'] = {
+  "query": "query pullRequestId($owner: String!, $repo: String!, $pullRequestNumber: Int!) {\n        repository(name: $repo, owner: $owner) {\n          pullRequest(number: $pullRequestNumber) {\n            id\n          }\n        }\n      }",
+  "variables": {
+    "owner": "fake",
+    "repo": "fake",
+    "pullRequestNumber": 123
+  }
+}
+
 exports['GitHub createRelease should create a draft release 1'] = {
   "tag_name": "v1.2.3",
   "body": "Some release notes",
@@ -449,30 +475,6 @@ exports['GitHub createRelease should raise a RequestError for other validation e
   "draft": false,
   "prerelease": false,
   "target_commitish": "abc123"
-}
-
-exports['GitHub createReleasePullRequest should create missing file 1'] = {
-  "title": "chore(main): release",
-  "head": "release-please--branches--main",
-  "base": "main",
-  "body": ":sparkles: Stainless prepared a new release\n---\n\n\n\n\n---\nThis Pull Request has been generated automatically as part of [Stainless](https://stainlessapi.com/)'s release process.\nFor a better experience, it is recommended to use either rebase-merge or squash-merge when merging this pull request ([see details](https://github.com/stainless-api/release-please/#linear-git-commit-history-use-squash-merge)).\n\n_More technical details can be found at [stainless-api/release-please](https://github.com/stainless-api/release-please)_.",
-  "draft": false
-}
-
-exports['GitHub createReleasePullRequest should handle missing files 1'] = {
-  "title": "chore(main): release",
-  "head": "release-please--branches--main",
-  "base": "main",
-  "body": ":sparkles: Stainless prepared a new release\n---\n\n\n\n\n---\nThis Pull Request has been generated automatically as part of [Stainless](https://stainlessapi.com/)'s release process.\nFor a better experience, it is recommended to use either rebase-merge or squash-merge when merging this pull request ([see details](https://github.com/stainless-api/release-please/#linear-git-commit-history-use-squash-merge)).\n\n_More technical details can be found at [stainless-api/release-please](https://github.com/stainless-api/release-please)_.",
-  "draft": false
-}
-
-exports['GitHub createReleasePullRequest should update file 1'] = {
-  "title": "chore(main): release",
-  "head": "release-please--branches--main",
-  "base": "main",
-  "body": ":sparkles: Stainless prepared a new release\n---\n\n\n\n\n---\nThis Pull Request has been generated automatically as part of [Stainless](https://stainlessapi.com/)'s release process.\nFor a better experience, it is recommended to use either rebase-merge or squash-merge when merging this pull request ([see details](https://github.com/stainless-api/release-please/#linear-git-commit-history-use-squash-merge)).\n\n_More technical details can be found at [stainless-api/release-please](https://github.com/stainless-api/release-please)_.",
-  "draft": false
 }
 
 exports['GitHub findFilesByExtension returns files matching the requested pattern 1'] = [
@@ -1313,3 +1315,29 @@ exports['GitHub pullRequestIterator uses REST API if files are not needed 1'] = 
     "sha": "abc123"
   }
 ]
+
+exports['GitHub updatePullRequest handles auto-merge option 1'] = {
+  "query": "query pullRequestId($owner: String!, $repo: String!, $pullRequestNumber: Int!) {\n        repository(name: $repo, owner: $owner) {\n          pullRequest(number: $pullRequestNumber) {\n            id\n          }\n        }\n      }",
+  "variables": {
+    "owner": "fake",
+    "repo": "fake",
+    "pullRequestNumber": 123
+  }
+}
+
+exports['GitHub updatePullRequest handles auto-merge option 2'] = {
+  "query": "mutation mutateEnableAutoMerge($pullRequestId: ID!, $mergeMethod: PullRequestMergeMethod) {\n      enablePullRequestAutoMerge(\n        input: {pullRequestId: $pullRequestId, mergeMethod: $mergeMethod}\n      ) {\n        pullRequest {\n          autoMergeRequest{\n            authorEmail,\n            commitBody,\n            commitHeadline,\n            enabledAt,\n            enabledBy {\n              login\n            },\n            mergeMethod,\n            pullRequest{\n              id\n            }\n          }\n        }\n      }\n    }",
+  "variables": {
+    "pullRequestId": "someIdForPR123",
+    "mergeMethod": "REBASE"
+  }
+}
+
+exports['GitHub updatePullRequest merges release PR directly when an auto-merge given but PR in "clean status" 1'] = {
+  "query": "query pullRequestId($owner: String!, $repo: String!, $pullRequestNumber: Int!) {\n        repository(name: $repo, owner: $owner) {\n          pullRequest(number: $pullRequestNumber) {\n            id\n          }\n        }\n      }",
+  "variables": {
+    "owner": "fake",
+    "repo": "fake",
+    "pullRequestNumber": 123
+  }
+}

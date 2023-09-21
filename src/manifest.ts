@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import {ChangelogSection} from './changelog-notes';
-import {GitHub, GitHubRelease, GitHubTag} from './github';
+import {GitHub, GitHubRelease, GitHubTag, MergeMethod} from './github';
 import {Version, VersionsMap} from './version';
 import {Commit, parseConventionalCommits} from './commit';
 import {PullRequest} from './pull-request';
@@ -188,6 +188,7 @@ export interface ManifestOptions {
   plugins?: PluginType[];
   fork?: boolean;
   reviewers?: string[];
+  autoMerge?: AutoMergeOption;
   signoff?: string;
   manifestPath?: string;
   labels?: string[];
@@ -283,6 +284,22 @@ export interface CreatedRelease extends GitHubRelease {
   patch: number;
 }
 
+/**
+ * Option to control when to auto-merge release PRs. If no filter have been provided, never auto-merge. If both
+ * conventionalCommitFilter and versionBumpFilter are provided we take the intersection (AND operation).
+ */
+export type AutoMergeOption = {
+  mergeMethod: MergeMethod;
+  /**
+   * Only auto merge if all conventional commits of the PR match the filter
+   */
+  conventionalCommitFilter?: {type: string; scope?: string}[];
+  /**
+   * Only auto merge if the version bump match the filter
+   */
+  versionBumpFilter?: ('major' | 'minor' | 'patch' | 'build')[];
+};
+
 export class Manifest {
   private repository: Repository;
   private github: GitHub;
@@ -293,6 +310,7 @@ export class Manifest {
   private separatePullRequests: boolean;
   readonly fork: boolean;
   private reviewers: string[];
+  private autoMerge?: AutoMergeOption;
   private signoffUser?: string;
   private labels: string[];
   private skipLabeling?: boolean;
@@ -362,6 +380,7 @@ export class Manifest {
       Object.keys(repositoryConfig).length === 1;
     this.fork = manifestOptions?.fork || false;
     this.reviewers = manifestOptions?.reviewers ?? [];
+    this.autoMerge = manifestOptions?.autoMerge;
     this.signoffUser = manifestOptions?.signoff;
     this.releaseLabels =
       manifestOptions?.releaseLabels || DEFAULT_RELEASE_LABELS;
@@ -1040,6 +1059,7 @@ export class Manifest {
         fork: this.fork,
         draft: pullRequest.draft,
         reviewers: this.reviewers,
+        autoMerge: this.pullRequestAutoMergeOption(pullRequest),
       }
     );
 
@@ -1072,6 +1092,7 @@ export class Manifest {
         reviewers: this.reviewers,
         signoffUser: this.signoffUser,
         pullRequestOverflowHandler: this.pullRequestOverflowHandler,
+        autoMerge: this.pullRequestAutoMergeOption(pullRequest),
       }
     );
 
@@ -1099,6 +1120,7 @@ export class Manifest {
         fork: this.fork,
         signoffUser: this.signoffUser,
         pullRequestOverflowHandler: this.pullRequestOverflowHandler,
+        autoMerge: this.pullRequestAutoMergeOption(pullRequest),
       }
     );
     // TODO: consider leaving the snooze label
@@ -1537,6 +1559,60 @@ export class Manifest {
       }
     }
     return this._pathsByComponent;
+  }
+
+  /**
+   * Only return the auto-merge option if the release PR match filters. If no filter provided, do not auto merge. If
+   * multiple filters are provided we take the intersection (AND operation).
+   */
+  pullRequestAutoMergeOption(
+    pullRequest: ReleasePullRequest
+  ): AutoMergeOption | undefined {
+    const {versionBumpFilter, conventionalCommitFilter} = this.autoMerge || {};
+
+    // if the version bump do not match any provided filter value, do not auto-merge
+    const applyVersionBumpFilter = () => {
+      const versionBump =
+        pullRequest.version &&
+        pullRequest.previousVersion &&
+        pullRequest.version.compareBump(pullRequest.previousVersion);
+      return (
+        versionBump && versionBumpFilter?.find(filter => versionBump === filter)
+      );
+    };
+
+    // given two sets of type:scope items, if any item from commitSet isn't in filterSet do not auto-merge
+    const applyConventionalCommitFilter = () => {
+      if (pullRequest.conventionalCommits.length === 0) {
+        return false;
+      }
+      const filterSet = new Set(
+        conventionalCommitFilter!.map(
+          filter => `${filter.type}:${filter.scope ? filter.scope : '*'}`
+        )
+      );
+      for (const commit of pullRequest.conventionalCommits) {
+        if (
+          !filterSet.has(`${commit.type}:${commit.scope}`) &&
+          !filterSet.has(`${commit.type}:*`)
+        ) {
+          return false;
+        }
+      }
+      return true;
+    };
+
+    const selected =
+      conventionalCommitFilter?.length && versionBumpFilter?.length
+        ? applyConventionalCommitFilter() && applyVersionBumpFilter()
+        : conventionalCommitFilter?.length
+        ? applyConventionalCommitFilter()
+        : versionBumpFilter?.length
+        ? applyVersionBumpFilter()
+        : // no filter provided
+          false;
+
+    return selected ? this.autoMerge : undefined;
   }
 }
 

@@ -28,6 +28,7 @@ import {
   FileNotFoundError,
   ConfigurationError,
   isOctokitRequestError,
+  isOctokitGraphqlResponseError,
 } from './errors';
 
 const MAX_ISSUE_BODY_SIZE = 65536;
@@ -71,6 +72,7 @@ export interface GitHubOptions {
   octokitAPIs: OctokitAPIs;
   logger?: Logger;
   useGraphql?: boolean;
+  graphqlRetries?: number;
 }
 
 interface ProxyOption {
@@ -91,6 +93,7 @@ interface GitHubCreateOptions {
   useGraphql?: boolean;
   retries?: number;
   throttlingRetries?: number;
+  graphqlRetries?: number;
 }
 
 type CommitFilter = (commit: Commit) => boolean;
@@ -213,10 +216,15 @@ interface FileDiff {
 }
 export type ChangeSet = Map<string, FileDiff>;
 
+export type MergeMethod = 'merge' | 'squash' | 'rebase';
+
 interface CreatePullRequestOptions {
   fork?: boolean;
   draft?: boolean;
   reviewers?: string[];
+  autoMerge?: {
+    mergeMethod: MergeMethod;
+  };
   /**
    * If the number of an existing pull request is passed, its HEAD branch and attributes (title, labels, etc) will be
    * updated instead of creating a new pull request.
@@ -228,6 +236,9 @@ interface UpdatePullRequestOptions {
   signoffUser?: string;
   fork?: boolean;
   reviewers?: string[];
+  autoMerge?: {
+    mergeMethod: MergeMethod;
+  };
   pullRequestOverflowHandler?: PullRequestOverflowHandler;
 }
 
@@ -239,6 +250,7 @@ export class GitHub {
   private fileCache: RepositoryFileCache;
   private logger: Logger;
   private useGraphql: boolean;
+  private graphqlRetries: number;
 
   private constructor(options: GitHubOptions) {
     this.repository = options.repository;
@@ -248,6 +260,7 @@ export class GitHub {
     this.fileCache = new RepositoryFileCache(this.octokit, this.repository);
     this.logger = options.logger ?? defaultLogger;
     this.useGraphql = options.useGraphql ?? true;
+    this.graphqlRetries = options.graphqlRetries ?? 5;
 
     // required to be able to rely on functions from code-suggester
     setupLogger(this.logger);
@@ -364,7 +377,7 @@ export class GitHub {
       }),
     };
 
-    const opts = {
+    const opts: GitHubOptions = {
       repository: {
         owner: options.owner,
         repo: options.repo,
@@ -379,6 +392,7 @@ export class GitHub {
       octokitAPIs: apis,
       logger,
       useGraphql: options.useGraphql,
+      graphqlRetries: options.graphqlRetries,
     };
     return new GitHub(opts);
   }
@@ -736,7 +750,7 @@ export class GitHub {
         maxRetries?: number;
       }
     ) => {
-      let maxRetries = options?.maxRetries ?? 5;
+      let maxRetries = options?.maxRetries ?? this.graphqlRetries;
       let seconds = 1;
       while (maxRetries >= 0) {
         try {
@@ -1218,54 +1232,6 @@ export class GitHub {
   );
 
   /**
-   * Open a pull request
-   *
-   * @deprecated This logic is handled by the Manifest class now as it
-   *   can be more complicated if the release notes are too big
-   * @param {ReleasePullRequest} releasePullRequest Pull request data to update
-   * @param {string} targetBranch The base branch of the pull request
-   * @param {GitHubPR} options The pull request options
-   * @throws {GitHubAPIError} on an API error
-   */
-  async createReleasePullRequest(
-    releasePullRequest: ReleasePullRequest,
-    targetBranch: string,
-    changesBranch: string,
-    options?: {
-      signoffUser?: string;
-      fork?: boolean;
-      skipLabeling?: boolean;
-    }
-  ): Promise<PullRequest> {
-    let message = releasePullRequest.title.toString();
-    if (options?.signoffUser) {
-      message = signoffCommitMessage(message, options.signoffUser);
-    }
-    const pullRequestLabels: string[] = options?.skipLabeling
-      ? []
-      : releasePullRequest.labels;
-    return await this.createPullRequest(
-      {
-        headBranchName: releasePullRequest.headRefName,
-        baseBranchName: targetBranch,
-        number: -1,
-        title: releasePullRequest.title.toString(),
-        body: releasePullRequest.body.toString().slice(0, MAX_ISSUE_BODY_SIZE),
-        labels: pullRequestLabels,
-        files: [],
-      },
-      targetBranch,
-      changesBranch,
-      message,
-      releasePullRequest.updates,
-      {
-        fork: options?.fork,
-        draft: releasePullRequest.draft,
-      }
-    );
-  }
-
-  /**
    * Open a pull request and its release branch
    *
    * @param {PullRequest} pullRequest Pull request data to update
@@ -1340,8 +1306,25 @@ export class GitHub {
         pullRequest.labels
       );
 
+      // attempt to enable auto-merge
+      let directlyMerged = false;
+      if (options?.autoMerge) {
+        try {
+          const result = await this.enablePullRequestAutoMerge(
+            pullRequestNumber,
+            options.autoMerge.mergeMethod
+          );
+          directlyMerged = result === 'direct-merged';
+        } catch (e: unknown) {
+          this.logger.error(
+            isOctokitGraphqlResponseError(e) ? e.errors || [] : (e as {}),
+            'Failed to enable auto merge. Continuing.'
+          );
+        }
+      }
+
       // assign reviewers
-      if (options?.reviewers) {
+      if (!directlyMerged && options?.reviewers) {
         try {
           await this.octokit.pulls.requestReviewers({
             owner: this.repository.owner,
@@ -1349,11 +1332,10 @@ export class GitHub {
             pull_number: pullRequestNumber,
             reviewers: options.reviewers,
           });
-        } catch (error) {
-          console.log(
-            `Failed to add reviewers. Continuing anyway: ${
-              isOctokitRequestError(error) ? error.message : error
-            }`
+        } catch (error: unknown) {
+          this.logger.error(
+            isOctokitRequestError(error) ? error.message : (error as {}),
+            'Failed to add reviewers. Continuing.'
           );
         }
       }
@@ -1440,6 +1422,7 @@ export class GitHub {
           fork: options?.fork,
           reviewers: options?.reviewers,
           existingPrNumber: number,
+          autoMerge: options?.autoMerge,
         }
       );
 
@@ -2324,6 +2307,103 @@ export class GitHub {
 
   invalidateFileCache() {
     this.fileCache = new RepositoryFileCache(this.octokit, this.repository);
+  }
+
+  private async queryPullRequestId(
+    pullRequestNumber: number
+  ): Promise<string | undefined> {
+    const query = `query pullRequestId($owner: String!, $repo: String!, $pullRequestNumber: Int!) {
+        repository(name: $repo, owner: $owner) {
+          pullRequest(number: $pullRequestNumber) {
+            id
+          }
+        }
+      }`;
+    const response = await this.graphqlRequest({
+      query,
+      owner: this.repository.owner,
+      repo: this.repository.repo,
+      pullRequestNumber,
+    });
+
+    this.logger.debug(response, 'queryPullrequestId');
+
+    const id = response?.repository?.pullRequest?.id;
+    if (id) {
+      return id as string;
+    }
+    return undefined;
+  }
+
+  private async mutatePullRequestEnableAutoMerge(
+    pullRequestId: string,
+    mergeMethod: MergeMethod
+  ) {
+    const mutation = `mutation mutateEnableAutoMerge($pullRequestId: ID!, $mergeMethod: PullRequestMergeMethod) {
+      enablePullRequestAutoMerge(
+        input: {pullRequestId: $pullRequestId, mergeMethod: $mergeMethod}
+      ) {
+        pullRequest {
+          autoMergeRequest{
+            authorEmail,
+            commitBody,
+            commitHeadline,
+            enabledAt,
+            enabledBy {
+              login
+            },
+            mergeMethod,
+            pullRequest{
+              id
+            }
+          }
+        }
+      }
+    }`;
+    const response = await this.graphqlRequest({
+      query: mutation,
+      pullRequestId,
+      mergeMethod: mergeMethod.toUpperCase(),
+    });
+
+    this.logger.debug({response}, 'mutatePullrequestEnableAutoMerge');
+  }
+
+  private async enablePullRequestAutoMerge(
+    pullRequestNumber: number,
+    mergeMethod: MergeMethod
+  ): Promise<'auto-merged' | 'direct-merged'> {
+    this.logger.debug('Enable PR auto-merge');
+    const prId = await this.queryPullRequestId(pullRequestNumber);
+    if (!prId) {
+      throw new Error(`No id found for pull request ${pullRequestNumber}`);
+    }
+    try {
+      await this.mutatePullRequestEnableAutoMerge(prId, mergeMethod);
+      return 'auto-merged';
+    } catch (e: unknown) {
+      if (
+        isOctokitGraphqlResponseError(e) &&
+        (e.errors || []).find(
+          err =>
+            err.type === 'UNPROCESSABLE' &&
+            err.message.includes('Pull request is in clean status')
+        )
+      ) {
+        this.logger.debug(
+          'PR can be merged directly, do it instead of via GitHub auto-merge'
+        );
+        await this.octokit.pulls.merge({
+          owner: this.repository.owner,
+          repo: this.repository.repo,
+          pull_number: pullRequestNumber,
+          merge_method: mergeMethod,
+        });
+        return 'direct-merged';
+      } else {
+        throw e;
+      }
+    }
   }
 }
 
