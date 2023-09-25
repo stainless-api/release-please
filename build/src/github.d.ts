@@ -1,3 +1,4 @@
+/// <reference types="node" />
 import { PullRequest } from './pull-request';
 import { Commit } from './commit';
 import { Octokit } from '@octokit/rest';
@@ -12,6 +13,7 @@ import { Release } from './release';
 import { GitHubFileContents } from '@google-automations/git-file-utils';
 import { Logger } from 'code-suggester/build/src/types';
 import { PullRequestOverflowHandler } from './util/pull-request-overflow-handler';
+import { Agent } from 'http';
 type RequestBuilderType = typeof request;
 type DefaultFunctionType = RequestBuilderType['defaults'];
 type RequestFunctionType = ReturnType<DefaultFunctionType>;
@@ -114,7 +116,7 @@ export declare class GitHub {
     private useGraphql;
     private graphqlRetries;
     private constructor();
-    static createDefaultAgent(baseUrl: string, defaultProxy?: ProxyOption): import("https-proxy-agent/dist/agent").default | import("http-proxy-agent/dist/agent").default | undefined;
+    static createDefaultAgent(baseUrl: string, defaultProxy?: ProxyOption): Agent | undefined;
     /**
      * Build a new GitHub client with auto-detected default branch.
      *
