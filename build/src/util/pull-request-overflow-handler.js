@@ -17,6 +17,7 @@ exports.FilePullRequestOverflowHandler = void 0;
 const pull_request_body_1 = require("./pull-request-body");
 const logger_1 = require("./logger");
 const url_1 = require("url");
+const errors_1 = require("../errors");
 const MAX_ISSUE_BODY_SIZE = 65536;
 const OVERFLOW_MESSAGE = 'This release is too large to preview in the pull request body. View the full release notes here:';
 const OVERFLOW_MESSAGE_REGEX = new RegExp(`${OVERFLOW_MESSAGE} (?<url>.*)`);
@@ -65,8 +66,18 @@ class FilePullRequestOverflowHandler {
             const url = new url_1.URL(match.groups.url);
             const pathMatch = url.pathname.match(FILE_PATH_REGEX);
             if ((_b = pathMatch === null || pathMatch === void 0 ? void 0 : pathMatch.groups) === null || _b === void 0 ? void 0 : _b.branchName) {
-                const fileContents = await this.github.getFileContentsOnBranch(RELEASE_NOTES_FILENAME, pathMatch.groups.branchName);
-                return pull_request_body_1.PullRequestBody.parse(fileContents.parsedContent);
+                try {
+                    const fileContents = await this.github.getFileContentsOnBranch(RELEASE_NOTES_FILENAME, pathMatch.groups.branchName);
+                    return pull_request_body_1.PullRequestBody.parse(fileContents.parsedContent);
+                }
+                catch (err) {
+                    if (err instanceof errors_1.FileNotFoundError) {
+                        // the branch or file have been deleted, do nothing
+                    }
+                    else {
+                        throw err;
+                    }
+                }
             }
             this.logger.warn(`Could not parse branch from ${match.groups.url}`);
             return pull_request_body_1.PullRequestBody.parse(pullRequest.body, this.logger);
