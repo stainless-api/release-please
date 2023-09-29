@@ -14,6 +14,7 @@ import { GitHubFileContents } from '@google-automations/git-file-utils';
 import { Logger } from 'code-suggester/build/src/types';
 import { PullRequestOverflowHandler } from './util/pull-request-overflow-handler';
 import { Agent } from 'http';
+import { Version } from './version';
 type RequestBuilderType = typeof request;
 type DefaultFunctionType = RequestBuilderType['defaults'];
 type RequestFunctionType = ReturnType<DefaultFunctionType>;
@@ -47,6 +48,7 @@ interface GitHubCreateOptions {
     retries?: number;
     throttlingRetries?: number;
     graphqlRetries?: number;
+    version?: Version;
 }
 type CommitFilter = (commit: Commit) => boolean;
 interface CommitIteratorOptions {
@@ -463,6 +465,6 @@ export declare class GitHub {
     private queryPullRequestId;
     private mutatePullRequestEnableAutoMerge;
     private enablePullRequestAutoMerge;
+    private sleepInMs;
 }
-export declare const sleepInMs: (ms: number) => Promise<unknown>;
 export {};

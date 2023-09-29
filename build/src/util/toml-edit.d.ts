@@ -1,3 +1,4 @@
+/// <reference types="iarna__toml" />
 import { JsonMap } from '@iarna/toml';
 import * as TOMLParser from '@iarna/toml/lib/toml-parser';
 /**

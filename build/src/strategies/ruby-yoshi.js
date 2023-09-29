@@ -41,9 +41,9 @@ class RubyYoshi extends base_1.BaseStrategy {
         super({
             ...options,
             changelogSections: CHANGELOG_SECTIONS,
-            commitPartial: (0, fs_1.readFileSync)((0, path_1.resolve)(__dirname, '../../../templates/commit.hbs'), 'utf8'),
-            headerPartial: (0, fs_1.readFileSync)((0, path_1.resolve)(__dirname, '../../../templates/header.hbs'), 'utf8'),
-            mainTemplate: (0, fs_1.readFileSync)((0, path_1.resolve)(__dirname, '../../../templates/template.hbs'), 'utf8'),
+            commitPartial: (0, fs_1.readFileSync)((0, path_1.resolve)(__dirname, '../../templates/commit.hbs'), 'utf8'),
+            headerPartial: (0, fs_1.readFileSync)((0, path_1.resolve)(__dirname, '../../templates/header.hbs'), 'utf8'),
+            mainTemplate: (0, fs_1.readFileSync)((0, path_1.resolve)(__dirname, '../../templates/template.hbs'), 'utf8'),
             tagSeparator: '/',
         });
         this.versionFile = (_a = options.versionFile) !== null && _a !== void 0 ? _a : '';

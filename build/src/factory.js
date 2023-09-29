@@ -12,22 +12,9 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __exportStar = (this && this.__exportStar) || function(m, exports) {
-    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getReleaserTypes = exports.unregisterReleaseType = exports.registerReleaseType = exports.buildStrategy = void 0;
+const tslib_1 = require("tslib");
 const go_1 = require("./strategies/go");
 const go_yoshi_1 = require("./strategies/go-yoshi");
 const java_yoshi_1 = require("./strategies/java-yoshi");
@@ -57,9 +44,9 @@ const maven_1 = require("./strategies/maven");
 const versioning_strategy_factory_1 = require("./factories/versioning-strategy-factory");
 const changelog_notes_factory_1 = require("./factories/changelog-notes-factory");
 const errors_1 = require("./errors");
-__exportStar(require("./factories/changelog-notes-factory"), exports);
-__exportStar(require("./factories/plugin-factory"), exports);
-__exportStar(require("./factories/versioning-strategy-factory"), exports);
+tslib_1.__exportStar(require("./factories/changelog-notes-factory"), exports);
+tslib_1.__exportStar(require("./factories/plugin-factory"), exports);
+tslib_1.__exportStar(require("./factories/versioning-strategy-factory"), exports);
 const releasers = {
     'dotnet-yoshi': options => new dotnet_yoshi_1.DotnetYoshi(options),
     go: options => new go_1.Go(options),

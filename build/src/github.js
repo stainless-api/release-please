@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.sleepInMs = exports.GitHub = exports.GH_GRAPHQL_URL = exports.GH_API_URL = void 0;
+exports.GitHub = exports.GH_GRAPHQL_URL = exports.GH_API_URL = void 0;
 const commit_and_push_1 = require("code-suggester/build/src/github/commit-and-push");
 const labels_1 = require("code-suggester/build/src/github/labels");
 const logger_1 = require("code-suggester/build/src/logger");
@@ -90,7 +90,7 @@ class GitHub {
                 maxRetries -= 1;
                 if (maxRetries >= 0) {
                     this.logger.trace(`sleeping ${seconds} seconds`);
-                    await (0, exports.sleepInMs)(1000 * seconds);
+                    await this.sleepInMs(1000 * seconds);
                     seconds = Math.min(seconds * 2, MAX_SLEEP_SECONDS);
                 }
             }
@@ -441,10 +441,9 @@ class GitHub {
      * @param {string} token Optional. A GitHub API token used for authentication.
      */
     static async create(options) {
-        var _a, _b, _c, _d, _e, _f, _g;
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j;
         const apiUrl = (_a = options.apiUrl) !== null && _a !== void 0 ? _a : exports.GH_API_URL;
         const graphqlUrl = (_b = options.graphqlUrl) !== null && _b !== void 0 ? _b : exports.GH_GRAPHQL_URL;
-        const releasePleaseVersion = require('../../package.json').version;
         const OctokitWithPlugins = rest_1.Octokit.plugin(plugin_retry_1.retry, plugin_throttling_1.throttling);
         const logger = (_c = options.logger) !== null && _c !== void 0 ? _c : logger_2.logger;
         const throttlingRetries = (_d = options.throttlingRetries) !== null && _d !== void 0 ? _d : 0;
@@ -495,7 +494,7 @@ class GitHub {
             request: request_1.request.defaults({
                 baseUrl: apiUrl,
                 headers: {
-                    'user-agent': `release-please/${releasePleaseVersion}`,
+                    'user-agent': `@stainless-api/release-please/${((_g = options.version) === null || _g === void 0 ? void 0 : _g.toString()) || '0.0.0-dev'}`,
                     Authorization: `token ${options.token}`,
                 },
             }),
@@ -505,7 +504,7 @@ class GitHub {
                     agent: this.createDefaultAgent(graphqlUrl, options.proxy),
                 },
                 headers: {
-                    'user-agent': `release-please/${releasePleaseVersion}`,
+                    'user-agent': `@stainless-api/release-please/${((_h = options.version) === null || _h === void 0 ? void 0 : _h.toString()) || '0.0.0-dev'}`,
                     Authorization: `token ${options.token}`,
                     'content-type': 'application/vnd.github.v3+json',
                 },
@@ -515,7 +514,7 @@ class GitHub {
             repository: {
                 owner: options.owner,
                 repo: options.repo,
-                defaultBranch: (_g = options.defaultBranch) !== null && _g !== void 0 ? _g : (await GitHub.defaultBranch(options.owner, options.repo, apis.octokit)),
+                defaultBranch: (_j = options.defaultBranch) !== null && _j !== void 0 ? _j : (await GitHub.defaultBranch(options.owner, options.repo, apis.octokit)),
             },
             octokitAPIs: apis,
             logger,
@@ -1602,7 +1601,7 @@ class GitHub {
                 this.logger.debug(`Release ${tagName} listed on GitHub`);
                 return;
             }
-            await (0, exports.sleepInMs)(500 * attempt);
+            await this.sleepInMs(500 * attempt);
         }
         this.logger.warn(`Release ${tagName} is not yet listed on GitHub`);
     }
@@ -1636,7 +1635,7 @@ class GitHub {
                     throw e;
                 }
             }
-            await (0, exports.sleepInMs)(500 * attempt);
+            await this.sleepInMs(500 * attempt);
         }
         if (notFoundError) {
             throw notFoundError;
@@ -1727,6 +1726,9 @@ class GitHub {
             }
         }
     }
+    sleepInMs(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
 }
 exports.GitHub = GitHub;
 /**
@@ -1765,6 +1767,4 @@ const wrapAsync = (fn, errorHandler) => {
         }
     };
 };
-const sleepInMs = (ms) => new Promise(resolve => setTimeout(resolve, ms));
-exports.sleepInMs = sleepInMs;
 //# sourceMappingURL=github.js.map

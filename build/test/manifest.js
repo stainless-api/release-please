@@ -16,7 +16,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const mocha_1 = require("mocha");
 const manifest_1 = require("../src/manifest");
 const github_1 = require("../src/github");
-const githubModule = require("../src/github");
 const sinon = require("sinon");
 const helpers_1 = require("./helpers");
 const chai_1 = require("chai");
@@ -977,7 +976,7 @@ function pullRequestBody(path) {
                 .post('/graphql')
                 .times(6) // original + 5 retries
                 .reply(502);
-            const sleepStub = sandbox.stub(githubModule, 'sleepInMs').resolves();
+            const sleepStub = sandbox.stub(github, 'sleepInMs').resolves(); // eslint-disable-line @typescript-eslint/no-explicit-any
             await assert.rejects(async () => {
                 await manifest_1.Manifest.fromConfig(github, 'target-branch', {
                     releaseType: 'simple',
@@ -986,7 +985,7 @@ function pullRequestBody(path) {
                     component: 'foobar',
                     includeComponentInTag: false,
                 });
-            }, error => {
+            }, (error) => {
                 return (error instanceof errors_1.GitHubAPIError &&
                     error.status === 502);
             });
@@ -2752,7 +2751,8 @@ version = "3.0.0"
                 mockPlugin.run.returnsArg(0);
                 mockPlugin.preconfigure.returnsArg(0);
                 mockPlugin.processCommits.returnsArg(0);
-                sandbox
+                const pluginFactory = require('../src/factories/plugin-factory');
+                const buildPluginStub = sandbox
                     .stub(pluginFactory, 'buildPlugin')
                     .withArgs(sinon.match.has('type', 'node-workspace'))
                     .returns(mockPlugin);
@@ -2777,6 +2777,7 @@ version = "3.0.0"
                 const pullRequests = await manifest.buildPullRequests([], []);
                 (0, chai_1.expect)(pullRequests).not.empty;
                 sinon.assert.calledOnce(mockPlugin.run);
+                sinon.assert.calledOnce(buildPluginStub);
             });
             (0, mocha_1.it)('should load and run multiple plugins', async () => {
                 const mockPlugin = sandbox.createStubInstance(node_workspace_1.NodeWorkspace);

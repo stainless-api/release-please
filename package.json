@@ -3,25 +3,25 @@
   "version": "0.1.0",
   "description": "Generate release PRs based on the conventionalcommits.org spec",
   "main": "./build/src/index.js",
+  "types": "build/src/index.d.ts",
   "bin": "./build/src/bin/release-please.js",
+  "packageManager": "pnpm@8.8.0",
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8"
+  },
   "scripts": {
-    "test:node18": "cross-env ENVIRONMENT=test LC_ALL=en c8 mocha --node-option no-experimental-fetch --require build/test/_fetch-polyfill.js --recursive --timeout=5000 build/test",
-    "test:node20": "npm run test:node18",
-    "test": "npm run test:node18",
-    "docs": "echo add docs tests",
-    "test:snap": "SNAPSHOT_UPDATE=1 LC_ALL=en npm test",
-    "clean": "gts clean",
-    "prepare": "npm run compile",
+    "build": "tsc",
+    "install": "tsc",
     "lint": "gts check",
-    "compile": "tsc -p .",
-    "cli": "npm run compile && node build/src/bin/release-please.js",
     "fix": "gts fix",
-    "pretest": "npm run compile"
+    "start": "ts-node ./src/bin/release-please.ts",
+    "test": "cross-env ENVIRONMENT=test mocha --require test/_fetch-polyfill.js",
+    "test:snap": "SNAPSHOT_UPDATE=1 LC_ALL=en pnpm test"
   },
   "files": [
     "build/src",
     "templates",
-    "!build/src/**/*.map",
     "schemas"
   ],
   "repository": "stainless-api/release-please",
@@ -42,7 +42,7 @@
   },
   "devDependencies": {
     "@octokit/types": "^9.0.0",
-    "@types/chai": "^4.1.7",
+    "@types/chai": "^4.3.6",
     "@types/diff": "^5.0.2",
     "@types/iarna__toml": "^2.0.1",
     "@types/js-yaml": "^4.0.0",
@@ -54,21 +54,22 @@
     "@types/mocha": "^9.0.0",
     "@types/node": "^18.0.0",
     "@types/node-fetch": "^2.6.4",
-    "@types/pino": "^7.0.0",
     "@types/semver": "^7.0.0",
-    "@types/sinon": "^10.0.0",
+    "@types/sinon": "^10.0.17",
     "@types/xmldom": "^0.1.31",
     "@types/yargs": "^17.0.0",
     "ajv": "^8.11.0",
     "ajv-formats": "^2.1.1",
     "c8": "^8.0.0",
-    "chai": "^4.2.0",
+    "chai": "^4.3.10",
     "cross-env": "^7.0.0",
-    "gts": "^3.1.0",
+    "gts": "^5.0.1",
     "mocha": "^9.2.2",
     "nock": "^13.0.0",
-    "sinon": "15.2.0",
-    "snap-shot-it": "^7.0.0"
+    "sinon": "16.0.0",
+    "snap-shot-it": "^7.0.0",
+    "ts-node": "^10.9.1",
+    "tslib": "^2.6.2"
   },
   "dependencies": {
     "@conventional-commits/parser": "^0.4.1",
@@ -78,7 +79,6 @@
     "@lerna/package": "^6.4.1",
     "@lerna/package-graph": "^6.4.1",
     "@lerna/run-topologically": "^6.4.1",
-    "@octokit/core": "^4.0.0",
     "@octokit/graphql": "^5.0.0",
     "@octokit/plugin-retry": "5.0.5",
     "@octokit/plugin-throttling": "6.1.0",
@@ -101,18 +101,14 @@
     "jsonpath": "^1.1.1",
     "node-fetch": "^2.7.0",
     "node-html-parser": "^6.0.0",
-    "octokit": "3.1.0",
     "parse-github-repo-url": "^1.4.1",
     "semver": "^7.0.0",
     "type-fest": "^3.0.0",
-    "typescript": "^4.6.4",
+    "typescript": "^5.2.2",
     "unist-util-visit": "^2.0.3",
     "unist-util-visit-parents": "^3.1.1",
     "xpath": "^0.0.32",
     "yaml": "^2.2.2",
     "yargs": "^17.0.0"
-  },
-  "engines": {
-    "node": ">=18.0.0"
   }
 }
