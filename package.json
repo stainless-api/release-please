@@ -13,6 +13,8 @@
   "scripts": {
     "build": "tsc --project tsconfig.json",
     "prepare": "tsc --project tsconfig.json",
+    "postinstall": "tsc --project tsconfig.json",
+    "prepack": "tsc --project tsconfig.json",
     "lint": "gts check",
     "fix": "gts fix",
     "start": "ts-node ./src/bin/release-please.ts",
