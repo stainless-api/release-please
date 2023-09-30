@@ -32,6 +32,9 @@ dependencies:
   '@octokit/graphql':
     specifier: ^5.0.0
     version: 5.0.6
+  '@octokit/plugin-paginate-rest':
+    specifier: ^7.1.2
+    version: 7.1.2(@octokit/core@4.2.4)
   '@octokit/plugin-retry':
     specifier: 5.0.5
     version: 5.0.5(@octokit/core@4.2.4)
@@ -497,6 +500,17 @@ packages:
       '@octokit/types': 9.3.2
     dev: false
 
+  /@octokit/plugin-paginate-rest@7.1.2(@octokit/core@4.2.4):
+    resolution: {integrity: sha512-Jx8KuKqEAVRsK6fMzZKv3h6UH9/NRDHsDRtUAROqqmZlCptM///Uef7A1ViZ/cbDplekz7VbDWdFLAZ/mpuDww==}
+    engines: {node: '>= 18'}
+    peerDependencies:
+      '@octokit/core': '>=4'
+    dependencies:
+      '@octokit/core': 4.2.4
+      '@octokit/tsconfig': 2.0.0
+      '@octokit/types': 9.3.2
+    dev: false
+
   /@octokit/plugin-request-log@1.0.4(@octokit/core@4.2.4):
     resolution: {integrity: sha512-mLUsMkgP7K/cnFEw07kWqXGF5LKrOkD+lhCrKvPHXWDywAwuDUeDwWBpc69XK3pNX0uKiVt8g5z96PJ6z9xCFA==}
     peerDependencies:
@@ -584,6 +598,10 @@ packages:
 
   /@octokit/tsconfig@1.0.2:
     resolution: {integrity: sha512-I0vDR0rdtP8p2lGMzvsJzbhdOWy405HcGovrspJ8RRibHnyRgggUSNO5AIox5LmqiwmatHKYsvj6VGFHkqS7lA==}
+    dev: false
+
+  /@octokit/tsconfig@2.0.0:
+    resolution: {integrity: sha512-tWnrai3quGt8+gRN2edzo9fmraWekeryXPeXDomMw2oFSpu/lH3VSWGn/q4V+rwjTRMeeXk/ci623/01Zet4VQ==}
     dev: false
 
   /@octokit/types@10.0.0:
