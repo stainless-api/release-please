@@ -1,6 +1,6 @@
 {
   "name": "@stainless-api/release-please",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Generate release PRs based on the conventionalcommits.org spec",
   "main": "./build/src/index.js",
   "types": "build/src/index.d.ts",
