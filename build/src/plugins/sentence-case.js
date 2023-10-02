@@ -35,7 +35,7 @@ class SentenceCase extends plugin_1.ManifestPlugin {
         this.logger.info(`SentenceCase processing ${commits.length} commits`);
         for (const commit of commits) {
             // The parsed conventional commit message, without the type:
-            console.info(commit.bareMessage);
+            this.logger.info(commit.bareMessage);
             commit.bareMessage = this.toUpperCase(commit.bareMessage);
             // Check whether commit is in conventional commit format, if it is
             // we'll split the string by type and description:
