@@ -1711,7 +1711,8 @@ class GitHub {
         catch (e) {
             if ((0, errors_1.isOctokitGraphqlResponseError)(e) &&
                 (e.errors || []).find(err => err.type === 'UNPROCESSABLE' &&
-                    err.message.includes('Pull request is in clean status'))) {
+                    (err.message.includes('Pull request is in clean status') ||
+                        err.message.includes('Protected branch rules not configured for this branch')))) {
                 this.logger.debug('PR can be merged directly, do it instead of via GitHub auto-merge');
                 await this.octokit.pulls.merge({
                     owner: this.repository.owner,
