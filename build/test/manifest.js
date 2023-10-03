@@ -6439,7 +6439,7 @@ version = "3.0.0"
             sinon.assert.calledOnce(lockBranchStub);
             sinon.assert.calledOnce(unlockBranchStub);
         });
-        (0, mocha_1.it)('should throw when release branch is missing and changes-branch not in synced with target-branch', async () => {
+        (0, mocha_1.it)('should not throw when release branch is missing and changes-branch not in synced with target-branch', async () => {
             mockPullRequests(github, [], [
                 {
                     headBranchName: 'release-please--branches--main--changes--next',
@@ -6510,15 +6510,7 @@ version = "3.0.0"
             }, {
                 '.': version_1.Version.parse('1.3.1'),
             });
-            let err;
-            try {
-                await manifest.createReleases();
-            }
-            catch (e) {
-                err = e;
-            }
-            (0, chai_1.expect)(err).to.be.instanceOf(Error);
-            snapshot(err.message);
+            await manifest.createReleases();
             // releases are still created
             sinon.assert.calledOnce(commentStub);
             sinon.assert.calledOnceWithExactly(addLabelsStub, ['autorelease: tagged'], 1234);

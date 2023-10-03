@@ -28,6 +28,7 @@ const errors_1 = require("./errors");
 const pull_request_overflow_handler_1 = require("./util/pull-request-overflow-handler");
 const signoff_commit_message_1 = require("./util/signoff-commit-message");
 const commit_exclude_1 = require("./util/commit-exclude");
+const logger_2 = require("code-suggester/build/src/logger");
 exports.DEFAULT_RELEASE_PLEASE_CONFIG = 'release-please-config.json';
 exports.DEFAULT_RELEASE_PLEASE_MANIFEST = '.release-please-manifest.json';
 exports.ROOT_PROJECT_PATH = '.';
@@ -131,6 +132,9 @@ class Manifest {
             parseConfig(github, configFile, changesBranch, path, releaseAs),
             parseReleasedVersions(github, manifestFile, changesBranch),
         ]);
+        if (manifestOptions.logger) {
+            (0, logger_2.setupLogger)(manifestOptions.logger);
+        }
         return new Manifest(github, targetBranch, repositoryConfig, releasedVersions, {
             manifestPath: manifestFile,
             ...manifestOptions,
@@ -737,7 +741,12 @@ class Manifest {
         // try to re-align branches to ensure the next release pull request won't face git conflicts. In case of
         // inconsistencies releases are still created but the command fails and won't force a re-alignment between a PR
         // ref branch and base branch.
-        await this.alignPullRequestsChangesBranch(pullRequests);
+        try {
+            await this.alignPullRequestsChangesBranch(pullRequests);
+        }
+        catch (err) {
+            this.logger.error(err);
+        }
         return createdReleases;
     }
     /**
