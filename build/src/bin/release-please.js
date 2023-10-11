@@ -593,10 +593,10 @@ exports.parser = yargs
     type: 'boolean',
 })
     .middleware(argv => {
-    if (argv.trace) {
+    if (argv.trace || process.env['LOG_LEVEL'] === 'trace') {
         (0, logger_1.setLogger)(new logger_1.CheckpointLogger(true, true));
     }
-    else if (argv.debug) {
+    else if (argv.debug || process.env['LOG_LEVEL'] === 'debug') {
         (0, logger_1.setLogger)(new logger_1.CheckpointLogger(true));
     }
 })

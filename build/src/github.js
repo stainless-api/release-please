@@ -44,7 +44,7 @@ class GitHub {
          * @throws {GitHubAPIError} on an API error
          */
         this.getCommitFiles = wrapAsync(async (sha) => {
-            this.logger.debug(`Backfilling file list for commit: ${sha}`);
+            this.logger.trace(`Backfilling file list for commit: ${sha}`);
             const files = [];
             for await (const resp of this.octokit.paginate.iterator(this.octokit.repos.getCommit, {
                 owner: this.repository.owner,
@@ -61,7 +61,7 @@ class GitHub {
                 this.logger.warn(`Found ${files.length} files. This may not include all the files.`);
             }
             else {
-                this.logger.debug(`Found ${files.length} files`);
+                this.logger.trace(`Found ${files.length} files`);
             }
             return files;
         });
@@ -595,6 +595,9 @@ class GitHub {
             }
             for (let i = 0; i < response.data.length; i++) {
                 results += 1;
+                if (results > maxResults) {
+                    break;
+                }
                 yield response.data[i];
             }
             if (!response.pageInfo.hasNextPage) {
@@ -605,7 +608,7 @@ class GitHub {
     }
     async mergeCommitsGraphQL(targetBranch, cursor, options = {}) {
         var _a, _b, _c, _d;
-        this.logger.debug(`Fetching merge commits on branch '${targetBranch}' with cursor: '${cursor}'`);
+        this.logger.debug(`Fetching merge commits on branch '${targetBranch}'${cursor ? ` (cursor ${cursor})` : ''}`);
         const query = `query pullRequestsSince($owner: String!, $repo: String!, $num: Int!, $maxFilesChanged: Int, $targetBranch: String!, $cursor: String) {
       repository(owner: $owner, name: $repo) {
         ref(qualifiedName: $targetBranch) {
@@ -668,19 +671,21 @@ class GitHub {
             this.logger.warn(`Did not receive a response for query: ${query}`, params);
             return null;
         }
-        // if the branch does exist, return null
+        // if the branch does not exist, return null
         if (!((_a = response.repository) === null || _a === void 0 ? void 0 : _a.ref)) {
-            this.logger.warn(`Could not find commits for branch '${targetBranch}' - it likely does not exist.`);
+            this.logger.warn(`Could not find commits for branch '${targetBranch}' - it likely does not exist`);
             return null;
         }
         const history = response.repository.ref.target.history;
         const commits = (history.nodes || []);
+        this.logger.debug(`Found ${commits.length} merge commits`);
         const commitData = [];
         for (const graphCommit of commits) {
             const commit = {
                 sha: graphCommit.sha,
                 message: graphCommit.message,
             };
+            this.logger.trace(`${commit.sha}: "${commit.message}"`);
             const pullRequest = graphCommit.associatedPullRequests.nodes.find(pr => {
                 return pr.mergeCommit && pr.mergeCommit.oid === graphCommit.sha;
             });
@@ -816,6 +821,9 @@ class GitHub {
             }
             for (let i = 0; i < response.data.length; i++) {
                 results += 1;
+                if (results > maxResults) {
+                    break;
+                }
                 yield response.data[i];
             }
             if (!response.pageInfo.hasNextPage) {
@@ -1025,6 +1033,7 @@ class GitHub {
         repository(owner: $owner, name: $repo) {
           releases(first: $num, after: $cursor, orderBy: {field: CREATED_AT, direction: DESC}) {
             nodes {
+              databaseId
               name
               tag {
                 name
@@ -1049,7 +1058,7 @@ class GitHub {
             num: 25,
         });
         if (!response.repository.releases.nodes.length) {
-            this.logger.warn('Could not find releases.');
+            this.logger.warn('GraphQL query did not return any GitHub release');
             return null;
         }
         const releases = response.repository.releases.nodes;
@@ -1059,9 +1068,10 @@ class GitHub {
                 .filter(release => !!release.tagCommit)
                 .map(release => {
                 if (!release.tag || !release.tagCommit) {
-                    this.logger.debug(release);
+                    this.logger.warn('Release returned by GraphQL query missing tag and tagCommit', release);
                 }
                 return {
+                    id: release.databaseId,
                     name: release.name || undefined,
                     tagName: release.tag ? release.tag.name : 'unknown',
                     sha: release.tagCommit.oid,
@@ -1206,7 +1216,7 @@ class GitHub {
             branch: newBranchName,
         });
         if (!(content === null || content === void 0 ? void 0 : content.html_url)) {
-            throw new Error(`Failed to write to file: ${filename} on branch: ${newBranchName}`);
+            throw new Error(`Failed to write to file '${filename}' on branch '${newBranchName}'`);
         }
         return content.html_url;
     }
@@ -1217,19 +1227,19 @@ class GitHub {
      *   or undefined if it can't be found.
      */
     async getBranchSha(branchName) {
-        this.logger.debug(`Looking up SHA for branch: ${branchName}`);
+        this.logger.debug(`Looking up SHA for branch '${branchName}'`);
         try {
             const { data: { object: { sha }, }, } = await this.octokit.git.getRef({
                 owner: this.repository.owner,
                 repo: this.repository.repo,
                 ref: `heads/${branchName}`,
             });
-            this.logger.debug(`SHA for branch: ${sha}`);
+            this.logger.debug(`SHA: ${sha}`);
             return sha;
         }
         catch (e) {
             if ((0, errors_1.isOctokitRequestError)(e) && e.status === 404) {
-                this.logger.debug(`Branch: ${branchName} does not exist`);
+                this.logger.debug(`Branch '${branchName}' does not exist`);
                 return undefined;
             }
             throw e;
@@ -1284,7 +1294,6 @@ class GitHub {
         return sha;
     }
     async updateBranchSha(branchName, branchSha) {
-        this.logger.debug(`Updating branch '${branchName}' to '${branchSha}'`);
         const { data: { object: { sha }, }, } = await this.octokit.git.updateRef({
             owner: this.repository.owner,
             repo: this.repository.repo,
@@ -1292,7 +1301,6 @@ class GitHub {
             sha: branchSha,
             force: true,
         });
-        this.logger.debug(`Updated branch: '${branchName}' to ${sha}`);
         return sha;
     }
     async lockBranch(branchName) {

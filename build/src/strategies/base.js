@@ -236,7 +236,6 @@ If you instead want to use the version number \`${newVersion}\` generated from c
         }
         const versionsMap = await this.updateVersionsMap(await this.buildVersionsMap(conventionalCommits), conventionalCommits, newVersion);
         const newVersionTag = new tag_name_1.TagName(newVersion, this.includeComponentInTag ? component : undefined, this.tagSeparator, this.includeVInTag);
-        this.logger.debug('pull request title pattern:', this.pullRequestTitlePattern);
         const pullRequestTitle = pull_request_title_1.PullRequestTitle.ofComponentTargetBranchVersion(component || '', this.targetBranch, this.changesBranch, newVersion, this.pullRequestTitlePattern);
         const releaseNotesBody = await this.buildReleaseNotes(conventionalCommits, newVersion, newVersionTag, latestRelease, commits);
         if (this.changelogEmpty(releaseNotesBody)) {

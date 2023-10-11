@@ -20,17 +20,7 @@ const version_1 = require("../version");
 // at the script level are undefined, they are only defined inside function
 // or instance methods/properties.
 const DEFAULT_PR_TITLE_PATTERN = 'chore${scope}: release${component} ${version}';
-function generateMatchPattern(pullRequestTitlePattern, logger = logger_1.logger) {
-    if (pullRequestTitlePattern &&
-        pullRequestTitlePattern.search(/\$\{scope\}/) === -1) {
-        logger.warn("pullRequestTitlePattern miss the part of '${scope}'");
-    }
-    if (pullRequestTitlePattern &&
-        pullRequestTitlePattern.search(/\$\{component\}/) === -1)
-        logger.warn("pullRequestTitlePattern miss the part of '${component}'");
-    if (pullRequestTitlePattern &&
-        pullRequestTitlePattern.search(/\$\{version\}/) === -1)
-        logger.warn("pullRequestTitlePattern miss the part of '${version}'");
+function generateMatchPattern(pullRequestTitlePattern) {
     return new RegExp(`^${(pullRequestTitlePattern || DEFAULT_PR_TITLE_PATTERN)
         .replace('[', '\\[') // TODO: handle all regex escaping
         .replace(']', '\\]')
@@ -51,10 +41,10 @@ class PullRequestTitle {
         this.changesBranch = opts.changesBranch || this.targetBranch;
         this.pullRequestTitlePattern =
             opts.pullRequestTitlePattern || DEFAULT_PR_TITLE_PATTERN;
-        this.matchPattern = generateMatchPattern(this.pullRequestTitlePattern, opts.logger);
+        this.matchPattern = generateMatchPattern(this.pullRequestTitlePattern);
     }
     static parse(title, pullRequestTitlePattern, logger = logger_1.logger) {
-        const matchPattern = generateMatchPattern(pullRequestTitlePattern, logger);
+        const matchPattern = generateMatchPattern(pullRequestTitlePattern);
         const match = title.match(matchPattern);
         if (match === null || match === void 0 ? void 0 : match.groups) {
             return new PullRequestTitle({

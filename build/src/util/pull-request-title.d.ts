@@ -1,6 +1,6 @@
 import { Logger } from './logger';
 import { Version } from '../version';
-export declare function generateMatchPattern(pullRequestTitlePattern?: string, logger?: Logger): RegExp;
+export declare function generateMatchPattern(pullRequestTitlePattern?: string): RegExp;
 export declare class PullRequestTitle {
     component?: string;
     changesBranch?: string;

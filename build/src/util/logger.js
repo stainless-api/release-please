@@ -46,7 +46,12 @@ class CheckpointLogger {
 }
 exports.CheckpointLogger = CheckpointLogger;
 /* eslint-enable @typescript-eslint/no-explicit-any */
-exports.logger = new CheckpointLogger(true);
+exports.logger = process.env['LOG_LEVEL'] === 'trace'
+    ? new CheckpointLogger(true, true)
+    : ['info', 'error', 'warn'].includes(process.env['LOG_LEVEL'] || '')
+        ? new CheckpointLogger()
+        : // default to debug logs
+            new CheckpointLogger(true);
 function setLogger(userLogger) {
     exports.logger = userLogger;
 }
