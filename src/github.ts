@@ -141,6 +141,7 @@ interface GraphQLPullRequest {
 }
 
 interface GraphQLRelease {
+  databaseId: number;
   name: string;
   tag: {
     name: string;
@@ -498,6 +499,9 @@ export class GitHub {
       }
       for (let i = 0; i < response.data.length; i++) {
         results += 1;
+        if (results > maxResults) {
+          break;
+        }
         yield response.data[i];
       }
       if (!response.pageInfo.hasNextPage) {
@@ -513,7 +517,9 @@ export class GitHub {
     options: CommitIteratorOptions = {}
   ): Promise<CommitHistory | null> {
     this.logger.debug(
-      `Fetching merge commits on branch '${targetBranch}' with cursor: '${cursor}'`
+      `Fetching merge commits on branch '${targetBranch}'${
+        cursor ? ` (cursor ${cursor})` : ''
+      }`
     );
     const query = `query pullRequestsSince($owner: String!, $repo: String!, $num: Int!, $maxFilesChanged: Int, $targetBranch: String!, $cursor: String) {
       repository(owner: $owner, name: $repo) {
@@ -582,21 +588,23 @@ export class GitHub {
       return null;
     }
 
-    // if the branch does exist, return null
+    // if the branch does not exist, return null
     if (!response.repository?.ref) {
       this.logger.warn(
-        `Could not find commits for branch '${targetBranch}' - it likely does not exist.`
+        `Could not find commits for branch '${targetBranch}' - it likely does not exist`
       );
       return null;
     }
     const history = response.repository.ref.target.history;
     const commits = (history.nodes || []) as GraphQLCommit[];
+    this.logger.debug(`Found ${commits.length} merge commits`);
     const commitData: Commit[] = [];
     for (const graphCommit of commits) {
       const commit: Commit = {
         sha: graphCommit.sha,
         message: graphCommit.message,
       };
+      this.logger.trace(`${commit.sha}: "${commit.message}"`);
       const pullRequest = graphCommit.associatedPullRequests.nodes.find(pr => {
         return pr.mergeCommit && pr.mergeCommit.oid === graphCommit.sha;
       });
@@ -723,7 +731,7 @@ export class GitHub {
    * @throws {GitHubAPIError} on an API error
    */
   getCommitFiles = wrapAsync(async (sha: string): Promise<string[]> => {
-    this.logger.debug(`Backfilling file list for commit: ${sha}`);
+    this.logger.trace(`Backfilling file list for commit: ${sha}`);
     const files: string[] = [];
     for await (const resp of this.octokit.paginate.iterator(
       this.octokit.repos.getCommit,
@@ -744,7 +752,7 @@ export class GitHub {
         `Found ${files.length} files. This may not include all the files.`
       );
     } else {
-      this.logger.debug(`Found ${files.length} files`);
+      this.logger.trace(`Found ${files.length} files`);
     }
     return files;
   });
@@ -841,6 +849,9 @@ export class GitHub {
       }
       for (let i = 0; i < response.data.length; i++) {
         results += 1;
+        if (results > maxResults) {
+          break;
+        }
         yield response.data[i];
       }
       if (!response.pageInfo.hasNextPage) {
@@ -1080,6 +1091,7 @@ export class GitHub {
         repository(owner: $owner, name: $repo) {
           releases(first: $num, after: $cursor, orderBy: {field: CREATED_AT, direction: DESC}) {
             nodes {
+              databaseId
               name
               tag {
                 name
@@ -1104,7 +1116,7 @@ export class GitHub {
       num: 25,
     });
     if (!response.repository.releases.nodes.length) {
-      this.logger.warn('Could not find releases.');
+      this.logger.warn('GraphQL query did not return any GitHub release');
       return null;
     }
     const releases = response.repository.releases.nodes as GraphQLRelease[];
@@ -1114,9 +1126,13 @@ export class GitHub {
         .filter(release => !!release.tagCommit)
         .map(release => {
           if (!release.tag || !release.tagCommit) {
-            this.logger.debug(release);
+            this.logger.warn(
+              'Release returned by GraphQL query missing tag and tagCommit',
+              release
+            );
           }
           return {
+            id: release.databaseId,
             name: release.name || undefined,
             tagName: release.tag ? release.tag.name : 'unknown',
             sha: release.tagCommit.oid,
@@ -1704,7 +1720,7 @@ export class GitHub {
 
     if (!content?.html_url) {
       throw new Error(
-        `Failed to write to file: ${filename} on branch: ${newBranchName}`
+        `Failed to write to file '${filename}' on branch '${newBranchName}'`
       );
     }
 
@@ -1718,7 +1734,7 @@ export class GitHub {
    *   or undefined if it can't be found.
    */
   private async getBranchSha(branchName: string): Promise<string | undefined> {
-    this.logger.debug(`Looking up SHA for branch: ${branchName}`);
+    this.logger.debug(`Looking up SHA for branch '${branchName}'`);
     try {
       const {
         data: {
@@ -1729,11 +1745,11 @@ export class GitHub {
         repo: this.repository.repo,
         ref: `heads/${branchName}`,
       });
-      this.logger.debug(`SHA for branch: ${sha}`);
+      this.logger.debug(`SHA: ${sha}`);
       return sha;
     } catch (e) {
       if (isOctokitRequestError(e) && e.status === 404) {
-        this.logger.debug(`Branch: ${branchName} does not exist`);
+        this.logger.debug(`Branch '${branchName}' does not exist`);
         return undefined;
       }
       throw e;
@@ -1817,7 +1833,6 @@ export class GitHub {
     branchName: string,
     branchSha: string
   ): Promise<string> {
-    this.logger.debug(`Updating branch '${branchName}' to '${branchSha}'`);
     const {
       data: {
         object: {sha},
@@ -1829,7 +1844,6 @@ export class GitHub {
       sha: branchSha,
       force: true,
     });
-    this.logger.debug(`Updated branch: '${branchName}' to ${sha}`);
     return sha;
   }
 

@@ -1615,6 +1615,12 @@ describe('Manifest', () => {
             url: 'https://github.com/fake-owner/fake-repo/releases/tag/v1.0.0',
           },
         ]);
+        mockTags(sandbox, github, [
+          {
+            sha: 'abc123',
+            name: 'v1.0.0',
+          },
+        ]);
         mockCommits(sandbox, github, [
           {
             sha: 'def456',
@@ -1670,12 +1676,8 @@ describe('Manifest', () => {
       });
 
       it('should honour the manifestFile argument in Manifest.fromManifest', async () => {
-        mockTags(sandbox, github, []);
-        const getFileContentsStub = sandbox.stub(
-          github,
-          'getFileContentsOnBranch'
-        );
-        getFileContentsStub
+        const getFileContentsStub = sandbox
+          .stub(github, 'getFileContentsOnBranch')
           .withArgs('release-please-config.json', 'next')
           .resolves(
             buildGitHubFileContent(fixturesPath, 'manifest/config/simple.json')
@@ -1698,6 +1700,12 @@ describe('Manifest', () => {
         expect(pullRequests).lengthOf(1);
         const pullRequest = pullRequests[0];
         assertHasUpdate(pullRequest.updates, 'non/default/path/manifest.json');
+
+        sinon.assert.calledOnceWithExactly(
+          getFileContentsStub,
+          'non/default/path/manifest.json',
+          'next'
+        );
       });
 
       it('should create a draft pull request', async () => {
@@ -3307,9 +3315,53 @@ version = "3.0.0"
           files: ['path/a/foo'],
         },
         {
-          sha: 'cccccc',
+          sha: 'bbb',
           message: 'fix: some bugfix',
+          files: ['path/b/foo'],
+        },
+        {
+          sha: 'commit1',
+          message: 'release: 1.2.3',
           files: ['path/a/foo'],
+          pullRequest: {
+            headBranchName:
+              'release-please--branches--main--changes--next--components--pkg1',
+            baseBranchName: 'main',
+            number: 111,
+            title: 'release: 1.2.3',
+            body: '',
+            labels: ['tagged'],
+            files: ['path/a/foo'],
+            sha: 'commit1',
+          },
+        },
+        // should be included in pkg1 new release, commits created after v1.2.3
+        ...Array.from({length: 100}, (_, i) => ({
+          sha: `ccc${i}`,
+          message: `fix: some fix ${i}`,
+          files: ['path/a/foo'],
+        })),
+        {
+          sha: 'commit2',
+          message: 'release: 2.3.4',
+          files: ['path/b/package.json'],
+          pullRequest: {
+            headBranchName:
+              'release-please/branches/main/changes/next/components/pkg2',
+            baseBranchName: 'main',
+            number: 222,
+            title: 'release: 2.3.4',
+            body: '',
+            labels: ['tagged'],
+            files: ['path/b/foo'],
+            sha: 'commit2',
+          },
+          // should not be included in pgk2 new release, commits created before v2.3.4
+          ...Array.from({length: 100}, (_, i) => ({
+            sha: `ddd${i}`,
+            message: `fix: some fix ${i}`,
+            files: ['path/b/foo'],
+          })),
         },
       ]);
       mockTags(sandbox, github, []);
@@ -3320,7 +3372,7 @@ version = "3.0.0"
             component: 'pkg1',
           },
           'path/b': {
-            'release-type': 'simple',
+            'release-type': 'node',
             component: 'pkg2',
           },
         },
@@ -3334,21 +3386,112 @@ version = "3.0.0"
         .withArgs('release-please-config.json', 'next')
         .resolves(buildGitHubFileRaw(JSON.stringify(config)))
         .withArgs('.release-please-manifest.json', 'next')
-        .resolves(buildGitHubFileRaw(JSON.stringify(versions)));
+        .resolves(buildGitHubFileRaw(JSON.stringify(versions)))
+        .withArgs('path/b/package.json', 'next')
+        .resolves(
+          buildGitHubFileRaw(JSON.stringify({name: 'b', version: '2.3.4'}))
+        );
       const manifest = await Manifest.fromManifest(
         github,
         'main',
         undefined,
         undefined,
-        {changesBranch: 'next'}
+        {changesBranch: 'next', separatePullRequests: true}
       );
       const pullRequests = await manifest.buildPullRequests([], []);
-      expect(pullRequests).lengthOf(1);
+      expect(pullRequests).lengthOf(2);
       expect(pullRequests[0].body.releaseData).lengthOf(1);
+      expect(pullRequests[0].conventionalCommits).lengthOf(102);
       expect(pullRequests[0].body.releaseData[0].component).to.eql('pkg1');
       expect(pullRequests[0].body.releaseData[0].version?.toString()).to.eql(
         '1.2.4'
       );
+      expect(pullRequests[1].body.releaseData).lengthOf(1);
+      expect(pullRequests[1].conventionalCommits).lengthOf(2);
+      expect(pullRequests[1].body.releaseData[0].component).to.eql('pkg2');
+      expect(pullRequests[1].body.releaseData[0].version?.toString()).to.eql(
+        '2.3.5'
+      );
+    });
+
+    it('should use latest version from tag if github releases not found but tag found', async () => {
+      mockReleases(sandbox, github, []);
+      mockCommits(sandbox, github, [
+        {
+          sha: 'aaaaaa',
+          message: 'fix: some bugfix',
+          files: ['path/a/foo'],
+        },
+        {
+          sha: 'bbb',
+          message: 'fix: some bugfix',
+          files: ['path/b/foo'],
+        },
+        {
+          sha: 'commit1',
+          message: 'release: 1.2.3',
+          files: ['path/a/foo'],
+        },
+        {
+          sha: 'commit2',
+          message: 'release: 2.3.4',
+          files: ['path/b/package.json'],
+        },
+        {
+          sha: 'ccc',
+          message: 'chore: some chore',
+          files: ['path/a/foo'],
+        },
+        {
+          sha: 'ddd',
+          message: 'chore: some chore',
+          files: ['path/b/foo'],
+        },
+      ]);
+      mockTags(sandbox, github, [
+        {name: 'pkg1-v1.2.3', sha: 'commit1'},
+        {name: 'pkg2-v2.3.4', sha: 'commit2'},
+      ]);
+      const config = {
+        packages: {
+          'path/a': {
+            'release-type': 'simple',
+            component: 'pkg1',
+          },
+          'path/b': {
+            'release-type': 'node',
+            component: 'pkg2',
+          },
+        },
+      };
+      const versions = {
+        'path/a': '1.2.3',
+        'path/b': '2.3.4',
+      };
+      const getFileContentsOnBranchStub = sandbox
+        .stub(github, 'getFileContentsOnBranch')
+        .withArgs('release-please-config.json', 'main')
+        .resolves(buildGitHubFileRaw(JSON.stringify(config)))
+        .withArgs('.release-please-manifest.json', 'main')
+        .resolves(buildGitHubFileRaw(JSON.stringify(versions)))
+        .withArgs('path/b/package.json', 'main')
+        .resolves(
+          buildGitHubFileRaw(JSON.stringify({name: 'b', version: '2.3.4'}))
+        );
+
+      const manifest = await Manifest.fromManifest(github, 'main');
+      const pullRequests = await manifest.buildPullRequests([], []);
+      expect(pullRequests).lengthOf(1);
+      expect(pullRequests[0].body.releaseData).lengthOf(2);
+      expect(pullRequests[0].body.releaseData[0].component).to.eql('pkg1');
+      expect(pullRequests[0].body.releaseData[0].version?.toString()).to.eql(
+        '1.2.4'
+      );
+      expect(pullRequests[0].body.releaseData[1].component).to.eql('pkg2');
+      expect(pullRequests[0].body.releaseData[1].version?.toString()).to.eql(
+        '2.3.5'
+      );
+      sinon.assert.calledOnce(getFileContentsOnBranchStub);
     });
 
     it('should not update manifest if unpublished version is created', async () => {
@@ -3473,8 +3616,40 @@ version = "3.0.0"
     });
 
     it('should handle extra files', async () => {
-      mockReleases(sandbox, github, []);
-      mockTags(sandbox, github, []);
+      mockReleases(sandbox, github, [
+        {
+          id: 123456,
+          sha: 'commit1',
+          tagName: 'a-v1.1.0',
+          url: 'https://github.com/fake-owner/fake-repo/releases/tag/a-v1.1.0',
+        },
+        {
+          id: 123456,
+          sha: 'commit2',
+          tagName: 'b-v1.0.0',
+          url: 'https://github.com/fake-owner/fake-repo/releases/tag/b-v1.0.0',
+        },
+        {
+          id: 123456,
+          sha: 'commit3',
+          tagName: 'c-v1.0.1',
+          url: 'https://github.com/fake-owner/fake-repo/releases/tag/c-v1.0.1',
+        },
+      ]);
+      mockTags(sandbox, github, [
+        {
+          name: 'a-v1.1.0',
+          sha: 'commit1',
+        },
+        {
+          name: 'b-v1.0.0',
+          sha: 'commit2',
+        },
+        {
+          name: 'c-v1.0.1',
+          sha: 'commit3',
+        },
+      ]);
       mockCommits(sandbox, github, [
         {
           sha: 'aaaaaa',
@@ -4130,6 +4305,10 @@ version = "3.0.0"
           },
           {
             name: 'd-v3.0.0',
+            sha: 'abc123',
+          },
+          {
+            name: 'v3.0.0',
             sha: 'abc123',
           },
         ]);

@@ -271,8 +271,9 @@ export const DEFAULT_SNAPSHOT_LABELS = ['autorelease: snapshot'];
 export const SNOOZE_LABEL = 'autorelease: snooze';
 export const DEFAULT_PRERELEASE_LABELS = ['autorelease: pre-release'];
 export const DEFAULT_CUSTOM_VERSION_LABEL = 'autorelease: custom version';
-const DEFAULT_RELEASE_SEARCH_DEPTH = 400;
-const DEFAULT_COMMIT_SEARCH_DEPTH = 500;
+
+const DEFAULT_RELEASE_SEARCH_DEPTH = 10;
+const DEFAULT_COMMIT_SEARCH_DEPTH = 300;
 
 export const MANIFEST_PULL_REQUEST_TITLE_PATTERN = 'chore: release ${branch}';
 
@@ -553,11 +554,14 @@ export class Manifest {
     const releaseShasByPath: Record<string, string> = {};
 
     // Releases by path
+    this.logger.debug(
+      `Searching through the latest ${this.releaseSearchDepth} GitHub releases`
+    );
     const releasesByPath: Record<string, Release> = {};
-    this.logger.debug(`release search depth: ${this.releaseSearchDepth}`);
     for await (const release of this.github.releaseIterator({
       maxResults: this.releaseSearchDepth,
     })) {
+      this.logger.debug(`GitHub release with id ${release.id}`);
       const tagName = TagName.parse(release.tagName);
       if (!tagName) {
         this.logger.warn(`Unable to parse release name: ${release.name}`);
@@ -574,12 +578,14 @@ export class Manifest {
       const expectedVersion = this.releasedVersions[path];
       if (!expectedVersion) {
         this.logger.warn(
-          `Unable to find expected version for path '${path}' in manifest`
+          `Unable to find an expected version for path '${path}' in manifest`
         );
         continue;
       }
       if (expectedVersion.toString() === tagName.version.toString()) {
-        this.logger.debug(`Found release for path ${path}, ${release.tagName}`);
+        this.logger.debug(
+          `Found release with tag matching expected version for path ${path} (tag ${release.tagName})`
+        );
         releaseShasByPath[path] = release.sha;
         releasesByPath[path] = {
           name: release.name,
@@ -596,14 +602,14 @@ export class Manifest {
     }
 
     if (releasesFound < expectedReleases) {
-      this.logger.warn(
-        `Expected ${expectedReleases} releases, only found ${releasesFound}`
-      );
-      // Fall back to looking for missing releases using expected tags
       const missingPaths = Object.keys(strategiesByPath).filter(
         path => !releasesByPath[path]
       );
-      this.logger.warn(`Missing ${missingPaths.length} paths: ${missingPaths}`);
+      this.logger.warn(
+        `Expected to find ${expectedReleases} releases but instead found ${releasesFound} of them. Fall back to finding missing releases using expected tags. Paths missing a release: ${missingPaths
+          .map(s => `'${s}'`)
+          .join(', ')}`
+      );
       const missingReleases = await this.backfillReleasesFromTags(
         missingPaths,
         strategiesByPath
@@ -615,27 +621,31 @@ export class Manifest {
       }
     }
 
-    const needsBootstrap = releasesFound < expectedReleases;
-
     if (releasesFound < expectedReleases) {
-      this.logger.warn(
-        `Expected ${expectedReleases} releases, only found ${releasesFound}`
+      this.logger.error(
+        `Expected to find ${expectedReleases} releases, but ${
+          releasesFound === 0
+            ? 'none could be found'
+            : `only found ${releasesFound} of them`
+        }.
+    Hint: does the manifest points to versions for which no git tag and github release exist? Tags may have been deleted or not created correctly for past releases.`
       );
     }
     for (const path in releasesByPath) {
       const release = releasesByPath[path];
-      this.logger.debug(
-        `release for path: ${path}, version: ${release.tag.version.toString()}, sha: ${
+      this.logger.trace(
+        `Release for path: ${path}, version: ${release.tag.version.toString()}, sha: ${
           release.sha
         }`
       );
     }
 
-    // iterate through commits and collect commits until we have
-    // seen all release commits
-    this.logger.info('Collecting commits since all latest releases');
+    // iterate through commits and collect commits until we have seen all release commits
+    this.logger.info('Collecting commits since latest releases');
     const commits: Commit[] = [];
-    this.logger.debug(`commit search depth: ${this.commitSearchDepth}`);
+    this.logger.debug(
+      `Searching through the latest ${this.commitSearchDepth} commits on branch ${this.changesBranch}`
+    );
     const commitGenerator = this.github.mergeCommitIterator(
       this.changesBranch,
       {
@@ -644,23 +654,38 @@ export class Manifest {
       }
     );
     const releaseShas = new Set(Object.values(releaseShasByPath));
-    this.logger.debug(releaseShas);
     const expectedShas = releaseShas.size;
 
     // sha => release pull request
+    const needsBootstrap = releasesFound < expectedReleases;
     const releasePullRequestsBySha: Record<string, PullRequest> = {};
     let releaseCommitsFound = 0;
     for await (const commit of commitGenerator) {
+      this.logger.debug(`- ${commit.sha} "${commit.message}"`);
       if (releaseShas.has(commit.sha)) {
         if (commit.pullRequest) {
+          this.logger.trace(
+            `Release commit has associated pull request: "${commit.pullRequest.title}" (#${commit.pullRequest.number})`
+          );
           releasePullRequestsBySha[commit.sha] = commit.pullRequest;
         } else {
           this.logger.warn(
-            `Release SHA ${commit.sha} did not have an associated pull request`
+            `Release commit '${commit.sha}' did not have an associated pull request`
           );
         }
         releaseCommitsFound += 1;
+      } else if (commit.pullRequest) {
+        this.logger.trace(
+          `Commit not a known release but has associated pull request: "${commit.pullRequest.title}" (#${commit.pullRequest.number})`
+        );
+        const branchName = BranchName.parse(commit.pullRequest.headBranchName);
+        if (branchName) {
+          this.logger.trace(`PR head looks like a release: ${branchName}`);
+          releasePullRequestsBySha[commit.sha] = commit.pullRequest;
+          releaseCommitsFound += 1;
+        }
       }
+
       if (this.lastReleaseSha && this.lastReleaseSha === commit.sha) {
         this.logger.info(
           `Using configured lastReleaseSha ${this.lastReleaseSha} as last commit.`
@@ -672,9 +697,10 @@ export class Manifest {
         );
         break;
       } else if (!needsBootstrap && releaseCommitsFound >= expectedShas) {
-        // found enough commits
+        this.logger.trace('Found enough commits');
         break;
       }
+
       commits.push({
         sha: commit.sha,
         message: commit.message,
@@ -978,7 +1004,9 @@ export class Manifest {
       }
     }
     this.logger.info(
-      `found ${openPullRequests.length} open release pull requests.`
+      `found ${openPullRequests.length} open release pull requests: ${
+        '\n' + openPullRequests.map(pr => `  - #${pr.number}: '${pr.title}'`)
+      }`
     );
     return openPullRequests;
   }
@@ -1010,7 +1038,9 @@ export class Manifest {
       }
     }
     this.logger.info(
-      `found ${snoozedPullRequests.length} snoozed release pull requests.`
+      `found ${snoozedPullRequests.length} snoozed release pull requests: ${
+        '\n' + snoozedPullRequests.map(pr => `  - #${pr.number}: '${pr.title}'`)
+      }`
     );
     return snoozedPullRequests;
   }
