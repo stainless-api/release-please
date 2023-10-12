@@ -453,7 +453,6 @@ class GitHub {
                 auth: options.token,
                 request: {
                     agent: this.createDefaultAgent(apiUrl, options.proxy),
-                    retries: (_f = options.retries) !== null && _f !== void 0 ? _f : 0,
                 },
                 log: {
                     // octokit debug logs include all requests, too noisy for our debug level
@@ -464,6 +463,8 @@ class GitHub {
                     error: logger.error,
                 },
                 retry: {
+                    retries: (_f = options.retries) !== null && _f !== void 0 ? _f : 0,
+                    retryAfter: 3,
                     doNotRetry: [
                         '403',
                         '429',
@@ -472,6 +473,7 @@ class GitHub {
                 },
                 throttle: {
                     enabled: throttlingRetries > 0,
+                    retryAfterBaseValue: 3000,
                     onRateLimit: (retryAfter, options, octokit, retryCount) => {
                         const method = 'method' in options ? options.method : 'UnknownMethod';
                         const url = 'url' in options ? options.url : 'UnknownUrl';
