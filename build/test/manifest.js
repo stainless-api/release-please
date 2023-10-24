@@ -3791,7 +3791,7 @@ version = "3.0.0"
                 'autorelease: pre-release',
             ]);
         });
-        (0, mocha_1.it)('enables auto-merge when filters are provided (filters: version bump, commit type, commit scope)', async () => {
+        (0, mocha_1.it)('enables auto-merge when filters are provided (filters: version bump, commit type, commit scope, match-all)', async () => {
             const createPullRequestStub = sandbox
                 .stub(github, 'createPullRequest')
                 .resolves({
@@ -3849,7 +3849,10 @@ version = "3.0.0"
                 autoMerge: {
                     mergeMethod: 'rebase',
                     versionBumpFilter: ['minor'],
-                    conventionalCommitFilter: [{ type: 'fix', scope: 'api' }],
+                    conventionalCommitFilter: {
+                        commits: [{ type: 'fix', scope: 'api' }],
+                        matchBehaviour: 'match-all',
+                    },
                 },
             });
             sandbox
@@ -3992,7 +3995,7 @@ version = "3.0.0"
                 autoMerge: undefined,
             }));
         });
-        (0, mocha_1.it)('enables auto-merge when filters are provided (filters: only commit type)', async () => {
+        (0, mocha_1.it)('enables auto-merge when filters are provided (filters: only commit type, match-all)', async () => {
             const createPullRequestStub = sandbox
                 .stub(github, 'createPullRequest')
                 .resolves({
@@ -4044,7 +4047,10 @@ version = "3.0.0"
                 separatePullRequests: true,
                 autoMerge: {
                     mergeMethod: 'rebase',
-                    conventionalCommitFilter: [{ type: 'fix' }], // only filter on type
+                    conventionalCommitFilter: {
+                        commits: [{ type: 'fix' }],
+                        matchBehaviour: 'match-all',
+                    }, // only filter on type
                 },
             });
             sandbox
@@ -4162,7 +4168,7 @@ version = "3.0.0"
                 autoMerge: undefined,
             }));
         });
-        (0, mocha_1.it)('enables auto-merge when filters are provided (filters: multiple commit filters)', async () => {
+        (0, mocha_1.it)('enables auto-merge when filters are provided (filters: build-patch-minor version bump, commit filters, match-at-least-one)', async () => {
             const createPullRequestStub = sandbox
                 .stub(github, 'createPullRequest')
                 .resolves({
@@ -4209,20 +4215,26 @@ version = "3.0.0"
                     releaseType: 'node',
                     component: 'pkg5',
                 },
+                'path/f': {
+                    releaseType: 'node',
+                    component: 'pkg6',
+                },
             }, {
                 'path/a': version_1.Version.parse('1.0.0'),
                 'path/b': version_1.Version.parse('1.0.0'),
                 'path/c': version_1.Version.parse('1.0.0'),
                 'path/d': version_1.Version.parse('1.0.0'),
                 'path/e': version_1.Version.parse('1.0.0'),
+                'path/f': version_1.Version.parse('1.0.0'),
             }, {
                 separatePullRequests: true,
                 autoMerge: {
                     mergeMethod: 'rebase',
-                    conventionalCommitFilter: [
-                        { type: 'fix' },
-                        { type: 'feat', scope: 'api' },
-                    ],
+                    versionBumpFilter: ['minor', 'build', 'patch'],
+                    conventionalCommitFilter: {
+                        matchBehaviour: 'match-at-least-one',
+                        commits: [{ type: 'fix' }, { type: 'feat', scope: 'api' }],
+                    },
                 },
             });
             sandbox
@@ -4236,7 +4248,7 @@ version = "3.0.0"
                     labels: [],
                     headRefName: 'release-please/branches/main/components/a',
                     draft: false,
-                    version: version_1.Version.parse('1.1.0'),
+                    version: version_1.Version.parse('1.0.1'),
                     previousVersion: version_1.Version.parse('1.0.0'),
                     conventionalCommits: [
                         {
@@ -4246,6 +4258,16 @@ version = "3.0.0"
                             references: [],
                             sha: 'commit123',
                             message: 'fix(something): something',
+                            bareMessage: 'something',
+                            breaking: false,
+                        },
+                        {
+                            type: 'ci',
+                            scope: 'something',
+                            notes: [],
+                            references: [],
+                            sha: 'commit123',
+                            message: 'ci(something): something',
                             bareMessage: 'something',
                             breaking: false,
                         },
@@ -4271,6 +4293,16 @@ version = "3.0.0"
                             bareMessage: 'something',
                             breaking: false,
                         },
+                        {
+                            type: 'ci',
+                            scope: 'something',
+                            notes: [],
+                            references: [],
+                            sha: 'commit123',
+                            message: 'ci(something): something',
+                            bareMessage: 'something',
+                            breaking: false,
+                        },
                     ],
                 },
                 {
@@ -4293,6 +4325,16 @@ version = "3.0.0"
                             bareMessage: 'something',
                             breaking: false,
                         },
+                        {
+                            type: 'ci',
+                            scope: 'something',
+                            notes: [],
+                            references: [],
+                            sha: 'commit123',
+                            message: 'ci(something): something',
+                            bareMessage: 'something',
+                            breaking: false,
+                        },
                     ],
                 },
                 {
@@ -4302,7 +4344,7 @@ version = "3.0.0"
                     labels: [],
                     headRefName: 'release-please/branches/main/components/d',
                     draft: false,
-                    version: version_1.Version.parse('1.1.0'),
+                    version: version_1.Version.parse('1.0.1'),
                     previousVersion: version_1.Version.parse('1.0.0'),
                     conventionalCommits: [
                         {
@@ -4315,6 +4357,16 @@ version = "3.0.0"
                             bareMessage: 'something',
                             breaking: false,
                         },
+                        {
+                            type: 'ci',
+                            scope: 'something',
+                            notes: [],
+                            references: [],
+                            sha: 'commit123',
+                            message: 'ci(something): something',
+                            bareMessage: 'something',
+                            breaking: false,
+                        },
                     ],
                 },
                 {
@@ -4324,16 +4376,58 @@ version = "3.0.0"
                     labels: [],
                     headRefName: 'release-please/branches/main/components/e',
                     draft: false,
-                    version: version_1.Version.parse('1.1.0'),
+                    version: version_1.Version.parse('2.0.0'),
                     previousVersion: version_1.Version.parse('1.0.0'),
                     conventionalCommits: [
                         {
-                            type: 'fix',
+                            type: 'feat',
                             scope: 'api',
                             notes: [],
                             references: [],
                             sha: 'commit123',
-                            message: 'chore(something): something',
+                            message: 'feat(api): something',
+                            bareMessage: 'something',
+                            breaking: false,
+                        },
+                        {
+                            type: 'feat',
+                            scope: 'something',
+                            notes: [],
+                            references: [],
+                            sha: 'commit123',
+                            message: 'feat(something): something',
+                            bareMessage: 'something',
+                            breaking: false,
+                        },
+                    ],
+                },
+                {
+                    title: pull_request_title_1.PullRequestTitle.ofTargetBranch('main', 'main'),
+                    body: new pull_request_body_1.PullRequestBody([]),
+                    updates: [],
+                    labels: [],
+                    headRefName: 'release-please/branches/main/components/f',
+                    draft: false,
+                    version: version_1.Version.parse('1.1.0'),
+                    previousVersion: version_1.Version.parse('1.0.0'),
+                    conventionalCommits: [
+                        {
+                            type: 'chore',
+                            scope: 'api',
+                            notes: [],
+                            references: [],
+                            sha: 'commit123',
+                            message: 'chore(api): something',
+                            bareMessage: 'something',
+                            breaking: false,
+                        },
+                        {
+                            type: 'ci',
+                            scope: 'something',
+                            notes: [],
+                            references: [],
+                            sha: 'commit123',
+                            message: 'feat(something): something',
                             bareMessage: 'something',
                             breaking: false,
                         },
@@ -4345,10 +4439,10 @@ version = "3.0.0"
                 .resolves(['label-a']);
             const createLabelsStub = sandbox.stub(github, 'createLabels').resolves();
             const pullRequestNumbers = await manifest.createPullRequests();
-            (0, chai_1.expect)(pullRequestNumbers).lengthOf(5);
+            (0, chai_1.expect)(pullRequestNumbers).lengthOf(6);
             sinon.assert.calledOnce(getLabelsStub);
             sinon.assert.calledOnce(createLabelsStub);
-            (0, chai_1.expect)(createPullRequestStub.callCount).to.equal(5);
+            (0, chai_1.expect)(createPullRequestStub.callCount).to.equal(6);
             sinon.assert.calledWith(createPullRequestStub, sinon.match.has('headBranchName', 'release-please/branches/main/components/a'), 'main', 'main', sinon.match.string, sinon.match.array, sinon.match({
                 autoMerge: { mergeMethod: 'rebase' },
             }));
@@ -4362,7 +4456,10 @@ version = "3.0.0"
                 autoMerge: { mergeMethod: 'rebase' },
             }));
             sinon.assert.calledWith(createPullRequestStub, sinon.match.has('headBranchName', 'release-please/branches/main/components/e'), 'main', 'main', sinon.match.string, sinon.match.array, sinon.match({
-                autoMerge: { mergeMethod: 'rebase' },
+                autoMerge: undefined,
+            }));
+            sinon.assert.calledWith(createPullRequestStub, sinon.match.has('headBranchName', 'release-please/branches/main/components/f'), 'main', 'main', sinon.match.string, sinon.match.array, sinon.match({
+                autoMerge: undefined,
             }));
         });
         (0, mocha_1.it)('updates an existing pull request', async () => {

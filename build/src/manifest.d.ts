@@ -210,12 +210,15 @@ export interface CreatedRelease extends GitHubRelease {
 export type AutoMergeOption = {
     mergeMethod: MergeMethod;
     /**
-     * Only auto merge if all conventional commits of the PR match the filter
+     * Only auto merge if conventional commits of the PR match the filter
      */
     conventionalCommitFilter?: {
-        type: string;
-        scope?: string;
-    }[];
+        matchBehaviour: 'match-all' | 'match-at-least-one';
+        commits: {
+            type: string;
+            scope?: string;
+        }[];
+    };
     /**
      * Only auto merge if the version bump match the filter
      */

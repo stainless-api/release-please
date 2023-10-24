@@ -970,30 +970,48 @@ class Manifest {
             const versionBump = pullRequest.version &&
                 pullRequest.previousVersion &&
                 pullRequest.version.compareBump(pullRequest.previousVersion);
+            console.log(`pr: ${pullRequest.headRefName}, version bump`, {
+                versionBump,
+            });
             return (versionBump && (versionBumpFilter === null || versionBumpFilter === void 0 ? void 0 : versionBumpFilter.find(filter => versionBump === filter)));
         };
-        // given two sets of type:scope items, if any item from commitSet isn't in filterSet do not auto-merge
+        // given two sets of type:scope items, auto-merge if items from commitSet match filterSet
         const applyConventionalCommitFilter = () => {
+            var _a;
             if (pullRequest.conventionalCommits.length === 0) {
                 return false;
             }
-            const filterSet = new Set(conventionalCommitFilter.map(filter => `${filter.type}:${filter.scope ? filter.scope : '*'}`));
-            for (const commit of pullRequest.conventionalCommits) {
-                if (!filterSet.has(`${commit.type}:${commit.scope}`) &&
-                    !filterSet.has(`${commit.type}:*`)) {
+            const filterSet = new Set(conventionalCommitFilter.commits.map(filter => `${filter.type}:${filter.scope ? filter.scope : '*'}`));
+            if (conventionalCommitFilter.matchBehaviour === 'match-all') {
+                for (const commit of pullRequest.conventionalCommits) {
+                    if (!filterSet.has(`${commit.type}:${commit.scope}`) &&
+                        !filterSet.has(`${commit.type}:*`)) {
+                        return false;
+                    }
+                    return true;
+                }
+            }
+            else if (conventionalCommitFilter.matchBehaviour === 'match-at-least-one') {
+                for (const commit of pullRequest.conventionalCommits) {
+                    if (filterSet.has(`${commit.type}:${commit.scope}`) ||
+                        filterSet.has(`${commit.type}:*`)) {
+                        console.log(`pr: ${pullRequest.headRefName}, match-at-least-one: found match ${commit.type}:${(_a = commit.scope) !== null && _a !== void 0 ? _a : '*'}`, filterSet);
+                        return true;
+                    }
                     return false;
                 }
             }
-            return true;
+            return false;
         };
-        const selected = (conventionalCommitFilter === null || conventionalCommitFilter === void 0 ? void 0 : conventionalCommitFilter.length) && (versionBumpFilter === null || versionBumpFilter === void 0 ? void 0 : versionBumpFilter.length)
+        const selected = (conventionalCommitFilter === null || conventionalCommitFilter === void 0 ? void 0 : conventionalCommitFilter.commits.length) && (versionBumpFilter === null || versionBumpFilter === void 0 ? void 0 : versionBumpFilter.length)
             ? applyConventionalCommitFilter() && applyVersionBumpFilter()
-            : (conventionalCommitFilter === null || conventionalCommitFilter === void 0 ? void 0 : conventionalCommitFilter.length)
+            : (conventionalCommitFilter === null || conventionalCommitFilter === void 0 ? void 0 : conventionalCommitFilter.commits.length)
                 ? applyConventionalCommitFilter()
                 : (versionBumpFilter === null || versionBumpFilter === void 0 ? void 0 : versionBumpFilter.length)
                     ? applyVersionBumpFilter()
                     : // no filter provided
                         false;
+        console.log(`pr: ${pullRequest.headRefName}, selected: ${selected}`);
         return selected ? this.autoMerge : undefined;
     }
 }
