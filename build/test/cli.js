@@ -617,7 +617,7 @@ const sandbox = sinon.createSandbox();
                 sinon.assert.calledOnce(createPullRequestsStub);
             });
             (0, mocha_1.it)('handles ruby --version-file', async () => {
-                await release_please_1.parser.parseAsync('release-pr --repo-url=googleapis/release-please-cli --release-type=ruby-yoshi --version-file=lib/foo/version.rb');
+                await release_please_1.parser.parseAsync('release-pr --repo-url=googleapis/release-please-cli --release-type=ruby --version-file=lib/foo/version.rb');
                 sinon.assert.calledOnceWithExactly(gitHubCreateStub, {
                     owner: 'googleapis',
                     repo: 'release-please-cli',
@@ -629,7 +629,7 @@ const sandbox = sinon.createSandbox();
                     throttlingRetries: 3,
                 });
                 sinon.assert.calledOnceWithExactly(fromConfigStub, fakeGitHub, 'main', sinon.match({
-                    releaseType: 'ruby-yoshi',
+                    releaseType: 'ruby',
                     versionFile: 'lib/foo/version.rb',
                 }), sinon.match.any, undefined);
                 sinon.assert.calledOnce(createPullRequestsStub);
