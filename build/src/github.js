@@ -464,12 +464,7 @@ class GitHub {
                 },
                 retry: {
                     retries: (_f = options.retries) !== null && _f !== void 0 ? _f : 0,
-                    retryAfter: 3,
-                    doNotRetry: [
-                        '403',
-                        '429',
-                        '404', // Not Found
-                    ],
+                    retryAfter: 3, // 3 seconds
                 },
                 throttle: {
                     enabled: throttlingRetries > 0,
