@@ -964,20 +964,21 @@ class Manifest {
      * multiple filters are provided we take the intersection (AND operation).
      */
     pullRequestAutoMergeOption(pullRequest) {
+        this.logger.debug(`Auto merge options: ${JSON.stringify(this.autoMerge)}`);
         const { versionBumpFilter, conventionalCommitFilter } = this.autoMerge || {};
         // if the version bump do not match any provided filter value, do not auto-merge
         const applyVersionBumpFilter = () => {
             const versionBump = pullRequest.version &&
                 pullRequest.previousVersion &&
                 pullRequest.version.compareBump(pullRequest.previousVersion);
-            console.log(`pr: ${pullRequest.headRefName}, version bump`, {
-                versionBump,
-            });
-            return (versionBump && (versionBumpFilter === null || versionBumpFilter === void 0 ? void 0 : versionBumpFilter.find(filter => versionBump === filter)));
+            const found = versionBump &&
+                (versionBumpFilter === null || versionBumpFilter === void 0 ? void 0 : versionBumpFilter.find(filter => versionBump === filter));
+            this.logger.debug(`applyVersionBumpFilter: ${JSON.stringify({ versionBump, found })}`);
+            return found;
         };
         // given two sets of type:scope items, auto-merge if items from commitSet match filterSet
         const applyConventionalCommitFilter = () => {
-            var _a;
+            var _a, _b;
             if (pullRequest.conventionalCommits.length === 0) {
                 return false;
             }
@@ -986,6 +987,7 @@ class Manifest {
                 for (const commit of pullRequest.conventionalCommits) {
                     if (!filterSet.has(`${commit.type}:${commit.scope}`) &&
                         !filterSet.has(`${commit.type}:*`)) {
+                        this.logger.debug(`applyConventionalCommitFilter: match-all: found match ${commit.type}:${(_a = commit.scope) !== null && _a !== void 0 ? _a : '*'}`);
                         return false;
                     }
                     return true;
@@ -995,7 +997,7 @@ class Manifest {
                 for (const commit of pullRequest.conventionalCommits) {
                     if (filterSet.has(`${commit.type}:${commit.scope}`) ||
                         filterSet.has(`${commit.type}:*`)) {
-                        console.log(`pr: ${pullRequest.headRefName}, match-at-least-one: found match ${commit.type}:${(_a = commit.scope) !== null && _a !== void 0 ? _a : '*'}`, filterSet);
+                        this.logger.debug(`applyConventionalCommitFilter: match-at-least-one: found match ${commit.type}:${(_b = commit.scope) !== null && _b !== void 0 ? _b : '*'}`, filterSet);
                         return true;
                     }
                     return false;
@@ -1011,7 +1013,7 @@ class Manifest {
                     ? applyVersionBumpFilter()
                     : // no filter provided
                         false;
-        console.log(`pr: ${pullRequest.headRefName}, selected: ${selected}`);
+        this.logger.debug(`Use auto merge option for release PR? ${Boolean(selected)}`);
         return selected ? this.autoMerge : undefined;
     }
 }
