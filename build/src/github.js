@@ -474,22 +474,27 @@ class GitHub {
                 throttle: {
                     enabled: throttlingRetries > 0,
                     retryAfterBaseValue: 3000,
+                    fallbackSecondaryRateRetryAfter: 90,
                     onRateLimit: (retryAfter, options, octokit, retryCount) => {
                         const method = 'method' in options ? options.method : 'UnknownMethod';
                         const url = 'url' in options ? options.url : 'UnknownUrl';
                         octokit.log.warn(`[octokit-throttling] Request quota exhausted for request ${method} ${url}`);
                         if (retryCount < throttlingRetries) {
-                            octokit.log.info(`Retrying after ${retryAfter} seconds`);
+                            octokit.log.info(`Attempt ${retryCount}: retrying after ${retryAfter} seconds`);
                             return true;
                         }
                         return undefined;
                     },
                     // See https://docs.github.com/en/rest/overview/resources-in-the-rest-api?apiVersion=2022-11-28#secondary-rate-limits
-                    onSecondaryRateLimit: (_retryAfter, options, octokit) => {
+                    onSecondaryRateLimit: (retryAfter, options, octokit, retryCount) => {
                         const method = 'method' in options ? options.method : 'UnknownMethod';
                         const url = 'url' in options ? options.url : 'UnknownUrl';
-                        // do not retry, only log a warning
                         octokit.log.warn(`[octokit-throttling] SecondaryRateLimit reached for request ${method} ${url}`);
+                        if (retryCount < throttlingRetries) {
+                            octokit.log.info(`Attempt ${retryCount}: retrying after ${retryAfter} seconds`);
+                            return true;
+                        }
+                        return undefined;
                     },
                 },
             }),
