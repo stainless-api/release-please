@@ -579,9 +579,19 @@ class Manifest {
         }, this.targetBranch, this.changesBranch, message, pullRequest.updates, {
             fork: this.fork,
             draft: pullRequest.draft,
-            reviewers: this.reviewers,
-            autoMerge: this.pullRequestAutoMergeOption(pullRequest),
         });
+        let directlyMerged = false;
+        const autoMerge = this.pullRequestAutoMergeOption(pullRequest);
+        if (autoMerge) {
+            const result = await this.github.enablePullRequestAutoMerge(newPullRequest.number, autoMerge.mergeMethod);
+            directlyMerged = result === 'direct-merged';
+        }
+        if (!directlyMerged) {
+            this.github.addPullRequestReviewers({
+                pullRequestNumber: newPullRequest.number,
+                reviewers: this.reviewers,
+            });
+        }
         return newPullRequest;
     }
     /// only update an existing pull request if it has release note changes
@@ -594,11 +604,21 @@ class Manifest {
         }
         const updatedPullRequest = await this.github.updatePullRequest(existing.number, pullRequest, this.targetBranch, this.changesBranch, {
             fork: this.fork,
-            reviewers: this.reviewers,
             signoffUser: this.signoffUser,
             pullRequestOverflowHandler: this.pullRequestOverflowHandler,
-            autoMerge: this.pullRequestAutoMergeOption(pullRequest),
         });
+        let directlyMerged = false;
+        const autoMerge = this.pullRequestAutoMergeOption(pullRequest);
+        if (autoMerge) {
+            const result = await this.github.enablePullRequestAutoMerge(updatedPullRequest.number, autoMerge.mergeMethod);
+            directlyMerged = result === 'direct-merged';
+        }
+        if (!directlyMerged) {
+            this.github.addPullRequestReviewers({
+                pullRequestNumber: updatedPullRequest.number,
+                reviewers: this.reviewers,
+            });
+        }
         return updatedPullRequest;
     }
     /// only update an snoozed pull request if it has release note changes
@@ -612,10 +632,21 @@ class Manifest {
             fork: this.fork,
             signoffUser: this.signoffUser,
             pullRequestOverflowHandler: this.pullRequestOverflowHandler,
-            autoMerge: this.pullRequestAutoMergeOption(pullRequest),
         });
         // TODO: consider leaving the snooze label
         await this.github.removeIssueLabels([exports.SNOOZE_LABEL], snoozed.number);
+        let directlyMerged = false;
+        const autoMerge = this.pullRequestAutoMergeOption(pullRequest);
+        if (autoMerge) {
+            const result = await this.github.enablePullRequestAutoMerge(updatedPullRequest.number, autoMerge.mergeMethod);
+            directlyMerged = result === 'direct-merged';
+        }
+        if (!directlyMerged) {
+            this.github.addPullRequestReviewers({
+                pullRequestNumber: updatedPullRequest.number,
+                reviewers: this.reviewers,
+            });
+        }
         return updatedPullRequest;
     }
     async *findMergedReleasePullRequests() {

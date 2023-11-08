@@ -89,10 +89,6 @@ export type MergeMethod = 'merge' | 'squash' | 'rebase';
 interface CreatePullRequestOptions {
     fork?: boolean;
     draft?: boolean;
-    reviewers?: string[];
-    autoMerge?: {
-        mergeMethod: MergeMethod;
-    };
     /**
      * If the number of an existing pull request is passed, its HEAD branch and attributes (title, labels, etc) will be
      * updated instead of creating a new pull request.
@@ -102,10 +98,6 @@ interface CreatePullRequestOptions {
 interface UpdatePullRequestOptions {
     signoffUser?: string;
     fork?: boolean;
-    reviewers?: string[];
-    autoMerge?: {
-        mergeMethod: MergeMethod;
-    };
     pullRequestOverflowHandler?: PullRequestOverflowHandler;
 }
 export declare class GitHub {
@@ -464,7 +456,11 @@ export declare class GitHub {
     invalidateFileCache(): void;
     private queryPullRequestId;
     private mutatePullRequestEnableAutoMerge;
-    private enablePullRequestAutoMerge;
+    enablePullRequestAutoMerge(pullRequestNumber: number, mergeMethod: MergeMethod): Promise<'auto-merged' | 'direct-merged' | 'none'>;
+    addPullRequestReviewers({ pullRequestNumber, reviewers, }: {
+        pullRequestNumber: number;
+        reviewers: string[];
+    }): Promise<void>;
     private sleepInMs;
 }
 export {};
