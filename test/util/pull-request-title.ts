@@ -29,8 +29,8 @@ describe('PullRequestTitle', () => {
         const pullRequestTitle = PullRequestTitle.parse(name);
         expect(pullRequestTitle).to.not.be.undefined;
         expect(pullRequestTitle?.getTargetBranch()).to.be.undefined;
-        expect(pullRequestTitle?.getComponent()).to.be.undefined;
-        expect(pullRequestTitle?.getVersion()?.toString()).to.eql('1.2.3');
+        expect(pullRequestTitle?.getComponents()).to.be.undefined;
+        expect(pullRequestTitle?.getVersions()?.toString()).to.eql('1.2.3');
         expect(pullRequestTitle?.toString()).to.eql(name);
       });
       it('parses a versioned branch name with v', () => {
@@ -38,16 +38,16 @@ describe('PullRequestTitle', () => {
         const pullRequestTitle = PullRequestTitle.parse(name);
         expect(pullRequestTitle).to.not.be.undefined;
         expect(pullRequestTitle?.getTargetBranch()).to.be.undefined;
-        expect(pullRequestTitle?.getComponent()).to.be.undefined;
-        expect(pullRequestTitle?.getVersion()?.toString()).to.eql('1.2.3');
+        expect(pullRequestTitle?.getComponents()).to.be.undefined;
+        expect(pullRequestTitle?.getVersions()?.toString()).to.eql('1.2.3');
       });
       it('parses a versioned branch name with component', () => {
         const name = 'chore: release storage v1.2.3';
         const pullRequestTitle = PullRequestTitle.parse(name);
         expect(pullRequestTitle).to.not.be.undefined;
         expect(pullRequestTitle?.getTargetBranch()).to.be.undefined;
-        expect(pullRequestTitle?.getComponent()).to.eql('storage');
-        expect(pullRequestTitle?.getVersion()?.toString()).to.eql('1.2.3');
+        expect(pullRequestTitle?.getComponents()).to.eql('storage');
+        expect(pullRequestTitle?.getVersions()?.toString()).to.eql('1.2.3');
       });
     });
 
@@ -56,8 +56,8 @@ describe('PullRequestTitle', () => {
       const pullRequestTitle = PullRequestTitle.parse(name);
       expect(pullRequestTitle).to.not.be.undefined;
       expect(pullRequestTitle?.getTargetBranch()).to.eql('main');
-      expect(pullRequestTitle?.getComponent()).to.be.undefined;
-      expect(pullRequestTitle?.getVersion()?.toString()).to.eql('1.2.3');
+      expect(pullRequestTitle?.getComponents()).to.be.undefined;
+      expect(pullRequestTitle?.getVersions()?.toString()).to.eql('1.2.3');
     });
 
     it('parses a target branch and changes branch', () => {
@@ -65,8 +65,8 @@ describe('PullRequestTitle', () => {
       const pullRequestTitle = PullRequestTitle.parse(name);
       expect(pullRequestTitle).to.not.be.undefined;
       expect(pullRequestTitle?.getTargetBranch()).to.eql('main');
-      expect(pullRequestTitle?.getComponent()).to.be.undefined;
-      expect(pullRequestTitle?.getVersion()?.toString()).to.eql('1.2.3');
+      expect(pullRequestTitle?.getComponents()).to.be.undefined;
+      expect(pullRequestTitle?.getVersions()?.toString()).to.eql('1.2.3');
     });
 
     it('parses a target branch and component', () => {
@@ -74,8 +74,8 @@ describe('PullRequestTitle', () => {
       const pullRequestTitle = PullRequestTitle.parse(name);
       expect(pullRequestTitle).to.not.be.undefined;
       expect(pullRequestTitle?.getTargetBranch()).to.eql('main');
-      expect(pullRequestTitle?.getComponent()).to.eql('storage');
-      expect(pullRequestTitle?.getVersion()?.toString()).to.eql('1.2.3');
+      expect(pullRequestTitle?.getComponents()).to.eql(['storage']);
+      expect(pullRequestTitle?.getVersions()?.toString()).to.eql(['1.2.3']);
     });
 
     it('parses a target branch and component with a slash', () => {
@@ -83,8 +83,20 @@ describe('PullRequestTitle', () => {
       const pullRequestTitle = PullRequestTitle.parse(name);
       expect(pullRequestTitle).to.not.be.undefined;
       expect(pullRequestTitle?.getTargetBranch()).to.eql('main');
-      expect(pullRequestTitle?.getComponent()).to.eql('some/title-test');
-      expect(pullRequestTitle?.getVersion()?.toString()).to.eql('0.0.1');
+      expect(pullRequestTitle?.getComponents()).to.eql(['some/title-test']);
+      expect(pullRequestTitle?.getVersions()?.toString()).to.eql(['0.0.1']);
+    });
+
+    it('parses multiple components separated with commas', () => {
+      const name = 'releases: sdk 0.1.2, vertex-sdk 2.3.4';
+      const pullRequestTitle = PullRequestTitle.parse(name);
+      expect(pullRequestTitle).to.not.be.undefined;
+      expect(pullRequestTitle?.getTargetBranch()).to.be.undefined;
+      expect(pullRequestTitle?.getComponents()).to.eql(['sdk', 'vertex-sdk']);
+      expect(pullRequestTitle?.getVersions()?.toString()).to.eql([
+        '0.1.2',
+        '2.3.4',
+      ]);
     });
 
     it('fails to parse', () => {
@@ -167,8 +179,8 @@ describe('PullRequestTitle with custom pullRequestTitlePattern', () => {
         );
         expect(pullRequestTitle).to.not.be.undefined;
         expect(pullRequestTitle?.getTargetBranch()).to.be.undefined;
-        expect(pullRequestTitle?.getComponent()).to.be.undefined;
-        expect(pullRequestTitle?.getVersion()?.toString()).to.eql('1.2.3');
+        expect(pullRequestTitle?.getComponents()).to.be.undefined;
+        expect(pullRequestTitle?.getVersions()?.toString()).to.eql('1.2.3');
         expect(pullRequestTitle?.toString()).to.eql(name);
       });
       it('parses a versioned branch name with v', () => {
@@ -179,8 +191,8 @@ describe('PullRequestTitle with custom pullRequestTitlePattern', () => {
         );
         expect(pullRequestTitle).to.not.be.undefined;
         expect(pullRequestTitle?.getTargetBranch()).to.be.undefined;
-        expect(pullRequestTitle?.getComponent()).to.be.undefined;
-        expect(pullRequestTitle?.getVersion()?.toString()).to.eql('1.2.3');
+        expect(pullRequestTitle?.getComponents()).to.be.undefined;
+        expect(pullRequestTitle?.getVersions()?.toString()).to.eql('1.2.3');
       });
       it('parses a versioned branch name with component', () => {
         const name = 'chore: 🔖 release storage v1.2.3';
@@ -190,8 +202,8 @@ describe('PullRequestTitle with custom pullRequestTitlePattern', () => {
         );
         expect(pullRequestTitle).to.not.be.undefined;
         expect(pullRequestTitle?.getTargetBranch()).to.be.undefined;
-        expect(pullRequestTitle?.getComponent()).to.eql('storage');
-        expect(pullRequestTitle?.getVersion()?.toString()).to.eql('1.2.3');
+        expect(pullRequestTitle?.getComponents()).to.eql('storage');
+        expect(pullRequestTitle?.getVersions()?.toString()).to.eql('1.2.3');
       });
     });
 
@@ -203,8 +215,8 @@ describe('PullRequestTitle with custom pullRequestTitlePattern', () => {
       );
       expect(pullRequestTitle).to.not.be.undefined;
       expect(pullRequestTitle?.getTargetBranch()).to.eql('main');
-      expect(pullRequestTitle?.getComponent()).to.be.undefined;
-      expect(pullRequestTitle?.getVersion()?.toString()).to.eql('1.2.3');
+      expect(pullRequestTitle?.getComponents()).to.be.undefined;
+      expect(pullRequestTitle?.getVersions()?.toString()).to.eql('1.2.3');
     });
 
     it('parses a target branch and component', () => {
@@ -215,8 +227,8 @@ describe('PullRequestTitle with custom pullRequestTitlePattern', () => {
       );
       expect(pullRequestTitle).to.not.be.undefined;
       expect(pullRequestTitle?.getTargetBranch()).to.eql('main');
-      expect(pullRequestTitle?.getComponent()).to.eql('storage');
-      expect(pullRequestTitle?.getVersion()?.toString()).to.eql('1.2.3');
+      expect(pullRequestTitle?.getComponents()).to.eql('storage');
+      expect(pullRequestTitle?.getVersions()?.toString()).to.eql('1.2.3');
     });
 
     it('parses a component with @ sign prefix', () => {
@@ -226,7 +238,7 @@ describe('PullRequestTitle with custom pullRequestTitlePattern', () => {
         'chore${scope}: 🔖 release${component} ${version}'
       );
       expect(pullRequestTitle).to.not.be.undefined;
-      expect(pullRequestTitle?.getComponent()).to.eql('@example/storage');
+      expect(pullRequestTitle?.getComponents()).to.eql('@example/storage');
     });
 
     it('fails to parse', () => {
@@ -245,8 +257,8 @@ describe('PullRequestTitle with custom pullRequestTitlePattern', () => {
       );
       expect(pullRequestTitle).to.not.be.undefined;
       expect(pullRequestTitle?.getTargetBranch()).to.eql('main');
-      expect(pullRequestTitle?.getComponent()).to.be.undefined;
-      expect(pullRequestTitle?.getVersion()).to.be.undefined;
+      expect(pullRequestTitle?.getComponents()).to.be.undefined;
+      expect(pullRequestTitle?.getVersions()).to.be.undefined;
     });
 
     it('parses a complex title and pattern', () => {
@@ -256,10 +268,10 @@ describe('PullRequestTitle with custom pullRequestTitlePattern', () => {
       );
       expect(pullRequestTitle).to.not.be.undefined;
       expect(pullRequestTitle?.getTargetBranch()).to.eql('hotfix/v3.1.0-bug');
-      expect(pullRequestTitle?.getVersion()?.toString()).to.eql(
+      expect(pullRequestTitle?.getVersions()?.toString()).to.eql(
         '3.1.0-hotfix1'
       );
-      expect(pullRequestTitle?.getComponent()).to.eql('@example/storage');
+      expect(pullRequestTitle?.getComponents()).to.eql('@example/storage');
     });
   });
   describe('ofVersion', () => {

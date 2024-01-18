@@ -40,23 +40,23 @@ export function generateMatchPattern(pullRequestTitlePattern?: string): RegExp {
 }
 
 export class PullRequestTitle {
-  component?: string;
+  components?: string[];
   changesBranch?: string;
   targetBranch?: string;
-  version?: Version;
+  versions?: Version[];
   pullRequestTitlePattern: string;
   matchPattern: RegExp;
 
   private constructor(opts: {
-    version?: Version;
-    component?: string;
+    versions?: Version[];
+    components?: string[];
     targetBranch?: string;
     changesBranch?: string;
     pullRequestTitlePattern?: string;
     logger?: Logger;
   }) {
-    this.version = opts.version;
-    this.component = opts.component;
+    this.versions = opts.versions;
+    this.components = opts.components;
     this.targetBranch = opts.targetBranch;
     this.changesBranch = opts.changesBranch || this.targetBranch;
     this.pullRequestTitlePattern =
@@ -73,10 +73,10 @@ export class PullRequestTitle {
     const match = title.match(matchPattern);
     if (match?.groups) {
       return new PullRequestTitle({
-        version: match.groups['version']
-          ? Version.parse(match.groups['version'])
+        versions: match.groups['versions']
+          ? Version.parseMultiple(match.groups['versions'])
           : undefined,
-        component: match.groups['component'],
+        components: match.groups['components'],
         changesBranch: match.groups['changesBranch'],
         targetBranch: match.groups['branch'],
         pullRequestTitlePattern,
@@ -87,26 +87,30 @@ export class PullRequestTitle {
   }
 
   static ofComponentVersion(
-    component: string,
-    version: Version,
+    components: string[],
+    versions: Version[],
     pullRequestTitlePattern?: string
   ): PullRequestTitle {
-    return new PullRequestTitle({version, component, pullRequestTitlePattern});
+    return new PullRequestTitle({
+      versions,
+      components,
+      pullRequestTitlePattern,
+    });
   }
   static ofVersion(
-    version: Version,
+    versions: Version[],
     pullRequestTitlePattern?: string
   ): PullRequestTitle {
-    return new PullRequestTitle({version, pullRequestTitlePattern});
+    return new PullRequestTitle({versions, pullRequestTitlePattern});
   }
   static ofTargetBranchVersion(
     targetBranch: string,
     changesBranch: string,
-    version: Version,
+    versions: Version[],
     pullRequestTitlePattern?: string
   ): PullRequestTitle {
     return new PullRequestTitle({
-      version,
+      versions,
       targetBranch,
       changesBranch,
       pullRequestTitlePattern,
@@ -114,15 +118,15 @@ export class PullRequestTitle {
   }
 
   static ofComponentTargetBranchVersion(
-    component?: string,
+    components?: string[],
     targetBranch?: string,
     changesBranch?: string,
-    version?: Version,
+    versions?: Version[],
     pullRequestTitlePattern?: string
   ): PullRequestTitle {
     return new PullRequestTitle({
-      version,
-      component,
+      versions,
+      components,
       targetBranch,
       changesBranch,
       pullRequestTitlePattern,
@@ -144,14 +148,14 @@ export class PullRequestTitle {
   getTargetBranch(): string | undefined {
     return this.targetBranch;
   }
-  getChangesBRanch(): string | undefined {
+  getChangesBranch(): string | undefined {
     return this.changesBranch;
   }
-  getComponent(): string | undefined {
-    return this.component;
+  getComponents(): string[] | undefined {
+    return this.components;
   }
-  getVersion(): Version | undefined {
-    return this.version;
+  getVersions(): Version[] | undefined {
+    return this.versions;
   }
 
   toString(): string {
@@ -160,14 +164,18 @@ export class PullRequestTitle {
         ? `(${this.changesBranch} => ${this.targetBranch})`
         : `(${this.targetBranch})`
       : '';
-    const component = this.component ? ` ${this.component}` : '';
-    const version = this.version ?? '';
-    return this.pullRequestTitlePattern
-      .replace('${scope}', scope)
-      .replace('${component}', component)
-      .replace('${version}', version.toString())
-      .replace('${changesBranch}', this.changesBranch || '')
-      .replace('${branch}', this.targetBranch || '')
-      .trim();
+    const components = this.components ? ` ${this.components}` : '';
+    const versions = this.versions ?? '';
+
+    // FIXME(sam): replace template values using indices for versions and components
+    // Should look like: `releases: ${components[0]} ${versions[0]}, ${components[1]} ${versions[1]}`
+
+    // return this.pullRequestTitlePattern
+    //   .replace('${scope}', scope)
+    //   .replace('${component}', component)
+    //   .replace('${version}', version.toString())
+    //   .replace('${changesBranch}', this.changesBranch || '')
+    //   .replace('${branch}', this.targetBranch || '')
+    //   .trim();
   }
 }
