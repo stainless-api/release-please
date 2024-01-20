@@ -30,14 +30,14 @@ describe('CompositeUpdater', () => {
   describe('updateContent', () => {
     it('updates content multiple times', async () => {
       const versions1 = new Map<string, Version>();
-      const version1 = Version.parse('1.2.3');
+      const version1 = Version.parseOne('1.2.3');
       versions1.set('artifact1', version1);
       const updater1 = new JavaUpdate({
         versionsMap: versions1,
         version: version1,
       });
       const versions2 = new Map<string, Version>();
-      const version2 = Version.parse('2.0.0');
+      const version2 = Version.parseOne('2.0.0');
       versions2.set('artifact2', version2);
       const updater2 = new JavaUpdate({
         versionsMap: versions2,

@@ -23,7 +23,7 @@ describe('PHPComposer', () => {
     it('does not update a version when version is the same', async () => {
       const oldContent = '{"version":"1.0.0","replace":{"version":"1.0.0"}}';
 
-      const version = Version.parse('1.0.0');
+      const version = Version.parseOne('1.0.0');
 
       const versionsMap: VersionsMap = new Map();
 
@@ -42,7 +42,7 @@ describe('PHPComposer', () => {
     it('update all versions in composer.json', async () => {
       const oldContent = '{"version":"0.0.0","replace":{"version":"0.0.0"}}';
 
-      const version = Version.parse('1.0.0');
+      const version = Version.parseOne('1.0.0');
 
       const versionsMap: VersionsMap = new Map();
 
@@ -63,7 +63,7 @@ describe('PHPComposer', () => {
     it('update root version in composer.json', async () => {
       const oldContent = '{"version":"0.0.0"}';
 
-      const version = Version.parse('1.0.0');
+      const version = Version.parseOne('1.0.0');
 
       const versionsMap: VersionsMap = new Map();
 
@@ -82,7 +82,7 @@ describe('PHPComposer', () => {
     it('update replace version in composer.json when version is present', async () => {
       const oldContent = '{"replace":{"version":"0.0.0"}}';
 
-      const version = Version.parse('1.0.0');
+      const version = Version.parseOne('1.0.0');
 
       const versionsMap: VersionsMap = new Map();
 
@@ -101,7 +101,7 @@ describe('PHPComposer', () => {
     it('update replace version in composer.json when version is missing', async () => {
       const oldContent = '{"replace":{}}';
 
-      const version = Version.parse('1.0.0');
+      const version = Version.parseOne('1.0.0');
 
       const versionsMap: VersionsMap = new Map();
 

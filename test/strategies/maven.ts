@@ -94,7 +94,7 @@ describe('Maven', () => {
         .resolves(['pom.xml', 'submodule/pom.xml']);
 
       const latestRelease = {
-        tag: new TagName(Version.parse('2.3.3')),
+        tag: new TagName(Version.parseOne('2.3.3')),
         sha: 'abc123',
         notes: 'some notes',
       };

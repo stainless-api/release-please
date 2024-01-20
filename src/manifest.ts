@@ -1896,7 +1896,7 @@ async function parseReleasedVersions(
   );
   const releasedVersions: ReleasedVersions = {};
   for (const path in manifestJson) {
-    releasedVersions[path] = Version.parse(manifestJson[path]);
+    releasedVersions[path] = Version.parseOne(manifestJson[path]);
   }
   return releasedVersions;
 }

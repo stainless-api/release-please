@@ -76,7 +76,7 @@ describe('Sfdx', () => {
         packageName: 'some-sfdx-package',
       });
       const latestRelease = {
-        tag: new TagName(Version.parse('0.123.4'), 'some-sfdx-package'),
+        tag: new TagName(Version.parseOne('0.123.4'), 'some-sfdx-package'),
         sha: 'abc123',
         notes: 'some notes',
       };
@@ -98,7 +98,7 @@ describe('Sfdx', () => {
         ),
       ];
       const latestRelease = {
-        tag: new TagName(Version.parse('0.123.4'), 'sfdx-test-repo'),
+        tag: new TagName(Version.parseOne('0.123.4'), 'sfdx-test-repo'),
         sha: 'abc123',
         notes: 'some notes',
       };
@@ -128,7 +128,7 @@ describe('Sfdx', () => {
         ),
       ];
       const latestRelease = {
-        tag: new TagName(Version.parse('0.123.4'), 'sfdx-test-repo'),
+        tag: new TagName(Version.parseOne('0.123.4'), 'sfdx-test-repo'),
         sha: 'abc123',
         notes: 'some notes',
       };
@@ -154,7 +154,7 @@ describe('Sfdx', () => {
         github,
       });
       const latestRelease = {
-        tag: new TagName(Version.parse('0.123.4'), 'some-sfdx-package'),
+        tag: new TagName(Version.parseOne('0.123.4'), 'some-sfdx-package'),
         sha: 'abc123',
         notes: 'some notes',
       };

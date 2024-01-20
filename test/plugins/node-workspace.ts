@@ -52,7 +52,7 @@ export function buildMockPackageUpdate(
     createIfMissing: false,
     cachedFileContents,
     updater: new PackageJson({
-      version: Version.parse(
+      version: Version.parseOne(
         JSON.parse(cachedFileContents.parsedContent).version
       ),
     }),
@@ -71,7 +71,7 @@ function buildMockChangelogUpdate(
     cachedFileContents,
     updater: new Changelog({
       changelogEntry,
-      version: Version.parse(versionString),
+      version: Version.parseOne(versionString),
     }),
   };
 }

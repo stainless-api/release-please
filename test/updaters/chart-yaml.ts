@@ -29,7 +29,7 @@ describe('ChartYaml', () => {
         'utf8'
       ).replace(/\r\n/g, '\n');
       const version = new ChartYaml({
-        version: Version.parse('1.1.0'),
+        version: Version.parseOne('1.1.0'),
       });
       const newContent = version.updateContent(oldContent);
       snapshot(newContent);

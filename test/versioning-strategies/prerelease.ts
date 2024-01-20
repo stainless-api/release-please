@@ -68,7 +68,7 @@ describe('PrereleaseVersioningStrategy', () => {
       const expected = expectedBumps[old];
       it(`can bump ${old} to ${expected}`, async () => {
         const strategy = new PrereleaseVersioningStrategy();
-        const oldVersion = Version.parse(old);
+        const oldVersion = Version.parseOne(old);
         const newVersion = await strategy.bump(oldVersion, commits);
         expect(newVersion.toString()).to.equal(expected);
       });
@@ -77,7 +77,7 @@ describe('PrereleaseVersioningStrategy', () => {
       const strategy = new PrereleaseVersioningStrategy({
         bumpMinorPreMajor: true,
       });
-      const oldVersion = Version.parse('0.1.2');
+      const oldVersion = Version.parseOne('0.1.2');
       const newVersion = await strategy.bump(oldVersion, commits);
       expect(newVersion.toString()).to.equal('0.2.0');
     });
@@ -132,7 +132,7 @@ describe('PrereleaseVersioningStrategy', () => {
       const expected = expectedBumps[old];
       it(`can bump ${old} to ${expected}`, async () => {
         const strategy = new PrereleaseVersioningStrategy();
-        const oldVersion = Version.parse(old);
+        const oldVersion = Version.parseOne(old);
         const newVersion = await strategy.bump(oldVersion, commits);
         expect(newVersion.toString()).to.equal(expected);
       });
@@ -141,7 +141,7 @@ describe('PrereleaseVersioningStrategy', () => {
       const strategy = new PrereleaseVersioningStrategy({
         bumpPatchForMinorPreMajor: true,
       });
-      const oldVersion = Version.parse('0.1.2');
+      const oldVersion = Version.parseOne('0.1.2');
       const newVersion = await strategy.bump(oldVersion, commits);
       expect(newVersion.toString()).to.equal('0.1.3');
     });
@@ -187,7 +187,7 @@ describe('PrereleaseVersioningStrategy', () => {
       const expected = expectedBumps[old];
       it(`can bump ${old} to ${expected}`, async () => {
         const strategy = new PrereleaseVersioningStrategy();
-        const oldVersion = Version.parse(old);
+        const oldVersion = Version.parseOne(old);
         const newVersion = await strategy.bump(oldVersion, commits);
         expect(newVersion.toString()).to.equal(expected);
       });
@@ -232,7 +232,7 @@ describe('PrereleaseVersioningStrategy', () => {
         },
       ];
       const strategy = new PrereleaseVersioningStrategy();
-      const oldVersion = Version.parse('1.2.3');
+      const oldVersion = Version.parseOne('1.2.3');
       const newVersion = await strategy.bump(oldVersion, commits);
       expect(newVersion.toString()).to.equal('3.1.2');
     });
@@ -284,7 +284,7 @@ describe('PrereleaseVersioningStrategy', () => {
         },
       ];
       const strategy = new PrereleaseVersioningStrategy();
-      const oldVersion = Version.parse('1.2.3');
+      const oldVersion = Version.parseOne('1.2.3');
       const newVersion = await strategy.bump(oldVersion, commits);
       expect(newVersion.toString()).to.equal('3.1.2');
     });

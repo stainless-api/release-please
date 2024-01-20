@@ -47,7 +47,7 @@ describe('version.rb', () => {
           shouldUpdate ? 'update' : 'not update'
         } for ${description}`, () => {
           const version = new VersionRB({
-            version: Version.parse(newVersion),
+            version: Version.parseOne(newVersion),
           });
           const result = version.updateContent(existingContent);
           expect(result).to.equal(expected);
@@ -61,7 +61,7 @@ describe('version.rb', () => {
         'utf8'
       ).replace(/\r\n/g, '\n');
       const version = new VersionRB({
-        version: Version.parse('0.6.0'),
+        version: Version.parseOne('0.6.0'),
       });
       const newContent = version.updateContent(oldContent);
       snapshot(newContent);
@@ -75,7 +75,7 @@ describe('version.rb', () => {
         .replace(/\r\n/g, '\n')
         .replace(/"/g, "'");
       const version = new VersionRB({
-        version: Version.parse('0.6.0'),
+        version: Version.parseOne('0.6.0'),
       });
       const newContent = version.updateContent(oldContent);
       snapshot(newContent);
@@ -87,7 +87,7 @@ describe('version.rb', () => {
         'utf8'
       ).replace(/\r\n/g, '\n');
       const version = new VersionRB({
-        version: Version.parse('0.6.11'),
+        version: Version.parseOne('0.6.11'),
       });
       const newContent = version.updateContent(oldContent);
       snapshot(newContent);
@@ -99,7 +99,7 @@ describe('version.rb', () => {
         'utf8'
       ).replace(/\r\n/g, '\n');
       const version = new VersionRB({
-        version: Version.parse('10.0.0-alpha1'),
+        version: Version.parseOne('10.0.0-alpha1'),
       });
       const newContent = version.updateContent(oldContent);
       snapshot(newContent);

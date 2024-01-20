@@ -798,7 +798,7 @@ describe('GitHub', () => {
           body: 'Some release notes response.',
         });
       const release = await github.createRelease({
-        tag: new TagName(Version.parse('1.2.3')),
+        tag: new TagName(Version.parseOne('1.2.3')),
         sha: 'abc123',
         notes: 'Some release notes',
       });
@@ -844,7 +844,7 @@ describe('GitHub', () => {
         });
 
       const promise = github.createRelease({
-        tag: new TagName(Version.parse('1.2.3')),
+        tag: new TagName(Version.parseOne('1.2.3')),
         sha: 'abc123',
         notes: 'Some release notes',
       });
@@ -867,7 +867,7 @@ describe('GitHub', () => {
         });
 
       const promise = github.createRelease({
-        tag: new TagName(Version.parse('1.2.3')),
+        tag: new TagName(Version.parseOne('1.2.3')),
         sha: 'abc123',
         notes: 'Some release notes',
       });
@@ -890,7 +890,7 @@ describe('GitHub', () => {
         });
       const release = await github.createRelease(
         {
-          tag: new TagName(Version.parse('1.2.3')),
+          tag: new TagName(Version.parseOne('1.2.3')),
           sha: 'abc123',
           notes: 'Some release notes',
         },
@@ -930,7 +930,7 @@ describe('GitHub', () => {
         });
       const release = await github.createRelease(
         {
-          tag: new TagName(Version.parse('1.2.3')),
+          tag: new TagName(Version.parseOne('1.2.3')),
           sha: 'abc123',
           notes: 'Some release notes',
         },

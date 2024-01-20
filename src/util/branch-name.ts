@@ -145,7 +145,7 @@ class AutoreleaseBranchName extends BranchName {
     const match = branchName.match(AUTORELEASE_PATTERN);
     if (match?.groups) {
       this.component = match.groups['component'];
-      this.version = Version.parse(match.groups['version']);
+      this.version = Version.parseOne(match.groups['version']);
     }
   }
   toString(): string {

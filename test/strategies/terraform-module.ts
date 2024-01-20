@@ -74,7 +74,7 @@ describe('TerraformModule', () => {
       });
       sandbox.stub(github, 'findFilesByFilenameAndRef').resolves([]);
       const latestRelease = {
-        tag: new TagName(Version.parse('0.123.4'), 'google-cloud-automl'),
+        tag: new TagName(Version.parseOne('0.123.4'), 'google-cloud-automl'),
         sha: 'abc123',
         notes: 'some notes',
       };

@@ -42,7 +42,7 @@ export function buildMockPackageUpdate(
     createIfMissing: false,
     cachedFileContents,
     updater: new CargoToml({
-      version: Version.parse(manifest.package?.version || 'FIXME'),
+      version: Version.parseOne(manifest.package?.version || 'FIXME'),
     }),
   };
 }
@@ -152,9 +152,9 @@ describe('LinkedVersions plugin', () => {
         },
       },
       {
-        'path/a': Version.parse('1.0.0'),
-        'path/b': Version.parse('0.2.3'),
-        'path/c': Version.parse('0.2.3'),
+        'path/a': Version.parseOne('1.0.0'),
+        'path/b': Version.parseOne('0.2.3'),
+        'path/c': Version.parseOne('0.2.3'),
       },
       {
         plugins: [
@@ -199,9 +199,9 @@ describe('LinkedVersions plugin', () => {
         },
       },
       {
-        'path/a': Version.parse('1.0.0'),
-        'path/b': Version.parse('0.2.3'),
-        'path/c': Version.parse('0.2.3'),
+        'path/a': Version.parseOne('1.0.0'),
+        'path/b': Version.parseOne('0.2.3'),
+        'path/c': Version.parseOne('0.2.3'),
       },
       {
         separatePullRequests: true,
@@ -250,9 +250,9 @@ describe('LinkedVersions plugin', () => {
         },
       },
       {
-        'path/a': Version.parse('1.0.0'),
-        'path/b': Version.parse('0.2.3'),
-        'path/c': Version.parse('0.2.3'),
+        'path/a': Version.parseOne('1.0.0'),
+        'path/b': Version.parseOne('0.2.3'),
+        'path/c': Version.parseOne('0.2.3'),
       },
       {
         separatePullRequests: true,
@@ -294,10 +294,10 @@ describe('LinkedVersions plugin', () => {
         },
       },
       {
-        'path/a': Version.parse('1.0.0'),
-        'path/b': Version.parse('0.2.3'),
-        'path/c': Version.parse('0.2.3'),
-        'path/d': Version.parse('1.0.0'),
+        'path/a': Version.parseOne('1.0.0'),
+        'path/b': Version.parseOne('0.2.3'),
+        'path/c': Version.parseOne('0.2.3'),
+        'path/d': Version.parseOne('1.0.0'),
       },
       {
         separatePullRequests: true,

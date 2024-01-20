@@ -78,7 +78,7 @@ export class DefaultVersioningStrategy implements VersioningStrategy {
           `found Release-As: ${releaseAs.text}, forcing version`
         );
         return new CustomVersionUpdate(
-          Version.parse(releaseAs.text).toString()
+          Version.parseOne(releaseAs.text).toString()
         );
       }
       if (commit.breaking) {

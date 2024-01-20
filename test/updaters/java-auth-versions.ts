@@ -29,9 +29,9 @@ describe('JavaAuthVersions', () => {
         'utf8'
       ).replace(/\r\n/g, '\n');
       const versions = new Map<string, Version>();
-      versions.set('google-auth-library', Version.parse('0.25.0'));
+      versions.set('google-auth-library', Version.parseOne('0.25.0'));
       const javaAuthVersions = new VersionsManifest({
-        version: Version.parse('0.25.0'),
+        version: Version.parseOne('0.25.0'),
         versionsMap: versions,
       });
       const newContent = javaAuthVersions.updateContent(oldContent);
@@ -46,10 +46,10 @@ describe('JavaAuthVersions', () => {
       const versions = new Map<string, Version>();
       versions.set(
         'google-auth-library-oauth2-http',
-        Version.parse('0.16.2-SNAPSHOT')
+        Version.parseOne('0.16.2-SNAPSHOT')
       );
       const javaAuthVersions = new VersionsManifest({
-        version: Version.parse('0.16.2-SNAPSHOT'),
+        version: Version.parseOne('0.16.2-SNAPSHOT'),
         versionsMap: versions,
       });
       const newContent = javaAuthVersions.updateContent(oldContent);
@@ -62,14 +62,14 @@ describe('JavaAuthVersions', () => {
         'utf8'
       ).replace(/\r\n/g, '\n');
       const versions = new Map<string, Version>();
-      versions.set('google-auth-library', Version.parse('0.25.0'));
+      versions.set('google-auth-library', Version.parseOne('0.25.0'));
       versions.set(
         'google-auth-library-oauth2-http',
-        Version.parse('0.16.2-SNAPSHOT')
+        Version.parseOne('0.16.2-SNAPSHOT')
       );
       const javaAuthVersions = new VersionsManifest({
         versionsMap: versions,
-        version: Version.parse('0.25.0'),
+        version: Version.parseOne('0.25.0'),
       });
       const newContent = javaAuthVersions.updateContent(oldContent);
       snapshot(newContent);

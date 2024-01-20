@@ -29,7 +29,7 @@ describe('version.go', () => {
         'utf8'
       ).replace(/\r\n/g, '\n');
       const version = new VersionGo({
-        version: Version.parse('0.59.0'),
+        version: Version.parseOne('0.59.0'),
       });
       const newContent = version.updateContent(oldContent);
       snapshot(newContent);

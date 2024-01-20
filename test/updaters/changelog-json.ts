@@ -34,7 +34,7 @@ describe('changelog.json', () => {
     ];
     const conventionalCommits = parseConventionalCommits(commits);
     const changelogJson = new ChangelogJson({
-      version: Version.parse('14.0.0'),
+      version: Version.parseOne('14.0.0'),
       artifactName: 'foo-artifact',
       commits: conventionalCommits,
       language: 'JAVA',
@@ -56,7 +56,7 @@ describe('changelog.json', () => {
     ];
     const conventionalCommits = parseConventionalCommits(commits);
     const changelogJson = new ChangelogJson({
-      version: Version.parse('14.0.0'),
+      version: Version.parseOne('14.0.0'),
       artifactName: 'foo-artifact',
       language: 'JAVA',
       commits: conventionalCommits,
@@ -81,7 +81,7 @@ describe('changelog.json', () => {
     ];
     const conventionalCommits = parseConventionalCommits(commits);
     const changelogJson = new ChangelogJson({
-      version: Version.parse('14.0.0'),
+      version: Version.parseOne('14.0.0'),
       artifactName: 'foo-artifact',
       language: 'JAVA',
       commits: conventionalCommits,

@@ -35,7 +35,7 @@ describe('SfdxProjectJson', () => {
       const versions = new Map<string, Version>();
       const pom = new SfdxProjectJson({
         versionsMap: versions,
-        version: Version.parse('v2.3.4'),
+        version: Version.parseOne('v2.3.4'),
       });
       const newContent = pom.updateContent(oldContent);
       snapshot(newContent);

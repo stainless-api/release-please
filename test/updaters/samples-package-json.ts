@@ -29,7 +29,7 @@ describe('SamplesPackageJson', () => {
         'utf8'
       );
       const samplesPackageJson = new SamplesPackageJson({
-        version: Version.parse('14.0.0'),
+        version: Version.parseOne('14.0.0'),
         packageName: '@google-cloud/firestore',
       });
       const newContent = samplesPackageJson.updateContent(oldContent);
@@ -42,7 +42,7 @@ describe('SamplesPackageJson', () => {
         'utf8'
       ).replace(/\r\n/g, '\n');
       const samplesPackageJson = new SamplesPackageJson({
-        version: Version.parse('14.0.0'),
+        version: Version.parseOne('14.0.0'),
         packageName: '@google-cloud/firestore',
       });
       const newContent = samplesPackageJson.updateContent(oldContent);

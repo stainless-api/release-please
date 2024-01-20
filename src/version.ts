@@ -48,7 +48,7 @@ export class Version {
    * @returns {Version} the parsed version
    * @throws {Error} if the version string cannot be parsed
    */
-  static parse(versionString: string): Version {
+  static parseOne(versionString: string): Version {
     const match = versionString.match(VERSION_REGEX);
     if (!match?.groups) {
       throw Error(`unable to parse version string: ${versionString}`);
@@ -59,6 +59,17 @@ export class Version {
     const preRelease = match.groups.preRelease;
     const build = match.groups.build;
     return new Version(major, minor, patch, preRelease, build);
+  }
+
+  /**
+   * Parse multiple version strings into data classes.
+   *
+   * @param {string[]} versionStrings the input version strings
+   * @returns {Version[]} the parsed versions
+   * @throws {Error} if a version string cannot be parsed
+   */
+  static parseMultiple(versionStrings: string[]): Version[] {
+    return versionStrings.map(v => Version.parseOne(v));
   }
 
   /**

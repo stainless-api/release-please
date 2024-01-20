@@ -57,7 +57,7 @@ describe('AlwaysBumpMajorStrategy', () => {
     ];
     it('bumps major', async () => {
       const strategy = new AlwaysBumpMajor();
-      const oldVersion = Version.parse('1.2.3');
+      const oldVersion = Version.parseOne('1.2.3');
       const newVersion = await strategy.bump(oldVersion, commits);
       expect(newVersion.toString()).to.equal('2.0.0');
     });
@@ -101,7 +101,7 @@ describe('AlwaysBumpMajorStrategy', () => {
     ];
     it('bumps major for minor', async () => {
       const strategy = new AlwaysBumpMajor();
-      const oldVersion = Version.parse('1.2.3');
+      const oldVersion = Version.parseOne('1.2.3');
       const newVersion = await strategy.bump(oldVersion, commits);
       expect(newVersion.toString()).to.equal('2.0.0');
     });
@@ -134,7 +134,7 @@ describe('AlwaysBumpMajorStrategy', () => {
     ];
     it('bumps major for patch', async () => {
       const strategy = new AlwaysBumpMajor();
-      const oldVersion = Version.parse('1.2.3');
+      const oldVersion = Version.parseOne('1.2.3');
       const newVersion = await strategy.bump(oldVersion, commits);
       expect(newVersion.toString()).to.equal('2.0.0');
     });

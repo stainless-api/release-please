@@ -155,7 +155,7 @@ describe('BranchName', () => {
   });
   describe('ofVersion', () => {
     it('builds the autorelease versioned branch name', () => {
-      const branchName = BranchName.ofVersion(Version.parse('1.2.3'));
+      const branchName = BranchName.ofVersion(Version.parseOne('1.2.3'));
       expect(branchName.toString()).to.eql('release-v1.2.3');
     });
   });
@@ -163,7 +163,7 @@ describe('BranchName', () => {
     it('builds the autorelease versioned branch name with component', () => {
       const branchName = BranchName.ofComponentVersion(
         'storage',
-        Version.parse('1.2.3')
+        Version.parseOne('1.2.3')
       );
       expect(branchName.toString()).to.eql('release-storage-v1.2.3');
     });

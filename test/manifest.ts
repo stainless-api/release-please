@@ -1655,7 +1655,7 @@ describe('Manifest', () => {
             },
           },
           {
-            '.': Version.parse('1.0.0'),
+            '.': Version.parseOne('1.0.0'),
           }
         );
         const pullRequests = await manifest.buildPullRequests([], []);
@@ -1719,7 +1719,7 @@ describe('Manifest', () => {
             },
           },
           {
-            '.': Version.parse('1.0.0'),
+            '.': Version.parseOne('1.0.0'),
           }
         );
         const pullRequests = await manifest.buildPullRequests([], []);
@@ -1738,7 +1738,7 @@ describe('Manifest', () => {
             },
           },
           {
-            '.': Version.parse('1.0.0'),
+            '.': Version.parseOne('1.0.0'),
           },
           {
             draftPullRequest: true,
@@ -1760,7 +1760,7 @@ describe('Manifest', () => {
             },
           },
           {
-            '.': Version.parse('1.0.0'),
+            '.': Version.parseOne('1.0.0'),
           },
           {
             labels: ['some-special-label'],
@@ -1783,7 +1783,7 @@ describe('Manifest', () => {
             },
           },
           {
-            '.': Version.parse('1.0.0'),
+            '.': Version.parseOne('1.0.0'),
           }
         );
         const pullRequests = await manifest.buildPullRequests([], []);
@@ -1803,7 +1803,7 @@ describe('Manifest', () => {
             },
           },
           {
-            '.': Version.parse('1.0.0'),
+            '.': Version.parseOne('1.0.0'),
           }
         );
         const pullRequests = await manifest.buildPullRequests([], []);
@@ -1867,7 +1867,7 @@ describe('Manifest', () => {
           },
         },
         {
-          '.': Version.parse('1.0.0'),
+          '.': Version.parseOne('1.0.0'),
         }
       );
       const pullRequests = await manifest.buildPullRequests([], []);
@@ -1959,8 +1959,8 @@ describe('Manifest', () => {
           },
         },
         {
-          'path/a': Version.parse('1.0.0'),
-          'path/b': Version.parse('0.2.3'),
+          'path/a': Version.parseOne('1.0.0'),
+          'path/b': Version.parseOne('0.2.3'),
         }
       );
       const pullRequests = await manifest.buildPullRequests([], []);
@@ -2045,8 +2045,8 @@ describe('Manifest', () => {
           },
         },
         {
-          'path/a': Version.parse('1.0.0'),
-          'path/b': Version.parse('0.2.3'),
+          'path/a': Version.parseOne('1.0.0'),
+          'path/b': Version.parseOne('0.2.3'),
         },
         {
           separatePullRequests: true,
@@ -3193,9 +3193,9 @@ version = "3.0.0"
           },
         },
         {
-          '.': Version.parse('1.2.1'),
-          'path/a': Version.parse('1.0.1'),
-          'path/b': Version.parse('0.2.3'),
+          '.': Version.parseOne('1.2.1'),
+          'path/a': Version.parseOne('1.0.1'),
+          'path/b': Version.parseOne('0.2.3'),
         },
         {
           groupPullRequestTitlePattern:
@@ -3293,8 +3293,8 @@ version = "3.0.0"
           },
         },
         {
-          'path/a': Version.parse('1.0.1'),
-          'path/b': Version.parse('0.2.3'),
+          'path/a': Version.parseOne('1.0.1'),
+          'path/b': Version.parseOne('0.2.3'),
         },
         {
           groupPullRequestTitlePattern:
@@ -3529,7 +3529,7 @@ version = "3.0.0"
           },
         },
         {
-          '.': Version.parse('1.2.3'),
+          '.': Version.parseOne('1.2.3'),
         }
       );
       const pullRequests = await manifest.buildPullRequests([], []);
@@ -3568,7 +3568,7 @@ version = "3.0.0"
             },
           },
           {
-            '.': Version.parse('1.0.0'),
+            '.': Version.parseOne('1.0.0'),
           }
         );
         const pullRequests = await manifest.buildPullRequests([], []);
@@ -3598,7 +3598,7 @@ version = "3.0.0"
             },
           },
           {
-            '.': Version.parse('1.0.0'),
+            '.': Version.parseOne('1.0.0'),
           }
         );
         const pullRequests = await manifest.buildPullRequests([], []);
@@ -3690,9 +3690,9 @@ version = "3.0.0"
           },
         },
         {
-          '.': Version.parse('1.1.0'),
-          'pkg/b': Version.parse('1.0.0'),
-          'pkg/c': Version.parse('1.0.1'),
+          '.': Version.parseOne('1.1.0'),
+          'pkg/b': Version.parseOne('1.0.0'),
+          'pkg/c': Version.parseOne('1.0.1'),
         }
       );
       const pullRequests = await manifest.buildPullRequests([], []);
@@ -3763,7 +3763,7 @@ version = "3.0.0"
           },
         },
         {
-          '.': Version.parse('1.0.0'),
+          '.': Version.parseOne('1.0.0'),
         },
         {
           draftPullRequest: true,
@@ -3867,8 +3867,8 @@ version = "3.0.0"
             },
           },
           {
-            'path/a': Version.parse('1.0.0'),
-            'path/b': Version.parse('0.2.3'),
+            'path/a': Version.parseOne('1.0.0'),
+            'path/b': Version.parseOne('0.2.3'),
           },
           {
             separatePullRequests: true,
@@ -3912,8 +3912,8 @@ version = "3.0.0"
             },
           },
           {
-            'path/a': Version.parse('1.0.0'),
-            'path/b': Version.parse('0.2.3'),
+            'path/a': Version.parseOne('1.0.0'),
+            'path/b': Version.parseOne('0.2.3'),
           },
           {
             separatePullRequests: true,
@@ -3947,7 +3947,7 @@ version = "3.0.0"
             },
           },
           {
-            'path/a': Version.parse('1.0.0'),
+            'path/a': Version.parseOne('1.0.0'),
           },
           {
             plugins: ['sentence-case'],
@@ -4037,7 +4037,7 @@ version = "3.0.0"
           },
         },
         {
-          '.': Version.parse('1.0.0'),
+          '.': Version.parseOne('1.0.0'),
         }
       );
       const pullRequests = await manifest.buildPullRequests([], []);
@@ -4130,8 +4130,8 @@ version = "3.0.0"
           },
         },
         {
-          'path/a': Version.parse('1.0.0'),
-          'path/b': Version.parse('0.2.3'),
+          'path/a': Version.parseOne('1.0.0'),
+          'path/b': Version.parseOne('0.2.3'),
         }
       );
       const pullRequests = await manifest.buildPullRequests([], []);
@@ -4191,7 +4191,7 @@ version = "3.0.0"
           },
         },
         {
-          '.': Version.parse('1.0.0'),
+          '.': Version.parseOne('1.0.0'),
         },
         {
           releaseSearchDepth: 1,
@@ -4266,7 +4266,7 @@ version = "3.0.0"
           },
         },
         {
-          '.': Version.parse('1.0.0'),
+          '.': Version.parseOne('1.0.0'),
         },
         {
           commitSearchDepth: 1,
@@ -4367,9 +4367,9 @@ version = "3.0.0"
             },
           },
           {
-            'pkg/b': Version.parse('1.0.0'),
-            'pkg/c': Version.parse('2.0.0'),
-            'pkg/d': Version.parse('3.0.0'),
+            'pkg/b': Version.parseOne('1.0.0'),
+            'pkg/c': Version.parseOne('2.0.0'),
+            'pkg/d': Version.parseOne('3.0.0'),
           },
           {
             separatePullRequests: true,
@@ -4411,9 +4411,9 @@ version = "3.0.0"
             },
           },
           {
-            'pkg/b': Version.parse('1.0.0'),
-            'pkg/c': Version.parse('2.0.0'),
-            'pkg/d': Version.parse('3.0.0'),
+            'pkg/b': Version.parseOne('1.0.0'),
+            'pkg/c': Version.parseOne('2.0.0'),
+            'pkg/d': Version.parseOne('3.0.0'),
           }
         );
         const pullRequests = await manifest.buildPullRequests([], []);
@@ -4449,9 +4449,9 @@ version = "3.0.0"
             },
           },
           {
-            'pkg/b': Version.parse('1.0.0'),
-            'pkg/c': Version.parse('2.0.0'),
-            'pkg/d': Version.parse('3.0.0'),
+            'pkg/b': Version.parseOne('1.0.0'),
+            'pkg/c': Version.parseOne('2.0.0'),
+            'pkg/d': Version.parseOne('3.0.0'),
           }
         );
         const pullRequests = await manifest.buildPullRequests([], []);
@@ -4484,8 +4484,8 @@ version = "3.0.0"
           },
         },
         {
-          'path/a': Version.parse('1.0.0'),
-          'path/b': Version.parse('0.2.3'),
+          'path/a': Version.parseOne('1.0.0'),
+          'path/b': Version.parseOne('0.2.3'),
         },
         {
           separatePullRequests: true,
@@ -4556,8 +4556,8 @@ version = "3.0.0"
           },
         },
         {
-          'path/a': Version.parse('1.0.0'),
-          'path/b': Version.parse('0.2.3'),
+          'path/a': Version.parseOne('1.0.0'),
+          'path/b': Version.parseOne('0.2.3'),
         },
         {
           separatePullRequests: true,
@@ -4679,8 +4679,8 @@ version = "3.0.0"
           },
         },
         {
-          'path/a': Version.parse('1.0.0'),
-          'path/b': Version.parse('0.2.3'),
+          'path/a': Version.parseOne('1.0.0'),
+          'path/b': Version.parseOne('0.2.3'),
         },
         {
           separatePullRequests: true,
@@ -4791,8 +4791,8 @@ version = "3.0.0"
           },
         },
         {
-          'path/a': Version.parse('1.0.0'),
-          'path/b': Version.parse('0.2.3'),
+          'path/a': Version.parseOne('1.0.0'),
+          'path/b': Version.parseOne('0.2.3'),
         },
         {
           separatePullRequests: true,
@@ -4883,8 +4883,8 @@ version = "3.0.0"
           },
         },
         {
-          'path/a': Version.parse('1.0.0'),
-          'path/b': Version.parse('0.2.3'),
+          'path/a': Version.parseOne('1.0.0'),
+          'path/b': Version.parseOne('0.2.3'),
         },
         {
           separatePullRequests: true,
@@ -4985,11 +4985,11 @@ version = "3.0.0"
           },
         },
         {
-          'path/a': Version.parse('1.0.0'),
-          'path/b': Version.parse('1.0.0'),
-          'path/c': Version.parse('1.0.0'),
-          'path/d': Version.parse('1.0.0'),
-          'path/e': Version.parse('1.0.0'),
+          'path/a': Version.parseOne('1.0.0'),
+          'path/b': Version.parseOne('1.0.0'),
+          'path/c': Version.parseOne('1.0.0'),
+          'path/d': Version.parseOne('1.0.0'),
+          'path/e': Version.parseOne('1.0.0'),
         },
         {
           separatePullRequests: true,
@@ -5014,8 +5014,8 @@ version = "3.0.0"
             labels: [],
             headRefName: 'release-please/branches/main/components/a',
             draft: false,
-            version: Version.parse('1.0.1'), // patch bump, does not match filter
-            previousVersion: Version.parse('1.0.0'),
+            version: Version.parseOne('1.0.1'), // patch bump, does not match filter
+            previousVersion: Version.parseOne('1.0.0'),
             conventionalCommits: [
               {
                 type: 'fix', // type match filter
@@ -5036,8 +5036,8 @@ version = "3.0.0"
             labels: [],
             headRefName: 'release-please/branches/main/components/b',
             draft: false,
-            version: Version.parse('1.1.0'), // minor bump, match filter
-            previousVersion: Version.parse('1.0.0'),
+            version: Version.parseOne('1.1.0'), // minor bump, match filter
+            previousVersion: Version.parseOne('1.0.0'),
             conventionalCommits: [
               {
                 type: 'fix', // type match filter
@@ -5058,8 +5058,8 @@ version = "3.0.0"
             labels: [],
             headRefName: 'release-please/branches/main/components/c',
             draft: false,
-            version: Version.parse('1.1.0'), // minor bump, match filter
-            previousVersion: Version.parse('1.0.0'),
+            version: Version.parseOne('1.1.0'), // minor bump, match filter
+            previousVersion: Version.parseOne('1.0.0'),
             conventionalCommits: [
               {
                 type: 'feat', // type does not match filter
@@ -5080,8 +5080,8 @@ version = "3.0.0"
             labels: [],
             headRefName: 'release-please/branches/main/components/d',
             draft: false,
-            version: Version.parse('1.1.0'), // minor bump, match filter
-            previousVersion: Version.parse('1.0.0'),
+            version: Version.parseOne('1.1.0'), // minor bump, match filter
+            previousVersion: Version.parseOne('1.0.0'),
             conventionalCommits: [
               {
                 type: 'fix', // type does match filter
@@ -5102,8 +5102,8 @@ version = "3.0.0"
             labels: [],
             headRefName: 'release-please/branches/main/components/e',
             draft: false,
-            version: Version.parse('1.1.0'), // minor bump, match filter
-            previousVersion: Version.parse('1.0.0'),
+            version: Version.parseOne('1.1.0'), // minor bump, match filter
+            previousVersion: Version.parseOne('1.0.0'),
             conventionalCommits: [
               {
                 type: 'fix', // type does match filter
@@ -5200,10 +5200,10 @@ version = "3.0.0"
           },
         },
         {
-          'path/a': Version.parse('1.0.0'),
-          'path/b': Version.parse('1.0.0'),
-          'path/c': Version.parse('1.0.0'),
-          'path/d': Version.parse('1.0.0'),
+          'path/a': Version.parseOne('1.0.0'),
+          'path/b': Version.parseOne('1.0.0'),
+          'path/c': Version.parseOne('1.0.0'),
+          'path/d': Version.parseOne('1.0.0'),
         },
         {
           separatePullRequests: true,
@@ -5227,8 +5227,8 @@ version = "3.0.0"
             labels: [],
             headRefName: 'release-please/branches/main/components/a',
             draft: false,
-            version: Version.parse('1.1.0'),
-            previousVersion: Version.parse('1.0.0'),
+            version: Version.parseOne('1.1.0'),
+            previousVersion: Version.parseOne('1.0.0'),
             conventionalCommits: [
               {
                 type: 'fix', // type match filter
@@ -5249,8 +5249,8 @@ version = "3.0.0"
             labels: [],
             headRefName: 'release-please/branches/main/components/b',
             draft: false,
-            version: Version.parse('1.1.0'),
-            previousVersion: Version.parse('1.0.0'),
+            version: Version.parseOne('1.1.0'),
+            previousVersion: Version.parseOne('1.0.0'),
             conventionalCommits: [
               {
                 type: 'fix', // type match filter
@@ -5271,8 +5271,8 @@ version = "3.0.0"
             labels: [],
             headRefName: 'release-please/branches/main/components/c',
             draft: false,
-            version: Version.parse('1.1.0'),
-            previousVersion: Version.parse('1.0.0'),
+            version: Version.parseOne('1.1.0'),
+            previousVersion: Version.parseOne('1.0.0'),
             conventionalCommits: [
               {
                 type: 'fix', // type does match filter
@@ -5293,8 +5293,8 @@ version = "3.0.0"
             labels: [],
             headRefName: 'release-please/branches/main/components/d',
             draft: false,
-            version: Version.parse('1.1.0'),
-            previousVersion: Version.parse('1.0.0'),
+            version: Version.parseOne('1.1.0'),
+            previousVersion: Version.parseOne('1.0.0'),
             conventionalCommits: [
               {
                 type: 'feat', // type does not match filter
@@ -5398,12 +5398,12 @@ version = "3.0.0"
           },
         },
         {
-          'path/a': Version.parse('1.0.0'),
-          'path/b': Version.parse('1.0.0'),
-          'path/c': Version.parse('1.0.0'),
-          'path/d': Version.parse('1.0.0'),
-          'path/e': Version.parse('1.0.0'),
-          'path/f': Version.parse('1.0.0'),
+          'path/a': Version.parseOne('1.0.0'),
+          'path/b': Version.parseOne('1.0.0'),
+          'path/c': Version.parseOne('1.0.0'),
+          'path/d': Version.parseOne('1.0.0'),
+          'path/e': Version.parseOne('1.0.0'),
+          'path/f': Version.parseOne('1.0.0'),
         },
         {
           separatePullRequests: true,
@@ -5428,8 +5428,8 @@ version = "3.0.0"
             labels: [],
             headRefName: 'release-please/branches/main/components/a',
             draft: false,
-            version: Version.parse('1.0.1'), // version bump match filter
-            previousVersion: Version.parse('1.0.0'),
+            version: Version.parseOne('1.0.1'), // version bump match filter
+            previousVersion: Version.parseOne('1.0.0'),
             conventionalCommits: [
               {
                 type: 'fix', // type match filter
@@ -5460,8 +5460,8 @@ version = "3.0.0"
             labels: [],
             headRefName: 'release-please/branches/main/components/b',
             draft: false,
-            version: Version.parse('1.1.0'), // version bump match filter
-            previousVersion: Version.parse('1.0.0'),
+            version: Version.parseOne('1.1.0'), // version bump match filter
+            previousVersion: Version.parseOne('1.0.0'),
             conventionalCommits: [
               {
                 type: 'feat', // type match filter
@@ -5492,8 +5492,8 @@ version = "3.0.0"
             labels: [],
             headRefName: 'release-please/branches/main/components/c',
             draft: false,
-            version: Version.parse('1.1.0'), // version bump match filter
-            previousVersion: Version.parse('1.0.0'),
+            version: Version.parseOne('1.1.0'), // version bump match filter
+            previousVersion: Version.parseOne('1.0.0'),
             conventionalCommits: [
               {
                 type: 'feat', // type does match filter
@@ -5524,8 +5524,8 @@ version = "3.0.0"
             labels: [],
             headRefName: 'release-please/branches/main/components/d',
             draft: false,
-            version: Version.parse('1.0.1'), // version bump match filter
-            previousVersion: Version.parse('1.0.0'),
+            version: Version.parseOne('1.0.1'), // version bump match filter
+            previousVersion: Version.parseOne('1.0.0'),
             conventionalCommits: [
               {
                 type: 'fix', // type does match filter
@@ -5556,8 +5556,8 @@ version = "3.0.0"
             labels: [],
             headRefName: 'release-please/branches/main/components/e',
             draft: false,
-            version: Version.parse('2.0.0'), // version bump does not match filter
-            previousVersion: Version.parse('1.0.0'),
+            version: Version.parseOne('2.0.0'), // version bump does not match filter
+            previousVersion: Version.parseOne('1.0.0'),
             conventionalCommits: [
               {
                 type: 'feat', // type match filter
@@ -5588,8 +5588,8 @@ version = "3.0.0"
             labels: [],
             headRefName: 'release-please/branches/main/components/f',
             draft: false,
-            version: Version.parse('1.1.0'), // version bump match filter
-            previousVersion: Version.parse('1.0.0'),
+            version: Version.parseOne('1.1.0'), // version bump match filter
+            previousVersion: Version.parseOne('1.0.0'),
             conventionalCommits: [
               {
                 type: 'chore', // type does not match filter
@@ -5706,8 +5706,8 @@ version = "3.0.0"
           },
         },
         {
-          'path/a': Version.parse('1.0.0'),
-          'path/b': Version.parse('0.2.3'),
+          'path/a': Version.parseOne('1.0.0'),
+          'path/b': Version.parseOne('0.2.3'),
         },
         {
           separatePullRequests: true,
@@ -5802,8 +5802,8 @@ version = "3.0.0"
             },
           },
           {
-            'path/a': Version.parse('1.0.0'),
-            'path/b': Version.parse('0.2.3'),
+            'path/a': Version.parseOne('1.0.0'),
+            'path/b': Version.parseOne('0.2.3'),
           },
           {
             separatePullRequests: true,
@@ -5920,8 +5920,8 @@ version = "3.0.0"
             },
           },
           {
-            'path/a': Version.parse('1.0.0'),
-            'path/b': Version.parse('0.2.3'),
+            'path/a': Version.parseOne('1.0.0'),
+            'path/b': Version.parseOne('0.2.3'),
           },
           {
             separatePullRequests: true,
@@ -6029,8 +6029,8 @@ version = "3.0.0"
           },
         },
         {
-          'path/a': Version.parse('1.0.0'),
-          'path/b': Version.parse('0.2.3'),
+          'path/a': Version.parseOne('1.0.0'),
+          'path/b': Version.parseOne('0.2.3'),
         },
         {
           separatePullRequests: true,
@@ -6104,8 +6104,8 @@ version = "3.0.0"
           },
         },
         {
-          'path/a': Version.parse('1.0.0'),
-          'path/b': Version.parse('0.2.3'),
+          'path/a': Version.parseOne('1.0.0'),
+          'path/b': Version.parseOne('0.2.3'),
         },
         {
           separatePullRequests: true,
@@ -6213,8 +6213,8 @@ version = "3.0.0"
           },
         },
         {
-          'path/a': Version.parse('1.0.0'),
-          'path/b': Version.parse('0.2.3'),
+          'path/a': Version.parseOne('1.0.0'),
+          'path/b': Version.parseOne('0.2.3'),
         },
         {
           separatePullRequests: true,
@@ -6300,8 +6300,8 @@ version = "3.0.0"
           },
         },
         {
-          'path/a': Version.parse('1.0.0'),
-          'path/b': Version.parse('0.2.3'),
+          'path/a': Version.parseOne('1.0.0'),
+          'path/b': Version.parseOne('0.2.3'),
         },
         {
           separatePullRequests: true,
@@ -6376,7 +6376,7 @@ version = "3.0.0"
           },
         },
         {
-          '.': Version.parse('1.3.1'),
+          '.': Version.parseOne('1.3.1'),
         }
       );
 
@@ -6464,10 +6464,10 @@ version = "3.0.0"
           },
         },
         {
-          'packages/bot-config-utils': Version.parse('3.1.4'),
-          'packages/label-utils': Version.parse('1.0.1'),
-          'packages/object-selector': Version.parse('1.0.2'),
-          'packages/datastore-lock': Version.parse('2.0.0'),
+          'packages/bot-config-utils': Version.parseOne('3.1.4'),
+          'packages/label-utils': Version.parseOne('1.0.1'),
+          'packages/object-selector': Version.parseOne('1.0.2'),
+          'packages/datastore-lock': Version.parseOne('2.0.0'),
         }
       );
       const releases = await manifest.buildReleases();
@@ -6554,8 +6554,8 @@ version = "3.0.0"
           },
         },
         {
-          'packages/bot-config-utils': Version.parse('3.1.4'),
-          'packages/label-utils': Version.parse('1.0.1'),
+          'packages/bot-config-utils': Version.parseOne('3.1.4'),
+          'packages/label-utils': Version.parseOne('1.0.1'),
         }
       );
       const releases = await manifest.buildReleases();
@@ -6602,7 +6602,7 @@ version = "3.0.0"
           },
         },
         {
-          '.': Version.parse('3.2.6'),
+          '.': Version.parseOne('3.2.6'),
         }
       );
       const releases = await manifest.buildReleases();
@@ -6646,7 +6646,7 @@ version = "3.0.0"
           },
         },
         {
-          '.': Version.parse('3.2.6'),
+          '.': Version.parseOne('3.2.6'),
         }
       );
       const releases = await manifest.buildReleases();
@@ -6732,10 +6732,10 @@ version = "3.0.0"
           },
         },
         {
-          'packages/bot-config-utils': Version.parse('3.1.4'),
-          'packages/label-utils': Version.parse('1.0.1'),
-          'packages/object-selector': Version.parse('1.0.2'),
-          'packages/datastore-lock': Version.parse('2.0.0'),
+          'packages/bot-config-utils': Version.parseOne('3.1.4'),
+          'packages/label-utils': Version.parseOne('1.0.1'),
+          'packages/object-selector': Version.parseOne('1.0.2'),
+          'packages/datastore-lock': Version.parseOne('2.0.0'),
         }
       );
       const releases = await manifest.buildReleases();
@@ -6795,7 +6795,7 @@ version = "3.0.0"
           },
         },
         {
-          '.': Version.parse('1.3.1'),
+          '.': Version.parseOne('1.3.1'),
         }
       );
       const releases = await manifest.buildReleases();
@@ -6842,7 +6842,7 @@ version = "3.0.0"
           },
         },
         {
-          '.': Version.parse('1.3.1'),
+          '.': Version.parseOne('1.3.1'),
         },
         {
           draft: true,
@@ -6895,7 +6895,7 @@ version = "3.0.0"
           },
         },
         {
-          '.': Version.parse('1.3.0'),
+          '.': Version.parseOne('1.3.0'),
         }
       );
       const releases = await manifest.buildReleases();
@@ -6948,7 +6948,7 @@ version = "3.0.0"
           },
         },
         {
-          '.': Version.parse('0.1.0'),
+          '.': Version.parseOne('0.1.0'),
         }
       );
       const releases = await manifest.buildReleases();
@@ -6997,7 +6997,7 @@ version = "3.0.0"
           },
         },
         {
-          '.': Version.parse('1.3.0'),
+          '.': Version.parseOne('1.3.0'),
         }
       );
       const releases = await manifest.buildReleases();
@@ -7047,7 +7047,7 @@ version = "3.0.0"
           },
         },
         {
-          '.': Version.parse('1.3.0'),
+          '.': Version.parseOne('1.3.0'),
         }
       );
       const releases = await manifest.buildReleases();
@@ -7082,7 +7082,7 @@ version = "3.0.0"
           },
         },
         {
-          '.': Version.parse('3.2.6'),
+          '.': Version.parseOne('3.2.6'),
         }
       );
       const releases = await manifest.buildReleases();
@@ -7123,7 +7123,7 @@ version = "3.0.0"
           },
         },
         {
-          '.': Version.parse('3.2.6'),
+          '.': Version.parseOne('3.2.6'),
         }
       );
       const releases = await manifest.buildReleases();
@@ -7161,7 +7161,7 @@ version = "3.0.0"
           },
         },
         {
-          '.': Version.parse('3.1.0'),
+          '.': Version.parseOne('3.1.0'),
         }
       );
       const releases = await manifest.buildReleases();
@@ -7217,11 +7217,11 @@ version = "3.0.0"
           },
         },
         {
-          '.': Version.parse('1.0.0'),
-          api: Version.parse('1.0.0'),
-          chat: Version.parse('1.0.0'),
-          cmds: Version.parse('1.0.0'),
-          presence: Version.parse('1.0.0'),
+          '.': Version.parseOne('1.0.0'),
+          api: Version.parseOne('1.0.0'),
+          chat: Version.parseOne('1.0.0'),
+          cmds: Version.parseOne('1.0.0'),
+          presence: Version.parseOne('1.0.0'),
         },
         {
           groupPullRequestTitlePattern: 'chore: release v${version}',
@@ -7305,10 +7305,10 @@ version = "3.0.0"
           },
         },
         {
-          'packages/bot-config-utils': Version.parse('3.1.4'),
-          'packages/label-utils': Version.parse('1.0.1'),
-          'packages/object-selector': Version.parse('1.0.2'),
-          'packages/datastore-lock': Version.parse('2.0.0'),
+          'packages/bot-config-utils': Version.parseOne('3.1.4'),
+          'packages/label-utils': Version.parseOne('1.0.1'),
+          'packages/object-selector': Version.parseOne('1.0.2'),
+          'packages/datastore-lock': Version.parseOne('2.0.0'),
         }
       );
       const releases = await manifest.buildReleases();
@@ -7396,7 +7396,7 @@ version = "3.0.0"
           },
         },
         {
-          '.': Version.parse('1.3.1'),
+          '.': Version.parseOne('1.3.1'),
         }
       );
       const releases = await manifest.createReleases();
@@ -7507,10 +7507,10 @@ version = "3.0.0"
           },
         },
         {
-          'packages/bot-config-utils': Version.parse('3.1.4'),
-          'packages/label-utils': Version.parse('1.0.1'),
-          'packages/object-selector': Version.parse('1.0.2'),
-          'packages/datastore-lock': Version.parse('2.0.0'),
+          'packages/bot-config-utils': Version.parseOne('3.1.4'),
+          'packages/label-utils': Version.parseOne('1.0.1'),
+          'packages/object-selector': Version.parseOne('1.0.2'),
+          'packages/datastore-lock': Version.parseOne('2.0.0'),
         }
       );
       const releases = await manifest.createReleases();
@@ -7595,7 +7595,7 @@ version = "3.0.0"
           },
         },
         {
-          '.': Version.parse('3.2.6'),
+          '.': Version.parseOne('3.2.6'),
         }
       );
       mockCreateRelease(github, [
@@ -7680,7 +7680,7 @@ version = "3.0.0"
           },
         },
         {
-          '.': Version.parse('1.3.1'),
+          '.': Version.parseOne('1.3.1'),
         },
         {
           labels: ['some-pull-request-label'],
@@ -7768,7 +7768,7 @@ version = "3.0.0"
           },
         },
         {
-          '.': Version.parse('1.3.1'),
+          '.': Version.parseOne('1.3.1'),
         }
       );
       const releases = await manifest.createReleases();
@@ -7858,7 +7858,7 @@ version = "3.0.0"
           },
         },
         {
-          '.': Version.parse('1.3.1'),
+          '.': Version.parseOne('1.3.1'),
         }
       );
       const releases = await manifest.createReleases();
@@ -7946,7 +7946,7 @@ version = "3.0.0"
           },
         },
         {
-          '.': Version.parse('1.3.1'),
+          '.': Version.parseOne('1.3.1'),
         }
       );
       const releases = await manifest.createReleases();
@@ -8033,7 +8033,7 @@ version = "3.0.0"
           },
         },
         {
-          '.': Version.parse('1.3.1'),
+          '.': Version.parseOne('1.3.1'),
         }
       );
       const releases = await manifest.createReleases();
@@ -8156,10 +8156,10 @@ version = "3.0.0"
           },
         },
         {
-          'packages/bot-config-utils': Version.parse('3.1.4'),
-          'packages/label-utils': Version.parse('1.0.1'),
-          'packages/object-selector': Version.parse('1.0.2'),
-          'packages/datastore-lock': Version.parse('2.0.0'),
+          'packages/bot-config-utils': Version.parseOne('3.1.4'),
+          'packages/label-utils': Version.parseOne('1.0.1'),
+          'packages/object-selector': Version.parseOne('1.0.2'),
+          'packages/datastore-lock': Version.parseOne('2.0.0'),
         }
       );
       const releases = await manifest.createReleases();
@@ -8301,10 +8301,10 @@ version = "3.0.0"
           },
         },
         {
-          'packages/bot-config-utils': Version.parse('3.1.4'),
-          'packages/label-utils': Version.parse('1.0.1'),
-          'packages/object-selector': Version.parse('1.0.2'),
-          'packages/datastore-lock': Version.parse('2.0.0'),
+          'packages/bot-config-utils': Version.parseOne('3.1.4'),
+          'packages/label-utils': Version.parseOne('1.0.1'),
+          'packages/object-selector': Version.parseOne('1.0.2'),
+          'packages/datastore-lock': Version.parseOne('2.0.0'),
         }
       );
       try {
@@ -8396,7 +8396,7 @@ version = "3.0.0"
           },
         },
         {
-          '.': Version.parse('1.3.1'),
+          '.': Version.parseOne('1.3.1'),
         }
       );
 
@@ -8505,7 +8505,7 @@ version = "3.0.0"
           },
         },
         {
-          '.': Version.parse('1.3.1'),
+          '.': Version.parseOne('1.3.1'),
         }
       );
 
@@ -8606,7 +8606,7 @@ version = "3.0.0"
           },
         },
         {
-          '.': Version.parse('1.3.1'),
+          '.': Version.parseOne('1.3.1'),
         }
       );
 
@@ -8741,7 +8741,7 @@ version = "3.0.0"
           },
         },
         {
-          '.': Version.parse('1.3.1'),
+          '.': Version.parseOne('1.3.1'),
         }
       );
 
@@ -8872,7 +8872,7 @@ version = "3.0.0"
           },
         },
         {
-          '.': Version.parse('1.3.1'),
+          '.': Version.parseOne('1.3.1'),
         }
       );
 

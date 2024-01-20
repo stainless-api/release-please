@@ -248,7 +248,7 @@ export class MavenWorkspace extends WorkspacePlugin<MavenArtifact> {
             );
             updatedVersions.set(
               updatedArtifact.name,
-              Version.parse(updatedArtifact.version)
+              Version.parseOne(updatedArtifact.version)
             );
           }
         } else {
@@ -334,7 +334,7 @@ export class MavenWorkspace extends WorkspacePlugin<MavenArtifact> {
 
   protected bumpVersion(artifact: MavenArtifact): Version {
     const strategy = new JavaSnapshot(new AlwaysBumpPatch());
-    return strategy.bump(Version.parse(artifact.version), [FAKE_COMMIT]);
+    return strategy.bump(Version.parseOne(artifact.version), [FAKE_COMMIT]);
   }
 
   protected updateCandidate(

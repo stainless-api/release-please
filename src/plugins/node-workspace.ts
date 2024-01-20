@@ -144,7 +144,7 @@ export class NodeWorkspace extends WorkspacePlugin<Package> {
   }
 
   protected bumpVersion(pkg: Package): Version {
-    const version = Version.parse(pkg.version);
+    const version = Version.parseOne(pkg.version);
     return new PatchVersionUpdate().bump(version);
   }
 
@@ -267,7 +267,7 @@ export class NodeWorkspace extends WorkspacePlugin<Package> {
       updatedVersions
     );
     const packageJson = updatedPackage.toJSON() as PackageJson;
-    const version = Version.parse(packageJson.version);
+    const version = Version.parseOne(packageJson.version);
     const pullRequest: ReleasePullRequest = {
       title: PullRequestTitle.ofTargetBranch(
         this.targetBranch,

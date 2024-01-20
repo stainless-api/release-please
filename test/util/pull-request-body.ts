@@ -128,12 +128,12 @@ describe('PullRequestBody', () => {
       const data = [
         {
           component: 'pkg1',
-          version: Version.parse('1.2.3'),
+          version: Version.parseOne('1.2.3'),
           notes: 'some special notes go here',
         },
         {
           component: 'pkg2',
-          version: Version.parse('2.0.0'),
+          version: Version.parseOne('2.0.0'),
           notes: 'more special notes go here',
         },
       ];
@@ -145,7 +145,7 @@ describe('PullRequestBody', () => {
       const data = [
         {
           component: 'pkg1',
-          version: Version.parse('1.2.3'),
+          version: Version.parseOne('1.2.3'),
           notes: 'some special notes go here',
         },
       ];
@@ -157,7 +157,7 @@ describe('PullRequestBody', () => {
       const data = [
         {
           component: 'pkg1',
-          version: Version.parse('1.2.3'),
+          version: Version.parseOne('1.2.3'),
           notes: 'some special notes go here',
         },
       ];
@@ -169,12 +169,12 @@ describe('PullRequestBody', () => {
       const data = [
         {
           component: 'pkg1',
-          version: Version.parse('1.2.3'),
+          version: Version.parseOne('1.2.3'),
           notes: 'some special notes go here',
         },
         {
           component: 'pkg2',
-          version: Version.parse('2.0.0'),
+          version: Version.parseOne('2.0.0'),
           notes: 'more special notes go here',
         },
       ];
@@ -189,12 +189,12 @@ describe('PullRequestBody', () => {
       const data = [
         {
           component: 'pkg1',
-          version: Version.parse('1.2.3'),
+          version: Version.parseOne('1.2.3'),
           notes: 'some special notes go here',
         },
         {
           component: 'pkg2',
-          version: Version.parse('2.0.0'),
+          version: Version.parseOne('2.0.0'),
           notes: 'more special notes go here',
         },
       ];
@@ -213,12 +213,12 @@ describe('PullRequestBody', () => {
     it('can handle componently entries', () => {
       const data = [
         {
-          version: Version.parse('1.2.3'),
+          version: Version.parseOne('1.2.3'),
           notes: 'some special notes go here',
         },
         {
           component: 'pkg2',
-          version: Version.parse('2.0.0'),
+          version: Version.parseOne('2.0.0'),
           notes: 'more special notes go here',
         },
       ];

@@ -73,11 +73,11 @@ describe('VersionManifest', () => {
         'utf8'
       ).replace(/\r\n/g, '\n');
       const versions = new Map<string, Version>();
-      versions.set('google-cloud-trace', Version.parse('0.109.0'));
-      versions.set('grpc-google-cloud-trace-v1', Version.parse('0.74.0'));
+      versions.set('google-cloud-trace', Version.parseOne('0.109.0'));
+      versions.set('grpc-google-cloud-trace-v1', Version.parseOne('0.74.0'));
       const javaAuthVersions = new VersionsManifest({
         versionsMap: versions,
-        version: Version.parse('1.2.3'),
+        version: Version.parseOne('1.2.3'),
       });
       const newContent = javaAuthVersions.updateContent(oldContent);
       snapshot(newContent);

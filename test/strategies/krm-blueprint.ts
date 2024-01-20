@@ -76,7 +76,7 @@ describe('KRMBlueprint', () => {
       sandbox.stub(github, 'findFilesByExtensionAndRef').resolves([]);
       const latestRelease = {
         tag: new TagName(
-          Version.parse('0.123.4'),
+          Version.parseOne('0.123.4'),
           'some-krm-blueprint-package'
         ),
         sha: 'abc123',

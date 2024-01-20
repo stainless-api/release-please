@@ -29,10 +29,13 @@ describe('JavaUpdate', () => {
         'utf8'
       ).replace(/\r\n/g, '\n');
       const versions = new Map<string, Version>();
-      versions.set('google-auth-library-parent', Version.parse('v0.16.2-sp.1'));
+      versions.set(
+        'google-auth-library-parent',
+        Version.parseOne('v0.16.2-sp.1')
+      );
       const updater = new JavaUpdate({
         versionsMap: versions,
-        version: Version.parse('v0.16.2-sp.1'),
+        version: Version.parseOne('v0.16.2-sp.1'),
       });
       const newContent = updater.updateContent(oldContent);
       snapshot(newContent);
@@ -43,10 +46,10 @@ describe('JavaUpdate', () => {
         'utf8'
       ).replace(/\r\n/g, '\n');
       const versions = new Map<string, Version>();
-      versions.set('module-name', Version.parse('3.3.3'));
+      versions.set('module-name', Version.parseOne('3.3.3'));
       const updater = new JavaUpdate({
         versionsMap: versions,
-        version: Version.parse('3.3.3'),
+        version: Version.parseOne('3.3.3'),
         isSnapshot: true,
       });
       const newContent = updater.updateContent(oldContent);
@@ -58,10 +61,10 @@ describe('JavaUpdate', () => {
         'utf8'
       ).replace(/\r\n/g, '\n');
       const versions = new Map<string, Version>();
-      versions.set('module-name', Version.parse('3.3.3'));
+      versions.set('module-name', Version.parseOne('3.3.3'));
       const updater = new JavaUpdate({
         versionsMap: versions,
-        version: Version.parse('3.3.3'),
+        version: Version.parseOne('3.3.3'),
       });
       const newContent = updater.updateContent(oldContent);
       snapshot(newContent);

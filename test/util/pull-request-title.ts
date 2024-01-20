@@ -87,8 +87,20 @@ describe('PullRequestTitle', () => {
       expect(pullRequestTitle?.getVersions()?.toString()).to.eql(['0.0.1']);
     });
 
-    it('parses multiple components separated with commas', () => {
+    it('parses multiple components separated by commas', () => {
       const name = 'releases: sdk 0.1.2, vertex-sdk 2.3.4';
+      const pullRequestTitle = PullRequestTitle.parse(name);
+      expect(pullRequestTitle).to.not.be.undefined;
+      expect(pullRequestTitle?.getTargetBranch()).to.be.undefined;
+      expect(pullRequestTitle?.getComponents()).to.eql(['sdk', 'vertex-sdk']);
+      expect(pullRequestTitle?.getVersions()?.toString()).to.eql([
+        '0.1.2',
+        '2.3.4',
+      ]);
+    });
+
+    it('parses multiple components separated by a space', () => {
+      const name = 'releases: sdk 0.1.2 vertex-sdk 2.3.4';
       const pullRequestTitle = PullRequestTitle.parse(name);
       expect(pullRequestTitle).to.not.be.undefined;
       expect(pullRequestTitle?.getTargetBranch()).to.be.undefined;
@@ -107,7 +119,7 @@ describe('PullRequestTitle', () => {
   describe('ofVersion', () => {
     it('builds the autorelease versioned branch name', () => {
       const pullRequestTitle = PullRequestTitle.ofVersion(
-        Version.parse('1.2.3')
+        Version.parseOne('1.2.3')
       );
       expect(pullRequestTitle.toString()).to.eql('chore: release 1.2.3');
     });
@@ -116,7 +128,7 @@ describe('PullRequestTitle', () => {
     it('builds the autorelease versioned branch name with component', () => {
       const pullRequestTitle = PullRequestTitle.ofComponentVersion(
         'storage',
-        Version.parse('1.2.3')
+        Version.parseOne('1.2.3')
       );
       expect(pullRequestTitle.toString()).to.eql(
         'chore: release storage 1.2.3'
@@ -140,7 +152,7 @@ describe('PullRequestTitle', () => {
       const pullRequestTitle = PullRequestTitle.ofTargetBranchVersion(
         'main',
         'main',
-        Version.parse('1.2.3')
+        Version.parseOne('1.2.3')
       );
       expect(pullRequestTitle.toString()).to.eql('chore(main): release 1.2.3');
     });
@@ -151,7 +163,7 @@ describe('PullRequestTitle', () => {
         'foo',
         'main',
         'main',
-        Version.parse('1.2.3')
+        Version.parseOne('1.2.3')
       );
       expect(pullRequestTitle.toString()).to.eql(
         'chore(main): release foo 1.2.3'
@@ -277,7 +289,7 @@ describe('PullRequestTitle with custom pullRequestTitlePattern', () => {
   describe('ofVersion', () => {
     it('builds the autorelease versioned branch name', () => {
       const pullRequestTitle = PullRequestTitle.ofVersion(
-        Version.parse('1.2.3'),
+        Version.parseOne('1.2.3'),
         'chore${scope}: 🔖 release${component} ${version}'
       );
       expect(pullRequestTitle.toString()).to.eql('chore: 🔖 release 1.2.3');
@@ -287,7 +299,7 @@ describe('PullRequestTitle with custom pullRequestTitlePattern', () => {
     it('builds the autorelease versioned branch name with component', () => {
       const pullRequestTitle = PullRequestTitle.ofComponentVersion(
         'storage',
-        Version.parse('1.2.3'),
+        Version.parseOne('1.2.3'),
         'chore${scope}: 🔖 release${component} ${version}'
       );
       expect(pullRequestTitle.toString()).to.eql(
@@ -300,7 +312,7 @@ describe('PullRequestTitle with custom pullRequestTitlePattern', () => {
       const pullRequestTitle = PullRequestTitle.ofTargetBranchVersion(
         'main',
         'main',
-        Version.parse('1.2.3'),
+        Version.parseOne('1.2.3'),
         'chore${scope}: 🔖 release${component} ${version}'
       );
       expect(pullRequestTitle.toString()).to.eql(
@@ -311,7 +323,7 @@ describe('PullRequestTitle with custom pullRequestTitlePattern', () => {
       const pullRequestTitle = PullRequestTitle.ofTargetBranchVersion(
         'main',
         'next',
-        Version.parse('1.2.3'),
+        Version.parseOne('1.2.3'),
         'chore${scope}: 🔖 release${component} ${version}'
       );
       expect(pullRequestTitle.toString()).to.eql(
@@ -325,7 +337,7 @@ describe('PullRequestTitle with custom pullRequestTitlePattern', () => {
         'foo',
         'main',
         'main',
-        Version.parse('1.2.3'),
+        Version.parseOne('1.2.3'),
         'chore${scope}: 🔖 release${component} ${version}'
       );
       expect(pullRequestTitle.toString()).to.eql(
@@ -337,7 +349,7 @@ describe('PullRequestTitle with custom pullRequestTitlePattern', () => {
         'foo',
         'main',
         'next',
-        Version.parse('1.2.3'),
+        Version.parseOne('1.2.3'),
         'chore${scope}: 🔖 release${component} ${version}'
       );
       expect(pullRequestTitle.toString()).to.eql(
