@@ -56,8 +56,15 @@ export function generateMatchPatternPRTitleComponentsSegment(
 }
 
 export function generateMatchPatternPRTitle(
-  pullRequestTitlePattern?: string
+  pullRequestTitlePattern?: string,
+  componentsSegmentPattern?: string,
+  componentsSegmentSeparator?: string
 ): RegExp {
+  const matchPatternComponentsSegment =
+    generateMatchPatternPRTitleComponentsSegment(
+      componentsSegmentPattern ||
+        DEFAULT_PR_TITLE_PATTERN_SINGLE_COMPONENT_SEGMENT
+    );
   return new RegExp(
     `^${(pullRequestTitlePattern || DEFAULT_PR_TITLE_PATTERN)
       .replace('[', '\\[') // TODO: handle all regex escaping
@@ -68,8 +75,9 @@ export function generateMatchPatternPRTitle(
         '${scope}',
         '(\\((?<changesBranch>[\\w-./]+ => )?(?<branch>[\\w-./]+)\\))?'
       )
-      // FIXME(sam): review + fix regexp for components segment
-      .replace('${componentsSegment}', ' ?(?<componentsSegment>@?[\\w-./]*)?')
+      // FIXME(sam): review + fix regexp for components segment, it should handle
+      // the separator.
+      .replace('${componentsSegment}', ` ${matchPatternComponentsSegment}`)
       .replace('${changesBranch}', '(?<changesBranch>?[\\w-./]+)?')
       .replace('${branch}', '(?<branch>[\\w-./]+)?')}$`
   );
