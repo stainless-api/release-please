@@ -19,11 +19,27 @@ import {Version} from '../version';
 // at the script level are undefined, they are only defined inside function
 // or instance methods/properties.
 
-const DEFAULT_PR_TITLE_PATTERN =
-  'chore${scope}: release${component} ${version}';
-export function generateMatchPattern(pullRequestTitlePattern?: string): RegExp {
+const DEFAULT_PR_TITLE_PATTERN = 'release: ${componentsSegment}';
+
+/**
+ * Default pattern for a component in the "components segment" of the release PR title
+ */
+const DEFAULT_PR_TITLE_PATTERN_SINGLE_COMPONENT_SEGMENT =
+  '${component} ${version}';
+
+/**
+ * Default separator for components in the "component segment" of the release PR.
+ */
+const DEFAULT_PR_TITLE_PATTERN_COMPONENT_SEPARATOR = ',';
+
+export function generateMatchPatternPRTitleComponentsSegment(
+  componentsSegmentPattern?: string
+): RegExp {
   return new RegExp(
-    `^${(pullRequestTitlePattern || DEFAULT_PR_TITLE_PATTERN)
+    `^${(
+      componentsSegmentPattern ||
+      DEFAULT_PR_TITLE_PATTERN_SINGLE_COMPONENT_SEGMENT
+    )
       .replace('[', '\\[') // TODO: handle all regex escaping
       .replace(']', '\\]')
       .replace('(', '\\(')
@@ -34,6 +50,26 @@ export function generateMatchPattern(pullRequestTitlePattern?: string): RegExp {
       )
       .replace('${component}', ' ?(?<component>@?[\\w-./]*)?')
       .replace('${version}', 'v?(?<version>[0-9].*)')
+      .replace('${changesBranch}', '(?<changesBranch>?[\\w-./]+)?')
+      .replace('${branch}', '(?<branch>[\\w-./]+)?')}$`
+  );
+}
+
+export function generateMatchPatternPRTitle(
+  pullRequestTitlePattern?: string
+): RegExp {
+  return new RegExp(
+    `^${(pullRequestTitlePattern || DEFAULT_PR_TITLE_PATTERN)
+      .replace('[', '\\[') // TODO: handle all regex escaping
+      .replace(']', '\\]')
+      .replace('(', '\\(')
+      .replace(')', '\\)')
+      .replace(
+        '${scope}',
+        '(\\((?<changesBranch>[\\w-./]+ => )?(?<branch>[\\w-./]+)\\))?'
+      )
+      // FIXME(sam): review + fix regexp for components segment
+      .replace('${componentsSegment}', ' ?(?<componentsSegment>@?[\\w-./]*)?')
       .replace('${changesBranch}', '(?<changesBranch>?[\\w-./]+)?')
       .replace('${branch}', '(?<branch>[\\w-./]+)?')}$`
   );
@@ -97,11 +133,11 @@ export class PullRequestTitle {
       pullRequestTitlePattern,
     });
   }
-  static ofVersion(
-    versions: Version[],
+  static ofSingleVersion(
+    version: Version,
     pullRequestTitlePattern?: string
   ): PullRequestTitle {
-    return new PullRequestTitle({versions, pullRequestTitlePattern});
+    return new PullRequestTitle({versions: [version], pullRequestTitlePattern});
   }
   static ofTargetBranchVersion(
     targetBranch: string,
