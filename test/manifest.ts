@@ -6908,7 +6908,7 @@ version = "3.0.0"
       );
     });
 
-    it('should build prerelease releases from pre-major', async () => {
+    it('should not build prerelease releases from pre-major', async () => {
       mockPullRequests(
         github,
         [],
@@ -6955,7 +6955,7 @@ version = "3.0.0"
       expect(releases).lengthOf(1);
       expect(releases[0].name).to.eql('release-brancher: v0.2.0');
       expect(releases[0].draft).to.be.undefined;
-      expect(releases[0].prerelease).to.be.true;
+      expect(releases[0].prerelease).to.be.false;
       expect(releases[0].tag.toString()).to.eql('release-brancher-v0.2.0');
     });
 
