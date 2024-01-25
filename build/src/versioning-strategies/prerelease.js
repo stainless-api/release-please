@@ -17,7 +17,7 @@ exports.PrereleaseVersioningStrategy = void 0;
 const default_1 = require("./default");
 const version_1 = require("../version");
 const versioning_strategy_1 = require("../versioning-strategy");
-const PRERELEASE_PATTERN = /^(?<type>[a-z]+)(?<number>\d+)$/;
+const PRERELEASE_PATTERN = /^(?<type>[a-z]+)(?<dot>\.)?(?<number>\d+)$/;
 class PrereleasePatchVersionUpdate {
     /**
      * Returns the new bumped version
@@ -32,7 +32,8 @@ class PrereleasePatchVersionUpdate {
                 const numberLength = match.groups.number.length;
                 const nextPrereleaseNumber = Number(match.groups.number) + 1;
                 const paddedNextPrereleaseNumber = `${nextPrereleaseNumber}`.padStart(numberLength, '0');
-                const nextPrerelease = `${match.groups.type}${paddedNextPrereleaseNumber}`;
+                const maybeDot = match.groups.dot ? '.' : '';
+                const nextPrerelease = `${match.groups.type}${maybeDot}${paddedNextPrereleaseNumber}`;
                 return new version_1.Version(version.major, version.minor, version.patch, nextPrerelease, version.build);
             }
         }
@@ -62,7 +63,8 @@ class PrereleaseMinorVersionUpdate {
                     nextPatchNumber = version.patch;
                 }
                 const paddedNextPrereleaseNumber = `${nextPrereleaseNumber}`.padStart(numberLength, '0');
-                const nextPrerelease = `${match.groups.type}${paddedNextPrereleaseNumber}`;
+                const maybeDot = match.groups.dot ? '.' : '';
+                const nextPrerelease = `${match.groups.type}${maybeDot}${paddedNextPrereleaseNumber}`;
                 return new version_1.Version(version.major, nextMinorNumber, nextPatchNumber, nextPrerelease, version.build);
             }
         }
@@ -94,7 +96,8 @@ class PrereleaseMajorVersionUpdate {
                     nextPatchNumber = version.patch;
                 }
                 const paddedNextPrereleaseNumber = `${nextPrereleaseNumber}`.padStart(numberLength, '0');
-                const nextPrerelease = `${match.groups.type}${paddedNextPrereleaseNumber}`;
+                const maybeDot = match.groups.dot ? '.' : '';
+                const nextPrerelease = `${match.groups.type}${maybeDot}${paddedNextPrereleaseNumber}`;
                 return new version_1.Version(nextMajorNumber, nextMinorNumber, nextPatchNumber, nextPrerelease, version.build);
             }
         }
