@@ -700,9 +700,7 @@ class Manifest {
                         pullRequest,
                         draft: (_a = config.draft) !== null && _a !== void 0 ? _a : this.draft,
                         prerelease: hasPrereleaseLabel ||
-                            (config.prerelease &&
-                                (!!release.tag.version.preRelease ||
-                                    release.tag.version.major === 0)),
+                            (config.prerelease && !!release.tag.version.preRelease),
                     });
                 }
             }
