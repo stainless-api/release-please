@@ -1012,6 +1012,7 @@ class Manifest {
                 return false;
             }
             const filterSet = new Set(conventionalCommitFilter.commits.map(filter => `${filter.type}:${filter.scope ? filter.scope : '*'}`));
+            // return true if every commit matches the filter - false otherwise
             if (conventionalCommitFilter.matchBehaviour === 'match-all') {
                 for (const commit of pullRequest.conventionalCommits) {
                     if (!filterSet.has(`${commit.type}:${commit.scope}`) &&
@@ -1019,18 +1020,19 @@ class Manifest {
                         this.logger.debug(`applyConventionalCommitFilter: match-all: found match ${commit.type}:${(_a = commit.scope) !== null && _a !== void 0 ? _a : '*'}`);
                         return false;
                     }
-                    return true;
                 }
+                return true;
             }
             else if (conventionalCommitFilter.matchBehaviour === 'match-at-least-one') {
+                // return true if any commit matches the filter - false otherwise
                 for (const commit of pullRequest.conventionalCommits) {
                     if (filterSet.has(`${commit.type}:${commit.scope}`) ||
                         filterSet.has(`${commit.type}:*`)) {
                         this.logger.debug(`applyConventionalCommitFilter: match-at-least-one: found match ${commit.type}:${(_b = commit.scope) !== null && _b !== void 0 ? _b : '*'}`, filterSet);
                         return true;
                     }
-                    return false;
                 }
+                return false;
             }
             return false;
         };

@@ -3914,6 +3914,38 @@ version = "3.0.0"
                     body: new pull_request_body_1.PullRequestBody([]),
                     updates: [],
                     labels: [],
+                    headRefName: 'release-please/branches/main/components/b',
+                    draft: false,
+                    version: version_1.Version.parse('1.1.0'),
+                    previousVersion: version_1.Version.parse('1.0.0'),
+                    conventionalCommits: [
+                        {
+                            type: 'fix',
+                            scope: 'api',
+                            notes: [],
+                            references: [],
+                            sha: 'commit123',
+                            message: 'fix(api): something',
+                            bareMessage: 'something',
+                            breaking: false,
+                        },
+                        {
+                            type: 'feat(client)',
+                            scope: 'api',
+                            notes: [],
+                            references: [],
+                            sha: 'commit123',
+                            message: 'fix(api): something',
+                            bareMessage: 'something',
+                            breaking: false,
+                        },
+                    ],
+                },
+                {
+                    title: pull_request_title_1.PullRequestTitle.ofTargetBranch('main', 'main'),
+                    body: new pull_request_body_1.PullRequestBody([]),
+                    updates: [],
+                    labels: [],
                     headRefName: 'release-please/branches/main/components/c',
                     draft: false,
                     version: version_1.Version.parse('1.1.0'),
@@ -3981,14 +4013,14 @@ version = "3.0.0"
                 .resolves(['label-a']);
             const createLabelsStub = sandbox.stub(github, 'createLabels').resolves();
             const pullRequestNumbers = await manifest.createPullRequests();
-            (0, chai_1.expect)(pullRequestNumbers).lengthOf(5);
+            (0, chai_1.expect)(pullRequestNumbers).lengthOf(6);
             sinon.assert.calledOnce(getLabelsStub);
             sinon.assert.calledOnce(createLabelsStub);
-            (0, chai_1.expect)(createPullRequestStub.callCount).to.equal(5);
+            (0, chai_1.expect)(createPullRequestStub.callCount).to.equal(6);
             sinon.assert.calledWith(createPullRequestStub, sinon.match.has('headBranchName', sinon.match.string), 'main', 'main', sinon.match.string, sinon.match.array, sinon.match.object);
             (0, chai_1.expect)(enablePullRequestAutoMergeStub.callCount).to.equal(1);
             // only called when not auto-merged
-            (0, chai_1.expect)(addPullRequestReviewersStub.callCount).to.equal(4);
+            (0, chai_1.expect)(addPullRequestReviewersStub.callCount).to.equal(5);
         });
         (0, mocha_1.it)('enables auto-merge when filters are provided (filters: only commit type, match-all)', async () => {
             const createPullRequestStub = sandbox
@@ -4277,6 +4309,38 @@ version = "3.0.0"
                     body: new pull_request_body_1.PullRequestBody([]),
                     updates: [],
                     labels: [],
+                    headRefName: 'release-please/branches/main/components/a',
+                    draft: false,
+                    version: version_1.Version.parse('1.0.1'),
+                    previousVersion: version_1.Version.parse('1.0.0'),
+                    conventionalCommits: [
+                        {
+                            type: 'ci',
+                            scope: 'something',
+                            notes: [],
+                            references: [],
+                            sha: 'commit123',
+                            message: 'ci(something): something',
+                            bareMessage: 'something',
+                            breaking: false,
+                        },
+                        {
+                            type: 'fix',
+                            scope: 'something',
+                            notes: [],
+                            references: [],
+                            sha: 'commit123',
+                            message: 'fix(something): something',
+                            bareMessage: 'something',
+                            breaking: false,
+                        },
+                    ],
+                },
+                {
+                    title: pull_request_title_1.PullRequestTitle.ofTargetBranch('main', 'main'),
+                    body: new pull_request_body_1.PullRequestBody([]),
+                    updates: [],
+                    labels: [],
                     headRefName: 'release-please/branches/main/components/b',
                     draft: false,
                     version: version_1.Version.parse('1.1.0'),
@@ -4438,12 +4502,12 @@ version = "3.0.0"
                 .resolves(['label-a']);
             const createLabelsStub = sandbox.stub(github, 'createLabels').resolves();
             const pullRequestNumbers = await manifest.createPullRequests();
-            (0, chai_1.expect)(pullRequestNumbers).lengthOf(6);
+            (0, chai_1.expect)(pullRequestNumbers).lengthOf(7);
             sinon.assert.calledOnce(getLabelsStub);
             sinon.assert.calledOnce(createLabelsStub);
-            (0, chai_1.expect)(createPullRequestStub.callCount).to.equal(6);
+            (0, chai_1.expect)(createPullRequestStub.callCount).to.equal(7);
             sinon.assert.calledWith(createPullRequestStub, sinon.match.has('headBranchName', sinon.match.string), 'main', 'main', sinon.match.string, sinon.match.array, sinon.match.object);
-            (0, chai_1.expect)(enablePullRequestAutoMergeStub.callCount).to.equal(3);
+            (0, chai_1.expect)(enablePullRequestAutoMergeStub.callCount).to.equal(4);
             // only called when not auto-merged
             (0, chai_1.expect)(addPullRequestReviewersStub.callCount).to.equal(3);
         });
