@@ -18,6 +18,7 @@ import {
   BuildNotesOptions,
 } from '../changelog-notes';
 import {ConventionalCommit} from '../commit';
+import {logger} from '../util/logger';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const conventionalChangelogWriter = require('conventional-changelog-writer');
@@ -75,7 +76,17 @@ export class DefaultChangelogNotes implements ChangelogNotes {
       this.mainTemplate || preset.writerOpts.mainTemplate;
     const changelogCommits = commits
       // Filter out commits that are just release commits, they shouldn't be part of the changelog
-      .filter(commit => !commit.message.trim().startsWith('chore: release '))
+      .filter(commit => {
+        const shouldIgnore = commit.message
+          .trim()
+          .startsWith('chore: release ');
+        if (shouldIgnore) {
+          logger.debug(
+            `changelog: ignoring commit '${commit.message}' (${commit.sha})`
+          );
+        }
+        return !shouldIgnore;
+      })
       .map(commit => {
         const notes = commit.notes
           .filter(note => note.title === 'BREAKING CHANGE')
