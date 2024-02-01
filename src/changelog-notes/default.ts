@@ -75,7 +75,7 @@ export class DefaultChangelogNotes implements ChangelogNotes {
       this.mainTemplate || preset.writerOpts.mainTemplate;
     const changelogCommits = commits
       // Filter out commits that are just release commits, they shouldn't be part of the changelog
-      .filter(commit => !commit.bareMessage.includes('chore: release '))
+      .filter(commit => !commit.message.includes('chore: release '))
       .map(commit => {
         const notes = commit.notes
           .filter(note => note.title === 'BREAKING CHANGE')
