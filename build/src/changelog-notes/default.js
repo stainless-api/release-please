@@ -14,6 +14,7 @@
 // limitations under the License.
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DefaultChangelogNotes = void 0;
+const logger_1 = require("../util/logger");
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const conventionalChangelogWriter = require('conventional-changelog-writer');
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -46,7 +47,18 @@ class DefaultChangelogNotes {
             this.headerPartial || preset.writerOpts.headerPartial;
         preset.writerOpts.mainTemplate =
             this.mainTemplate || preset.writerOpts.mainTemplate;
-        const changelogCommits = commits.map(commit => {
+        const changelogCommits = commits
+            // Filter out commits that are just release commits, they shouldn't be part of the changelog
+            .filter(commit => {
+            const shouldIgnore = commit.message
+                .trim()
+                .startsWith('chore: release ');
+            if (shouldIgnore) {
+                logger_1.logger.debug(`changelog: ignoring commit '${commit.message}' (${commit.sha})`);
+            }
+            return !shouldIgnore;
+        })
+            .map(commit => {
             const notes = commit.notes
                 .filter(note => note.title === 'BREAKING CHANGE')
                 .map(note => replaceIssueLink(note, context.host, context.owner, context.repository));

@@ -123,6 +123,39 @@ const version_1 = require("../../src/version");
             (0, chai_1.expect)(notes).to.is.string;
             (0, helpers_1.safeSnapshot)(notes);
         });
+        (0, mocha_1.it)('should ignore "chore: release" commits', async () => {
+            const commits = [
+                {
+                    sha: 'sha1',
+                    message: 'chore: some chore',
+                    files: ['path1/file1.rb'],
+                    type: 'chore',
+                    scope: null,
+                    bareMessage: 'some chore',
+                    notes: [],
+                    references: [],
+                    breaking: false,
+                },
+                {
+                    sha: 'sha2',
+                    message: 'chore: release main',
+                    files: ['path1/file1.rb'],
+                    type: 'chore',
+                    scope: null,
+                    bareMessage: 'release main',
+                    notes: [],
+                    references: [],
+                    breaking: false,
+                },
+            ];
+            const changelogNotes = new default_1.DefaultChangelogNotes();
+            const notes = await changelogNotes.buildNotes(commits, {
+                ...notesOptions,
+                changelogSections: [{ type: 'chore', section: 'Chores', hidden: false }],
+            });
+            (0, chai_1.expect)(notes).to.is.string;
+            (0, helpers_1.safeSnapshot)(notes);
+        });
         (0, mocha_1.describe)('with commit parsing', () => {
             (0, mocha_1.it)('should handle a breaking change', async () => {
                 const commits = [(0, helpers_1.buildMockCommit)('fix!: some bugfix')];
