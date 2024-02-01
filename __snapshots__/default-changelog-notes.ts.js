@@ -54,6 +54,11 @@ exports['DefaultChangelogNotes buildNotes should handle BREAKING CHANGE notes 1'
 
 exports['DefaultChangelogNotes buildNotes should ignore "chore: release" commits 1'] = `
 ## [1.2.3](https://github.com/googleapis/java-asset/compare/v1.2.2...v1.2.3) (1983-10-10)
+
+
+### Chores
+
+* some chore ([sha1](https://github.com/googleapis/java-asset/commit/sha1))
 `
 
 exports['DefaultChangelogNotes buildNotes should ignore RELEASE AS notes 1'] = `

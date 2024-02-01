@@ -130,6 +130,17 @@ describe('DefaultChangelogNotes', () => {
     it('should ignore "chore: release" commits', async () => {
       const commits = [
         {
+          sha: 'sha1',
+          message: 'chore: some chore',
+          files: ['path1/file1.rb'],
+          type: 'chore',
+          scope: null,
+          bareMessage: 'some chore',
+          notes: [],
+          references: [],
+          breaking: false,
+        },
+        {
           sha: 'sha2',
           message: 'chore: release main',
           files: ['path1/file1.rb'],
