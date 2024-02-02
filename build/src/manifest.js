@@ -336,6 +336,20 @@ class Manifest {
         for (const path in this.repositoryConfig) {
             commitsPerPath[path] = commitsAfterSha(path === exports.ROOT_PROJECT_PATH ? commits : splitCommits[path], releaseShasByPath[path]);
         }
+        // Filter out commits that are just release commits for multiple packages
+        for (const [path, commits] of Object.entries(commitsPerPath)) {
+            commitsPerPath[path] = commits.filter(commit => {
+                var _a;
+                if (((_a = commit.pullRequest) === null || _a === void 0 ? void 0 : _a.baseBranchName) &&
+                    commit.message
+                        .trim()
+                        .startsWith(`chore: release ${commit.pullRequest.baseBranchName}`)) {
+                    this.logger.debug(`ignoring release commit for multi-packages PR: '${commit.message}' (${commit.sha})`);
+                    return false;
+                }
+                return true;
+            });
+        }
         const commitExclude = new commit_exclude_1.CommitExclude(this.repositoryConfig);
         commitsPerPath = commitExclude.excludeCommits(commitsPerPath);
         // backfill latest release tags from manifest

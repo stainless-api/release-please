@@ -48,15 +48,13 @@ class DefaultChangelogNotes {
         preset.writerOpts.mainTemplate =
             this.mainTemplate || preset.writerOpts.mainTemplate;
         const changelogCommits = commits
-            // Filter out commits that are just release commits, they shouldn't be part of the changelog
+            // Filter out commits that are just release commits for multiple packages, they shouldn't be part of the changelog
             .filter(commit => {
-            const shouldIgnore = commit.message
-                .trim()
-                .startsWith('chore: release ');
-            if (shouldIgnore) {
-                logger_1.logger.debug(`changelog: ignoring commit '${commit.message}' (${commit.sha})`);
+            if (commit.message.trim().startsWith('chore: release ')) {
+                logger_1.logger.debug(`changelog: ignoring commit '${commit.message}' (${commit.sha}). It is a release commit for multi-packages PR.`);
+                return false;
             }
-            return !shouldIgnore;
+            return true;
         })
             .map(commit => {
             const notes = commit.notes
