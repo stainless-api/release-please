@@ -101,7 +101,7 @@
     "https-proxy-agent": "^5.0.1",
     "js-yaml": "^4.0.0",
     "jsonpath": "^1.1.1",
-    "node-fetch": "^2.7.0",
+    "node-fetch": "^3.0.0",
     "node-html-parser": "^6.0.0",
     "parse-github-repo-url": "^1.4.1",
     "semver": "^7.0.0",
