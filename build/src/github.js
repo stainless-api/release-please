@@ -441,8 +441,8 @@ class GitHub {
                 },
                 throttle: {
                     enabled: throttlingRetries > 0,
-                    retryAfterBaseValue: 3000,
-                    fallbackSecondaryRateRetryAfter: 90,
+                    retryAfterBaseValue: 3000, // 3 seconds
+                    fallbackSecondaryRateRetryAfter: 90, // 1 minute, 30 seconds
                     onRateLimit: (retryAfter, options, octokit, retryCount) => {
                         const method = 'method' in options ? options.method : 'UnknownMethod';
                         const url = 'url' in options ? options.url : 'UnknownUrl';
@@ -923,7 +923,7 @@ class GitHub {
             data: pullRequests.map(pullRequest => {
                 var _a, _b, _c;
                 return {
-                    sha: (_a = pullRequest.mergeCommit) === null || _a === void 0 ? void 0 : _a.oid,
+                    sha: (_a = pullRequest.mergeCommit) === null || _a === void 0 ? void 0 : _a.oid, // already filtered non-merged
                     number: pullRequest.number,
                     baseBranchName: pullRequest.baseRefName,
                     headBranchName: pullRequest.headRefName,

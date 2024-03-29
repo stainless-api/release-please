@@ -61,7 +61,7 @@ class DefaultChangelogNotes {
                 .filter(note => note.title === 'BREAKING CHANGE')
                 .map(note => replaceIssueLink(note, context.host, context.owner, context.repository));
             return {
-                body: '',
+                body: '', // commit.body,
                 subject: htmlEscape(commit.bareMessage),
                 type: commit.type,
                 scope: commit.scope,

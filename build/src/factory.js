@@ -102,7 +102,7 @@ async function buildStrategy(options) {
         changelogSections: options.changelogSections,
     });
     const strategyOptions = {
-        skipGitHubRelease: options.skipGithubRelease,
+        skipGitHubRelease: options.skipGithubRelease, // Note the case difference in GitHub
         ...options,
         targetBranch,
         changesBranch,

@@ -179,7 +179,7 @@ const version_1 = require("../../src/version");
             '1.1.0-beta01': '1.1.0-beta02',
             '1.1.1-beta01': '1.1.1-beta02',
             '1.0.0-beta1': '1.0.0-beta2',
-            '1.0.0-beta9': '1.0.0-beta10',
+            '1.0.0-beta9': '1.0.0-beta10', // (although that would be unfortunate)
             '1.0.0-beta09': '1.0.0-beta10',
             '1.0.0-beta.0': '1.0.0-beta.1',
         };

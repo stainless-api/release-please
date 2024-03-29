@@ -154,7 +154,7 @@ const sandbox = sinon.createSandbox();
                     notes: 'some notes',
                 };
                 const release = await strategy.buildReleasePullRequest({
-                    commits: COMMITS_NO_SNAPSHOT,
+                    commits: COMMITS_NO_SNAPSHOT, // no snapshot in commits
                     latestRelease,
                 });
                 (0, chai_1.expect)((_a = release === null || release === void 0 ? void 0 : release.version) === null || _a === void 0 ? void 0 : _a.toString()).to.eql('2.3.4');

@@ -1775,7 +1775,7 @@ version = "3.0.0"
             const manifest = await manifest_1.Manifest.fromManifest(github, 'main', undefined, undefined, { changesBranch: 'next' });
             const pullRequests = await manifest.buildPullRequests([
                 {
-                    title: 'chore(main): release v6.7.9-alpha.1',
+                    title: 'chore(main): release v6.7.9-alpha.1', // version from title differs from PR manifest
                     body: 'some content',
                     headBranchName: 'release-please--branches--main--changes--next--components--pkg1',
                     baseBranchName: 'main',
@@ -1784,7 +1784,7 @@ version = "3.0.0"
                     files: [],
                 },
                 {
-                    title: 'chore(main): release v7.8.9',
+                    title: 'chore(main): release v7.8.9', // version from title differs from PR manifest
                     body: 'some content',
                     headBranchName: 'release-please--branches--main--changes--next--components--pkg2',
                     baseBranchName: 'main',
@@ -1793,7 +1793,7 @@ version = "3.0.0"
                     files: [],
                 },
                 {
-                    title: 'chore(main): release 8.9.0',
+                    title: 'chore(main): release 8.9.0', // version from title differs from PR manifest
                     body: 'some content',
                     headBranchName: 'release-please--branches--main--changes--next--components--pkg3',
                     baseBranchName: 'main',
@@ -1802,7 +1802,7 @@ version = "3.0.0"
                     files: [],
                 },
                 {
-                    title: 'chore(main): release v9.0.1',
+                    title: 'chore(main): release v9.0.1', // version from title differs from PR manifest
                     body: 'some content',
                     headBranchName: 'release-please--branches--main--changes--next--components--pkg4',
                     baseBranchName: 'main',
@@ -1914,7 +1914,7 @@ version = "3.0.0"
                     headBranchName: 'release-please--branches--main--changes--next--components--pkg2',
                     baseBranchName: 'main',
                     number: 123,
-                    labels: [manifest_1.DEFAULT_CUSTOM_VERSION_LABEL],
+                    labels: [manifest_1.DEFAULT_CUSTOM_VERSION_LABEL], // labeled as custom version, no need to fetch manifest from release branch
                     files: [],
                 },
             ], []);
@@ -2135,7 +2135,7 @@ version = "3.0.0"
                     headBranchName: 'release-please--branches--main--changes--next--components--pkg2',
                     baseBranchName: 'main',
                     number: 123,
-                    labels: [],
+                    labels: [], // no custom version label
                     files: [],
                 },
             ], []);
@@ -2831,7 +2831,7 @@ version = "3.0.0"
                 'pkg/c/ccc.properties',
             ])
                 .but.not.include.oneOf([
-                'pkg/b/bbb.properties',
+                'pkg/b/bbb.properties', // should be at root
                 'pkg/c/pkg-c.properties', // should be up one level
             ]);
         });
@@ -3920,12 +3920,12 @@ version = "3.0.0"
                     labels: [],
                     headRefName: 'release-please/branches/main/components/a',
                     draft: false,
-                    version: version_1.Version.parse('1.0.1'),
+                    version: version_1.Version.parse('1.0.1'), // patch bump, does not match filter
                     previousVersion: version_1.Version.parse('1.0.0'),
                     conventionalCommits: [
                         {
-                            type: 'fix',
-                            scope: 'api',
+                            type: 'fix', // type match filter
+                            scope: 'api', // scope match filter
                             notes: [],
                             references: [],
                             sha: 'commit123',
@@ -3942,12 +3942,12 @@ version = "3.0.0"
                     labels: [],
                     headRefName: 'release-please/branches/main/components/b',
                     draft: false,
-                    version: version_1.Version.parse('1.1.0'),
+                    version: version_1.Version.parse('1.1.0'), // minor bump, match filter
                     previousVersion: version_1.Version.parse('1.0.0'),
                     conventionalCommits: [
                         {
-                            type: 'fix',
-                            scope: 'api',
+                            type: 'fix', // type match filter
+                            scope: 'api', // scope match filter
                             notes: [],
                             references: [],
                             sha: 'commit123',
@@ -3964,12 +3964,12 @@ version = "3.0.0"
                     labels: [],
                     headRefName: 'release-please/branches/main/components/b',
                     draft: false,
-                    version: version_1.Version.parse('1.1.0'),
+                    version: version_1.Version.parse('1.1.0'), // minor bump, match filter
                     previousVersion: version_1.Version.parse('1.0.0'),
                     conventionalCommits: [
                         {
-                            type: 'fix',
-                            scope: 'api',
+                            type: 'fix', // type match filter
+                            scope: 'api', // scope match filter
                             notes: [],
                             references: [],
                             sha: 'commit123',
@@ -3978,8 +3978,8 @@ version = "3.0.0"
                             breaking: false,
                         },
                         {
-                            type: 'feat(client)',
-                            scope: 'api',
+                            type: 'feat(client)', // type does not match filter
+                            scope: 'api', // scope match filter
                             notes: [],
                             references: [],
                             sha: 'commit123',
@@ -3996,12 +3996,12 @@ version = "3.0.0"
                     labels: [],
                     headRefName: 'release-please/branches/main/components/c',
                     draft: false,
-                    version: version_1.Version.parse('1.1.0'),
+                    version: version_1.Version.parse('1.1.0'), // minor bump, match filter
                     previousVersion: version_1.Version.parse('1.0.0'),
                     conventionalCommits: [
                         {
-                            type: 'feat',
-                            scope: 'api',
+                            type: 'feat', // type does not match filter
+                            scope: 'api', // scope match filter
                             notes: [],
                             references: [],
                             sha: 'commit123',
@@ -4018,12 +4018,12 @@ version = "3.0.0"
                     labels: [],
                     headRefName: 'release-please/branches/main/components/d',
                     draft: false,
-                    version: version_1.Version.parse('1.1.0'),
+                    version: version_1.Version.parse('1.1.0'), // minor bump, match filter
                     previousVersion: version_1.Version.parse('1.0.0'),
                     conventionalCommits: [
                         {
-                            type: 'fix',
-                            scope: null,
+                            type: 'fix', // type does match filter
+                            scope: null, // no scope, does not match filter
                             notes: [],
                             references: [],
                             sha: 'commit123',
@@ -4040,12 +4040,12 @@ version = "3.0.0"
                     labels: [],
                     headRefName: 'release-please/branches/main/components/e',
                     draft: false,
-                    version: version_1.Version.parse('1.1.0'),
+                    version: version_1.Version.parse('1.1.0'), // minor bump, match filter
                     previousVersion: version_1.Version.parse('1.0.0'),
                     conventionalCommits: [
                         {
-                            type: 'fix',
-                            scope: 'other',
+                            type: 'fix', // type does match filter
+                            scope: 'other', // other scope, does not match filter
                             notes: [],
                             references: [],
                             sha: 'commit123',
@@ -4149,8 +4149,8 @@ version = "3.0.0"
                     previousVersion: version_1.Version.parse('1.0.0'),
                     conventionalCommits: [
                         {
-                            type: 'fix',
-                            scope: 'api',
+                            type: 'fix', // type match filter
+                            scope: 'api', // some scope
                             notes: [],
                             references: [],
                             sha: 'commit123',
@@ -4171,8 +4171,8 @@ version = "3.0.0"
                     previousVersion: version_1.Version.parse('1.0.0'),
                     conventionalCommits: [
                         {
-                            type: 'fix',
-                            scope: 'other',
+                            type: 'fix', // type match filter
+                            scope: 'other', // another scope
                             notes: [],
                             references: [],
                             sha: 'commit123',
@@ -4193,8 +4193,8 @@ version = "3.0.0"
                     previousVersion: version_1.Version.parse('1.0.0'),
                     conventionalCommits: [
                         {
-                            type: 'fix',
-                            scope: null,
+                            type: 'fix', // type does match filter
+                            scope: null, // no scope
                             notes: [],
                             references: [],
                             sha: 'commit123',
@@ -4215,7 +4215,7 @@ version = "3.0.0"
                     previousVersion: version_1.Version.parse('1.0.0'),
                     conventionalCommits: [
                         {
-                            type: 'feat',
+                            type: 'feat', // type does not match filter
                             scope: 'api',
                             notes: [],
                             references: [],
@@ -4327,11 +4327,11 @@ version = "3.0.0"
                     labels: [],
                     headRefName: 'release-please/branches/main/components/a',
                     draft: false,
-                    version: version_1.Version.parse('1.0.1'),
+                    version: version_1.Version.parse('1.0.1'), // version bump match filter
                     previousVersion: version_1.Version.parse('1.0.0'),
                     conventionalCommits: [
                         {
-                            type: 'fix',
+                            type: 'fix', // type match filter
                             scope: 'something',
                             notes: [],
                             references: [],
@@ -4341,7 +4341,7 @@ version = "3.0.0"
                             breaking: false,
                         },
                         {
-                            type: 'ci',
+                            type: 'ci', // type does not match filter
                             scope: 'something',
                             notes: [],
                             references: [],
@@ -4359,11 +4359,11 @@ version = "3.0.0"
                     labels: [],
                     headRefName: 'release-please/branches/main/components/a',
                     draft: false,
-                    version: version_1.Version.parse('1.0.1'),
+                    version: version_1.Version.parse('1.0.1'), // version bump match filter
                     previousVersion: version_1.Version.parse('1.0.0'),
                     conventionalCommits: [
                         {
-                            type: 'ci',
+                            type: 'ci', // first type does not match filter
                             scope: 'something',
                             notes: [],
                             references: [],
@@ -4373,7 +4373,7 @@ version = "3.0.0"
                             breaking: false,
                         },
                         {
-                            type: 'fix',
+                            type: 'fix', // type match filter
                             scope: 'something',
                             notes: [],
                             references: [],
@@ -4391,12 +4391,12 @@ version = "3.0.0"
                     labels: [],
                     headRefName: 'release-please/branches/main/components/b',
                     draft: false,
-                    version: version_1.Version.parse('1.1.0'),
+                    version: version_1.Version.parse('1.1.0'), // version bump match filter
                     previousVersion: version_1.Version.parse('1.0.0'),
                     conventionalCommits: [
                         {
-                            type: 'feat',
-                            scope: 'api',
+                            type: 'feat', // type match filter
+                            scope: 'api', // scope match filter
                             notes: [],
                             references: [],
                             sha: 'commit123',
@@ -4405,7 +4405,7 @@ version = "3.0.0"
                             breaking: false,
                         },
                         {
-                            type: 'ci',
+                            type: 'ci', // type does not match filter
                             scope: 'something',
                             notes: [],
                             references: [],
@@ -4423,12 +4423,12 @@ version = "3.0.0"
                     labels: [],
                     headRefName: 'release-please/branches/main/components/c',
                     draft: false,
-                    version: version_1.Version.parse('1.1.0'),
+                    version: version_1.Version.parse('1.1.0'), // version bump match filter
                     previousVersion: version_1.Version.parse('1.0.0'),
                     conventionalCommits: [
                         {
-                            type: 'feat',
-                            scope: null,
+                            type: 'feat', // type does match filter
+                            scope: null, // no scope, does not match filter
                             notes: [],
                             references: [],
                             sha: 'commit123',
@@ -4437,7 +4437,7 @@ version = "3.0.0"
                             breaking: false,
                         },
                         {
-                            type: 'ci',
+                            type: 'ci', // type does not match filter
                             scope: 'something',
                             notes: [],
                             references: [],
@@ -4455,12 +4455,12 @@ version = "3.0.0"
                     labels: [],
                     headRefName: 'release-please/branches/main/components/d',
                     draft: false,
-                    version: version_1.Version.parse('1.0.1'),
+                    version: version_1.Version.parse('1.0.1'), // version bump match filter
                     previousVersion: version_1.Version.parse('1.0.0'),
                     conventionalCommits: [
                         {
-                            type: 'fix',
-                            scope: null,
+                            type: 'fix', // type does match filter
+                            scope: null, // no scope, does match filter
                             notes: [],
                             references: [],
                             sha: 'commit123',
@@ -4469,7 +4469,7 @@ version = "3.0.0"
                             breaking: false,
                         },
                         {
-                            type: 'ci',
+                            type: 'ci', // type does not match filter
                             scope: 'something',
                             notes: [],
                             references: [],
@@ -4487,11 +4487,11 @@ version = "3.0.0"
                     labels: [],
                     headRefName: 'release-please/branches/main/components/e',
                     draft: false,
-                    version: version_1.Version.parse('2.0.0'),
+                    version: version_1.Version.parse('2.0.0'), // version bump does not match filter
                     previousVersion: version_1.Version.parse('1.0.0'),
                     conventionalCommits: [
                         {
-                            type: 'feat',
+                            type: 'feat', // type match filter
                             scope: 'api',
                             notes: [],
                             references: [],
@@ -4501,8 +4501,8 @@ version = "3.0.0"
                             breaking: false,
                         },
                         {
-                            type: 'feat',
-                            scope: 'something',
+                            type: 'feat', // type does match filter
+                            scope: 'something', // scope does not match filter
                             notes: [],
                             references: [],
                             sha: 'commit123',
@@ -4519,11 +4519,11 @@ version = "3.0.0"
                     labels: [],
                     headRefName: 'release-please/branches/main/components/f',
                     draft: false,
-                    version: version_1.Version.parse('1.1.0'),
+                    version: version_1.Version.parse('1.1.0'), // version bump match filter
                     previousVersion: version_1.Version.parse('1.0.0'),
                     conventionalCommits: [
                         {
-                            type: 'chore',
+                            type: 'chore', // type does not match filter
                             scope: 'api',
                             notes: [],
                             references: [],
@@ -4533,7 +4533,7 @@ version = "3.0.0"
                             breaking: false,
                         },
                         {
-                            type: 'ci',
+                            type: 'ci', // type does not match filter
                             scope: 'something',
                             notes: [],
                             references: [],
