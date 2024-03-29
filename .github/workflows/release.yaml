@@ -27,12 +27,12 @@ jobs:
           git merge --no-ff main
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 18
       - run: corepack enable && corepack prepare
       # Note: actions/setup-node doesn't yet provide parameters for corepack, we need to run it again after enabling it
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
           node-version: 18
           cache: pnpm
