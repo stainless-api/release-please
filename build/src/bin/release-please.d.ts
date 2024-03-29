@@ -11,7 +11,7 @@ export declare const parser: yargs.Argv<{
 } & {
     trace: boolean;
 } & {
-    plugin: (string | number)[] | never[];
+    plugin: never[] | (string | number)[];
 }>;
 interface HandleError {
     (err: ErrorObject): void;
