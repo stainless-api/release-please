@@ -10,7 +10,7 @@ dependencies:
     version: 0.4.1
   '@google-automations/git-file-utils':
     specifier: ^1.2.5
-    version: 1.2.5
+    version: 1.2.6
   '@iarna/toml':
     specifier: ^3.0.0
     version: 3.0.0
@@ -299,12 +299,12 @@ packages:
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     dev: true
 
-  /@google-automations/git-file-utils@1.2.5:
-    resolution: {integrity: sha512-1fJ/+W5yzyzGIVet8SHUSF5zFJyhwNKoUB34oXp7zL72L6arwOhUs5CQ9S45cw3ReCFleAB9MjwX0f120ufX8g==}
+  /@google-automations/git-file-utils@1.2.6:
+    resolution: {integrity: sha512-wNWeNLBtQH39kTayGuJMF1IRVPxfcywH//thQHD+xzRlanTNDI/5WACUvBkIz9bhnEC7ADm5ibA+DX9meU+JwQ==}
     engines: {node: '>= 14'}
     dependencies:
-      '@octokit/rest': 19.0.5
-      '@octokit/types': 8.2.1
+      '@octokit/rest': 19.0.13
+      '@octokit/types': 9.0.0
       minimatch: 5.1.6
     transitivePeerDependencies:
       - encoding
@@ -521,6 +521,17 @@ packages:
       '@octokit/types': 8.2.1
     dev: false
 
+  /@octokit/plugin-paginate-rest@6.1.2(@octokit/core@4.2.4):
+    resolution: {integrity: sha512-qhrmtQeHU/IivxucOV1bbI/xZyC/iOBhclokv7Sut5vnejAIAEXVcGQeRpQlU39E0WwK9lNvJHphHri/DB6lbQ==}
+    engines: {node: '>= 14'}
+    peerDependencies:
+      '@octokit/core': '>=4'
+    dependencies:
+      '@octokit/core': 4.2.4
+      '@octokit/tsconfig': 1.0.2
+      '@octokit/types': 9.3.2
+    dev: false
+
   /@octokit/plugin-request-log@1.0.4(@octokit/core@4.2.4):
     resolution: {integrity: sha512-mLUsMkgP7K/cnFEw07kWqXGF5LKrOkD+lhCrKvPHXWDywAwuDUeDwWBpc69XK3pNX0uKiVt8g5z96PJ6z9xCFA==}
     peerDependencies:
@@ -538,6 +549,16 @@ packages:
       '@octokit/core': 4.2.4
       '@octokit/types': 8.2.1
       deprecation: 2.3.1
+    dev: false
+
+  /@octokit/plugin-rest-endpoint-methods@7.2.3(@octokit/core@4.2.4):
+    resolution: {integrity: sha512-I5Gml6kTAkzVlN7KCtjOM+Ruwe/rQppp0QU372K1GP7kNOYEKe8Xn5BW4sE62JAHdwpq95OQK/qGNyKQMUzVgA==}
+    engines: {node: '>= 14'}
+    peerDependencies:
+      '@octokit/core': '>=3'
+    dependencies:
+      '@octokit/core': 4.2.4
+      '@octokit/types': 10.0.0
     dev: false
 
   /@octokit/plugin-retry@5.0.5(@octokit/core@4.2.4):
@@ -595,6 +616,18 @@ packages:
       - encoding
     dev: false
 
+  /@octokit/rest@19.0.13:
+    resolution: {integrity: sha512-/EzVox5V9gYGdbAI+ovYj3nXQT1TtTHRT+0eZPcuC05UFSWO3mdO9UY1C0i2eLF9Un1ONJkAk+IEtYGAC+TahA==}
+    engines: {node: '>= 14'}
+    dependencies:
+      '@octokit/core': 4.2.4
+      '@octokit/plugin-paginate-rest': 6.1.2(@octokit/core@4.2.4)
+      '@octokit/plugin-request-log': 1.0.4(@octokit/core@4.2.4)
+      '@octokit/plugin-rest-endpoint-methods': 7.2.3(@octokit/core@4.2.4)
+    transitivePeerDependencies:
+      - encoding
+    dev: false
+
   /@octokit/rest@19.0.5:
     resolution: {integrity: sha512-+4qdrUFq2lk7Va+Qff3ofREQWGBeoTKNqlJO+FGjFP35ZahP+nBenhZiGdu8USSgmq4Ky3IJ/i4u0xbLqHaeow==}
     engines: {node: '>= 14'}
@@ -605,6 +638,10 @@ packages:
       '@octokit/plugin-rest-endpoint-methods': 6.7.0(@octokit/core@4.2.4)
     transitivePeerDependencies:
       - encoding
+    dev: false
+
+  /@octokit/tsconfig@1.0.2:
+    resolution: {integrity: sha512-I0vDR0rdtP8p2lGMzvsJzbhdOWy405HcGovrspJ8RRibHnyRgggUSNO5AIox5LmqiwmatHKYsvj6VGFHkqS7lA==}
     dev: false
 
   /@octokit/types@10.0.0:
@@ -623,6 +660,12 @@ packages:
     resolution: {integrity: sha512-LUewfj94xCMH2rbD5YJ+6AQ4AVjFYTgpp6rboWM5T7N3IsIF65SBEOVcYMGAEzO/kKNiNaW4LoWtoThOhH06gw==}
     dependencies:
       '@octokit/openapi-types': 16.0.0
+
+  /@octokit/types@9.3.2:
+    resolution: {integrity: sha512-D4iHGTdAnEEVsB8fl95m1hiz7D5YiRdQ9b/OEb3BYRVwbLsGHcRVPz+u+BgRLNk0Q0/4iZCBqDN96j2XNxfXrA==}
+    dependencies:
+      '@octokit/openapi-types': 18.1.1
+    dev: false
 
   /@pkgr/utils@2.4.2:
     resolution: {integrity: sha512-POgTXhjrTfbTV63DiFXav4lBHiICLKKwDeaKn9Nphwj7WH6m0hMMCaJkMyRWjgtPFyRKRVoMXXjczsTQRDEhYw==}
