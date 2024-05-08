@@ -29,6 +29,8 @@ const setup_py_1 = require("../../src/updaters/python/setup-py");
 const changelog_1 = require("../../src/updaters/changelog");
 const changelog_json_1 = require("../../src/updaters/changelog-json");
 const snapshot = require("snap-shot-it");
+const pull_request_body_1 = require("../../src/util/pull-request-body");
+const python_readme_1 = require("../../src/updaters/python/python-readme");
 const sandbox = sinon.createSandbox();
 const fixturesPath = './test/fixtures/strategies/python';
 const UUID_REGEX = /[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}/g;
@@ -136,6 +138,32 @@ const COMMITS = [
             });
             const updates = release.updates;
             (0, helpers_1.assertHasUpdate)(updates, 'pyproject.toml', pyproject_toml_1.PyProjectToml);
+        });
+        (0, mocha_1.it)('finds and updates a README.md', async () => {
+            const strategy = new python_1.Python({
+                targetBranch: 'main',
+                github,
+                component: 'google-cloud-automl',
+            });
+            sandbox
+                .stub(github, 'getFileContentsOnBranch')
+                .resolves((0, helpers_1.buildGitHubFileContent)('./test/updaters/fixtures', 'README-python-pre.md'));
+            sandbox.stub(github, 'findFilesByFilenameAndRef').resolves([]);
+            const release = await strategy.buildReleasePullRequest({
+                commits: COMMITS,
+                latestRelease: await strategy.buildRelease({
+                    title: 'chore(main): release v1.2.3',
+                    headBranchName: 'release-please/branches/main',
+                    baseBranchName: 'main',
+                    number: 1234,
+                    body: new pull_request_body_1.PullRequestBody([]).toString(),
+                    labels: [],
+                    files: [],
+                    sha: 'abc123',
+                }),
+            });
+            const updates = release.updates;
+            (0, helpers_1.assertHasUpdate)(updates, 'README.md', python_readme_1.PythonReadme);
         });
         (0, mocha_1.it)('finds and updates a version.py file', async () => {
             const strategy = new python_1.Python({

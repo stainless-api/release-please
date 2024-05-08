@@ -23,6 +23,7 @@ const pyproject_toml_1 = require("../updaters/python/pyproject-toml");
 const python_file_with_version_1 = require("../updaters/python/python-file-with-version");
 const errors_1 = require("../errors");
 const filter_commits_1 = require("../util/filter-commits");
+const python_readme_1 = require("../updaters/python/python-readme");
 const CHANGELOG_SECTIONS = [
     { type: 'feat', section: 'Features' },
     { type: 'fix', section: 'Bug Fixes' },
@@ -66,6 +67,13 @@ class Python extends base_1.BaseStrategy {
             path: this.addPath('setup.py'),
             createIfMissing: false,
             updater: new setup_py_1.SetupPy({
+                version,
+            }),
+        });
+        updates.push({
+            path: this.addPath('README.md'),
+            createIfMissing: false,
+            updater: new python_readme_1.PythonReadme({
                 version,
             }),
         });
