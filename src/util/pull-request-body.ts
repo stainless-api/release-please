@@ -135,7 +135,7 @@ function extractMultipleReleases(notes: string, logger: Logger): ReleaseData[] {
       const notes = detail.textContent.trim();
       data.push({
         component: match.groups.component,
-        version: Version.parse(match.groups.version),
+        version: Version.parseOne(match.groups.version),
         notes,
       });
     } else {
@@ -147,7 +147,7 @@ function extractMultipleReleases(notes: string, logger: Logger): ReleaseData[] {
       detail.removeChild(summaryNode);
       const notes = detail.textContent.trim();
       data.push({
-        version: Version.parse(componentlessMatch.groups.version),
+        version: Version.parseOne(componentlessMatch.groups.version),
         notes,
       });
     }
@@ -165,7 +165,7 @@ function extractSingleRelease(body: string, logger: Logger): ReleaseData[] {
   }
   return [
     {
-      version: Version.parse(versionString),
+      version: Version.parseOne(versionString),
       notes: body,
     },
   ];

@@ -29,7 +29,7 @@ describe('PackageLockJson', () => {
         'utf8'
       );
       const packageJson = new PackageLockJson({
-        version: Version.parse('14.0.0'),
+        version: Version.parseOne('14.0.0'),
       });
       const newContent = packageJson.updateContent(oldContent);
       snapshot(newContent.replace(/\r\n/g, '\n'));
@@ -43,7 +43,7 @@ describe('PackageLockJson', () => {
         'utf8'
       );
       const packageJson = new PackageLockJson({
-        version: Version.parse('14.0.0'),
+        version: Version.parseOne('14.0.0'),
       });
       const newContent = packageJson.updateContent(oldContent);
       snapshot(newContent.replace(/\r\n/g, '\n'));
@@ -57,7 +57,7 @@ describe('PackageLockJson', () => {
         'utf8'
       );
       const packageJson = new PackageLockJson({
-        version: Version.parse('14.0.0'),
+        version: Version.parseOne('14.0.0'),
       });
       const newContent = packageJson.updateContent(oldContent);
       snapshot(newContent.replace(/\r\n/g, '\n'));

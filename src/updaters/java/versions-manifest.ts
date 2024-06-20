@@ -73,7 +73,7 @@ export class VersionsManifest extends JavaUpdate {
     content.split(/\r?\n/).forEach(line => {
       const match = line.match(/^([\w\-_]+):([^:]+):([^:]+)/);
       if (match) {
-        versions.set(match[1], Version.parse(match[2]));
+        versions.set(match[1], Version.parseOne(match[2]));
       }
     });
     return versions;

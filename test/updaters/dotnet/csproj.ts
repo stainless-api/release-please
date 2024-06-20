@@ -20,7 +20,7 @@ import {Version} from '../../../src/version';
 import {CsProj} from '../../../src/updaters/dotnet/csproj';
 
 const fixturesPath = './test/updaters/fixtures';
-const FAKE_VERSION = Version.parse('1.2.3');
+const FAKE_VERSION = Version.parseOne('1.2.3');
 
 describe('CsProj', () => {
   describe('updateContent', () => {

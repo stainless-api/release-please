@@ -35,7 +35,7 @@ describe('ruby-common', () => {
     testTable.forEach(([input, expected]) => {
       it(`${input} should resolve to ${expected}`, () => {
         expect(
-          resolveRubyGemfileLockVersion(Version.parse(input).toString())
+          resolveRubyGemfileLockVersion(Version.parseOne(input).toString())
         ).to.equal(expected);
       });
     });
@@ -55,7 +55,9 @@ describe('ruby-common', () => {
 
     testTable.forEach(([input, expected]) => {
       it(`${input} should equal ${expected}`, () => {
-        expect(stringifyRubyVersion(Version.parse(input))).to.equal(expected);
+        expect(stringifyRubyVersion(Version.parseOne(input))).to.equal(
+          expected
+        );
       });
     });
 
@@ -73,7 +75,7 @@ describe('ruby-common', () => {
 
       testTable.forEach(([input, expected]) => {
         it(`${input} combined with resolveRubyGemfileLockVersion should equal ${expected}`, () => {
-          const versionString = stringifyRubyVersion(Version.parse(input));
+          const versionString = stringifyRubyVersion(Version.parseOne(input));
           expect(resolveRubyGemfileLockVersion(versionString)).to.equal(
             expected
           );
@@ -95,14 +97,14 @@ describe('ruby-common', () => {
 
       testTable.forEach(([input, expected]) => {
         it(`${input} should equal ${expected}`, () => {
-          expect(stringifyRubyVersion(Version.parse(input), true)).to.equal(
+          expect(stringifyRubyVersion(Version.parseOne(input), true)).to.equal(
             expected
           );
         });
 
         it(`${input} combined with resolveRubyGemfileLockVersion should equal ${expected}`, () => {
           const versionString = stringifyRubyVersion(
-            Version.parse(input),
+            Version.parseOne(input),
             true
           );
           expect(resolveRubyGemfileLockVersion(versionString)).to.equal(

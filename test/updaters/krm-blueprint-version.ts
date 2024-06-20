@@ -46,10 +46,10 @@ describe('KRM Blueprint', () => {
           const versionsMap = new Map();
           versionsMap.set(
             'previousVersion',
-            Version.parse(test.previousVersion)
+            Version.parseOne(test.previousVersion)
           );
           const version = new KRMBlueprintVersion({
-            version: Version.parse(test.expectedVersion),
+            version: Version.parseOne(test.expectedVersion),
             versionsMap,
           });
           const newContent = version.updateContent(oldContent);
@@ -64,7 +64,7 @@ describe('KRM Blueprint', () => {
           ).replace(/\r\n/g, '\n');
 
           const version = new KRMBlueprintVersion({
-            version: Version.parse(test.expectedVersion),
+            version: Version.parseOne(test.expectedVersion),
           });
           const newContent = version.updateContent(oldContent);
           snapshot(newContent);

@@ -48,7 +48,7 @@ export function buildMockPackageUpdate(
     createIfMissing: false,
     cachedFileContents,
     updater: new CargoToml({
-      version: Version.parse(manifest.package?.version || 'FIXME'),
+      version: Version.parseOne(manifest.package?.version || 'FIXME'),
     }),
   };
 }
@@ -150,8 +150,8 @@ describe('Plugin compatibility', () => {
           },
         },
         {
-          'packages/rustA': Version.parse('1.0.0'),
-          'packages/rustB': Version.parse('1.0.0'),
+          'packages/rustA': Version.parseOne('1.0.0'),
+          'packages/rustB': Version.parseOne('1.0.0'),
         },
         {
           plugins: [

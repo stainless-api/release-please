@@ -56,7 +56,7 @@ describe('Gemfile.lock', () => {
           shouldUpdate ? 'update' : 'not update'
         } for ${description}`, () => {
           const version = new GemfileLock({
-            version: Version.parse(newVersion),
+            version: Version.parseOne(newVersion),
             gemName,
           });
           const result = version.updateContent(existingContent);
@@ -71,7 +71,7 @@ describe('Gemfile.lock', () => {
         'utf8'
       ).replace(/\r\n/g, '\n');
       const version = new GemfileLock({
-        version: Version.parse('0.2.0'),
+        version: Version.parseOne('0.2.0'),
         gemName: '',
       });
       const newContent = version.updateContent(oldContent);
@@ -84,7 +84,7 @@ describe('Gemfile.lock', () => {
         'utf8'
       ).replace(/\r\n/g, '\n');
       const version = new GemfileLock({
-        version: Version.parse('0.2.0'),
+        version: Version.parseOne('0.2.0'),
         gemName: 'foo',
       });
       const newContent = version.updateContent(oldContent);
@@ -97,7 +97,7 @@ describe('Gemfile.lock', () => {
         'utf8'
       ).replace(/\r\n/g, '\n');
       const version = new GemfileLock({
-        version: Version.parse('0.2.0-alpha'),
+        version: Version.parseOne('0.2.0-alpha'),
         gemName: 'foo',
       });
       const newContent = version.updateContent(oldContent);

@@ -28,7 +28,7 @@ describe('PomXml', () => {
         resolve(fixturesPath, './pom.xml'),
         'utf8'
       ).replace(/\r\n/g, '\n');
-      const updater = new PomXml(Version.parse('v2.3.4'));
+      const updater = new PomXml(Version.parseOne('v2.3.4'));
       const newContent = updater.updateContent(oldContent);
       snapshot(newContent);
     });
@@ -38,7 +38,7 @@ describe('PomXml', () => {
         resolve(fixturesPath, './pom-submodule.xml'),
         'utf8'
       ).replace(/\r\n/g, '\n');
-      const updater = new PomXml(Version.parse('v2.3.4'));
+      const updater = new PomXml(Version.parseOne('v2.3.4'));
       const newContent = updater.updateContent(oldContent);
       snapshot(newContent);
     });
@@ -51,11 +51,11 @@ describe('PomXml', () => {
       const updatedVersions = new Map();
       updatedVersions.set(
         'com.google.auth:google-auth-library-credentials',
-        Version.parse('v2.1.3')
+        Version.parseOne('v2.1.3')
       );
-      updatedVersions.set('com.google.guava:guava', Version.parse('v1.2.4'));
+      updatedVersions.set('com.google.guava:guava', Version.parseOne('v1.2.4'));
 
-      const updater = new PomXml(Version.parse('v2.3.4'), updatedVersions);
+      const updater = new PomXml(Version.parseOne('v2.3.4'), updatedVersions);
       const newContent = updater.updateContent(oldContent);
       snapshot(newContent);
     });
@@ -65,7 +65,7 @@ describe('PomXml', () => {
         resolve(fixturesPath, './pom-trailing-newline.xml'),
         'utf8'
       ).replace(/\r\n/g, '\n');
-      const updater = new PomXml(Version.parse('v2.3.4'));
+      const updater = new PomXml(Version.parseOne('v2.3.4'));
       const newContent = updater.updateContent(oldContent);
       snapshot(newContent);
     });
