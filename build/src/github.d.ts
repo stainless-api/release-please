@@ -456,7 +456,7 @@ export declare class GitHub {
     invalidateFileCache(): void;
     private queryPullRequestId;
     private mutatePullRequestEnableAutoMerge;
-    enablePullRequestAutoMerge(pullRequestNumber: number, mergeMethod: MergeMethod): Promise<'auto-merged' | 'direct-merged' | 'none'>;
+    enablePullRequestAutoMerge(pullRequestNumber: number, mergeMethod: MergeMethod): Promise<'auto-merged' | 'none'>;
     addPullRequestReviewers({ pullRequestNumber, reviewers, }: {
         pullRequestNumber: number;
         reviewers: string[];

@@ -994,7 +994,7 @@ const sandbox = sinon.createSandbox();
             (0, chai_1.expect)(result).to.equal('auto-merged');
             req.done();
         });
-        (0, mocha_1.it)('merges release PR directly when an auto-merge given but PR in "clean status"', async () => {
+        (0, mocha_1.it)('does nothing when an auto-merge given but PR in "clean status"', async () => {
             const mutatePullRequestEnableAutoMergeStub = sandbox
                 .stub(github, 'mutatePullRequestEnableAutoMerge') // eslint-disable-line @typescript-eslint/no-explicit-any
                 .throws(new graphql_1.GraphqlResponseError({ method: 'GET', url: '/foo/bar' }, {}, {
@@ -1028,13 +1028,9 @@ const sandbox = sinon.createSandbox();
                         },
                     },
                 },
-            })
-                .put('/repos/fake/fake/pulls/123/merge', {
-                merge_method: 'rebase',
-            })
-                .reply(200);
+            });
             const result = await github.enablePullRequestAutoMerge(123, 'rebase');
-            (0, chai_1.expect)(result).to.equal('direct-merged');
+            (0, chai_1.expect)(result).to.equal('none');
             sinon.assert.calledOnce(mutatePullRequestEnableAutoMergeStub);
             req.done();
         });
@@ -1072,13 +1068,9 @@ const sandbox = sinon.createSandbox();
                         },
                     },
                 },
-            })
-                .put('/repos/fake/fake/pulls/123/merge', {
-                merge_method: 'rebase',
-            })
-                .reply(200);
+            });
             const result = await github.enablePullRequestAutoMerge(123, 'rebase');
-            (0, chai_1.expect)(result).to.equal('direct-merged');
+            (0, chai_1.expect)(result).to.equal('none');
             sinon.assert.calledOnce(mutatePullRequestEnableAutoMergeStub);
             req.done();
         });
