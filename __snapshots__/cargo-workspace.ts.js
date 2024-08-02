@@ -37,7 +37,9 @@ Release notes for path: packages/rustA, releaseType: rust
 </details>
 
 ---
-This Pull Request has been generated automatically as part of [Stainless](https://stainlessapi.com/)'s release process.
+This Pull Request has been generated automatically as part of [Stainless](https://stainlessapi.com/)'s release process. See [our docs](https://app.stainlessapi.com/docs/guides/publish) for more details.
+We've used the included commits to determine the [semver version number](https://semver.org/#semantic-versioning-specification-semver) for this Pull Request. Alternatively, you can manually set the version number in the title of this Pull Request.
+
 For a better experience, it is recommended to use either rebase-merge or squash-merge when merging this pull request ([see details](https://github.com/stainless-api/release-please/#linear-git-commit-history-use-squash-merge)).
 
 _More technical details can be found at [stainless-api/release-please](https://github.com/stainless-api/release-please)_.
@@ -51,7 +53,9 @@ exports['CargoWorkspace plugin run can skip merging rust packages 1'] = `
 Release notes for path: packages/rustA, releaseType: rust
 
 ---
-This Pull Request has been generated automatically as part of [Stainless](https://stainlessapi.com/)'s release process.
+This Pull Request has been generated automatically as part of [Stainless](https://stainlessapi.com/)'s release process. See [our docs](https://app.stainlessapi.com/docs/guides/publish) for more details.
+We've used the included commits to determine the [semver version number](https://semver.org/#semantic-versioning-specification-semver) for this Pull Request. Alternatively, you can manually set the version number in the title of this Pull Request.
+
 For a better experience, it is recommended to use either rebase-merge or squash-merge when merging this pull request ([see details](https://github.com/stainless-api/release-please/#linear-git-commit-history-use-squash-merge)).
 
 _More technical details can be found at [stainless-api/release-please](https://github.com/stainless-api/release-please)_.
@@ -69,7 +73,9 @@ exports['CargoWorkspace plugin run can skip merging rust packages 2'] = `
     * pkgA bumped from 1.1.1 to 1.1.2
 
 ---
-This Pull Request has been generated automatically as part of [Stainless](https://stainlessapi.com/)'s release process.
+This Pull Request has been generated automatically as part of [Stainless](https://stainlessapi.com/)'s release process. See [our docs](https://app.stainlessapi.com/docs/guides/publish) for more details.
+We've used the included commits to determine the [semver version number](https://semver.org/#semantic-versioning-specification-semver) for this Pull Request. Alternatively, you can manually set the version number in the title of this Pull Request.
+
 For a better experience, it is recommended to use either rebase-merge or squash-merge when merging this pull request ([see details](https://github.com/stainless-api/release-please/#linear-git-commit-history-use-squash-merge)).
 
 _More technical details can be found at [stainless-api/release-please](https://github.com/stainless-api/release-please)_.
@@ -87,7 +93,9 @@ exports['CargoWorkspace plugin run can skip merging rust packages 3'] = `
     * pkgB bumped from 2.2.2 to 2.2.3
 
 ---
-This Pull Request has been generated automatically as part of [Stainless](https://stainlessapi.com/)'s release process.
+This Pull Request has been generated automatically as part of [Stainless](https://stainlessapi.com/)'s release process. See [our docs](https://app.stainlessapi.com/docs/guides/publish) for more details.
+We've used the included commits to determine the [semver version number](https://semver.org/#semantic-versioning-specification-semver) for this Pull Request. Alternatively, you can manually set the version number in the title of this Pull Request.
+
 For a better experience, it is recommended to use either rebase-merge or squash-merge when merging this pull request ([see details](https://github.com/stainless-api/release-please/#linear-git-commit-history-use-squash-merge)).
 
 _More technical details can be found at [stainless-api/release-please](https://github.com/stainless-api/release-please)_.
@@ -101,7 +109,9 @@ exports['CargoWorkspace plugin run can skip merging rust packages 4'] = `
 Release notes for path: packages/rustD, releaseType: rust
 
 ---
-This Pull Request has been generated automatically as part of [Stainless](https://stainlessapi.com/)'s release process.
+This Pull Request has been generated automatically as part of [Stainless](https://stainlessapi.com/)'s release process. See [our docs](https://app.stainlessapi.com/docs/guides/publish) for more details.
+We've used the included commits to determine the [semver version number](https://semver.org/#semantic-versioning-specification-semver) for this Pull Request. Alternatively, you can manually set the version number in the title of this Pull Request.
+
 For a better experience, it is recommended to use either rebase-merge or squash-merge when merging this pull request ([see details](https://github.com/stainless-api/release-please/#linear-git-commit-history-use-squash-merge)).
 
 _More technical details can be found at [stainless-api/release-please](https://github.com/stainless-api/release-please)_.
@@ -119,7 +129,9 @@ exports['CargoWorkspace plugin run can skip merging rust packages 5'] = `
     * pkgA bumped from 1.1.1 to 1.1.2
 
 ---
-This Pull Request has been generated automatically as part of [Stainless](https://stainlessapi.com/)'s release process.
+This Pull Request has been generated automatically as part of [Stainless](https://stainlessapi.com/)'s release process. See [our docs](https://app.stainlessapi.com/docs/guides/publish) for more details.
+We've used the included commits to determine the [semver version number](https://semver.org/#semantic-versioning-specification-semver) for this Pull Request. Alternatively, you can manually set the version number in the title of this Pull Request.
+
 For a better experience, it is recommended to use either rebase-merge or squash-merge when merging this pull request ([see details](https://github.com/stainless-api/release-please/#linear-git-commit-history-use-squash-merge)).
 
 _More technical details can be found at [stainless-api/release-please](https://github.com/stainless-api/release-please)_.
@@ -141,7 +153,9 @@ Release notes for path: packages/rustD, releaseType: rust
 </details>
 
 ---
-This Pull Request has been generated automatically as part of [Stainless](https://stainlessapi.com/)'s release process.
+This Pull Request has been generated automatically as part of [Stainless](https://stainlessapi.com/)'s release process. See [our docs](https://app.stainlessapi.com/docs/guides/publish) for more details.
+We've used the included commits to determine the [semver version number](https://semver.org/#semantic-versioning-specification-semver) for this Pull Request. Alternatively, you can manually set the version number in the title of this Pull Request.
+
 For a better experience, it is recommended to use either rebase-merge or squash-merge when merging this pull request ([see details](https://github.com/stainless-api/release-please/#linear-git-commit-history-use-squash-merge)).
 
 _More technical details can be found at [stainless-api/release-please](https://github.com/stainless-api/release-please)_.
@@ -158,7 +172,9 @@ Release notes for path: packages/rustA, releaseType: rust
 </details>
 
 ---
-This Pull Request has been generated automatically as part of [Stainless](https://stainlessapi.com/)'s release process.
+This Pull Request has been generated automatically as part of [Stainless](https://stainlessapi.com/)'s release process. See [our docs](https://app.stainlessapi.com/docs/guides/publish) for more details.
+We've used the included commits to determine the [semver version number](https://semver.org/#semantic-versioning-specification-semver) for this Pull Request. Alternatively, you can manually set the version number in the title of this Pull Request.
+
 For a better experience, it is recommended to use either rebase-merge or squash-merge when merging this pull request ([see details](https://github.com/stainless-api/release-please/#linear-git-commit-history-use-squash-merge)).
 
 _More technical details can be found at [stainless-api/release-please](https://github.com/stainless-api/release-please)_.
@@ -180,7 +196,9 @@ Release notes for path: packages/rustD, releaseType: rust
 </details>
 
 ---
-This Pull Request has been generated automatically as part of [Stainless](https://stainlessapi.com/)'s release process.
+This Pull Request has been generated automatically as part of [Stainless](https://stainlessapi.com/)'s release process. See [our docs](https://app.stainlessapi.com/docs/guides/publish) for more details.
+We've used the included commits to determine the [semver version number](https://semver.org/#semantic-versioning-specification-semver) for this Pull Request. Alternatively, you can manually set the version number in the title of this Pull Request.
+
 For a better experience, it is recommended to use either rebase-merge or squash-merge when merging this pull request ([see details](https://github.com/stainless-api/release-please/#linear-git-commit-history-use-squash-merge)).
 
 _More technical details can be found at [stainless-api/release-please](https://github.com/stainless-api/release-please)_.
@@ -206,7 +224,9 @@ Release notes for path: packages/rustB, releaseType: rust
 </details>
 
 ---
-This Pull Request has been generated automatically as part of [Stainless](https://stainlessapi.com/)'s release process.
+This Pull Request has been generated automatically as part of [Stainless](https://stainlessapi.com/)'s release process. See [our docs](https://app.stainlessapi.com/docs/guides/publish) for more details.
+We've used the included commits to determine the [semver version number](https://semver.org/#semantic-versioning-specification-semver) for this Pull Request. Alternatively, you can manually set the version number in the title of this Pull Request.
+
 For a better experience, it is recommended to use either rebase-merge or squash-merge when merging this pull request ([see details](https://github.com/stainless-api/release-please/#linear-git-commit-history-use-squash-merge)).
 
 _More technical details can be found at [stainless-api/release-please](https://github.com/stainless-api/release-please)_.
@@ -255,7 +275,9 @@ Release notes for path: packages/rustD, releaseType: rust
 </details>
 
 ---
-This Pull Request has been generated automatically as part of [Stainless](https://stainlessapi.com/)'s release process.
+This Pull Request has been generated automatically as part of [Stainless](https://stainlessapi.com/)'s release process. See [our docs](https://app.stainlessapi.com/docs/guides/publish) for more details.
+We've used the included commits to determine the [semver version number](https://semver.org/#semantic-versioning-specification-semver) for this Pull Request. Alternatively, you can manually set the version number in the title of this Pull Request.
+
 For a better experience, it is recommended to use either rebase-merge or squash-merge when merging this pull request ([see details](https://github.com/stainless-api/release-please/#linear-git-commit-history-use-squash-merge)).
 
 _More technical details can be found at [stainless-api/release-please](https://github.com/stainless-api/release-please)_.

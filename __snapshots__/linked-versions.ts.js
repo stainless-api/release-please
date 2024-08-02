@@ -11,7 +11,9 @@ exports['LinkedVersions plugin can skip grouping pull requests 1'] = `
 * some bugfix ([aaaaaa](https://github.com/fake-owner/fake-repo/commit/aaaaaa))
 
 ---
-This Pull Request has been generated automatically as part of [Stainless](https://stainlessapi.com/)'s release process.
+This Pull Request has been generated automatically as part of [Stainless](https://stainlessapi.com/)'s release process. See [our docs](https://app.stainlessapi.com/docs/guides/publish) for more details.
+We've used the included commits to determine the [semver version number](https://semver.org/#semantic-versioning-specification-semver) for this Pull Request. Alternatively, you can manually set the version number in the title of this Pull Request.
+
 For a better experience, it is recommended to use either rebase-merge or squash-merge when merging this pull request ([see details](https://github.com/stainless-api/release-please/#linear-git-commit-history-use-squash-merge)).
 
 _More technical details can be found at [stainless-api/release-please](https://github.com/stainless-api/release-please)_.
@@ -30,7 +32,9 @@ exports['LinkedVersions plugin can skip grouping pull requests 2'] = `
 * some bugfix ([bbbbbb](https://github.com/fake-owner/fake-repo/commit/bbbbbb))
 
 ---
-This Pull Request has been generated automatically as part of [Stainless](https://stainlessapi.com/)'s release process.
+This Pull Request has been generated automatically as part of [Stainless](https://stainlessapi.com/)'s release process. See [our docs](https://app.stainlessapi.com/docs/guides/publish) for more details.
+We've used the included commits to determine the [semver version number](https://semver.org/#semantic-versioning-specification-semver) for this Pull Request. Alternatively, you can manually set the version number in the title of this Pull Request.
+
 For a better experience, it is recommended to use either rebase-merge or squash-merge when merging this pull request ([see details](https://github.com/stainless-api/release-please/#linear-git-commit-history-use-squash-merge)).
 
 _More technical details can be found at [stainless-api/release-please](https://github.com/stainless-api/release-please)_.
@@ -49,7 +53,9 @@ exports['LinkedVersions plugin can skip grouping pull requests 3'] = `
 * **pkg3:** Synchronize group name versions
 
 ---
-This Pull Request has been generated automatically as part of [Stainless](https://stainlessapi.com/)'s release process.
+This Pull Request has been generated automatically as part of [Stainless](https://stainlessapi.com/)'s release process. See [our docs](https://app.stainlessapi.com/docs/guides/publish) for more details.
+We've used the included commits to determine the [semver version number](https://semver.org/#semantic-versioning-specification-semver) for this Pull Request. Alternatively, you can manually set the version number in the title of this Pull Request.
+
 For a better experience, it is recommended to use either rebase-merge or squash-merge when merging this pull request ([see details](https://github.com/stainless-api/release-please/#linear-git-commit-history-use-squash-merge)).
 
 _More technical details can be found at [stainless-api/release-please](https://github.com/stainless-api/release-please)_.
@@ -81,7 +87,9 @@ exports['LinkedVersions plugin should allow multiple groups of linked versions 1
 </details>
 
 ---
-This Pull Request has been generated automatically as part of [Stainless](https://stainlessapi.com/)'s release process.
+This Pull Request has been generated automatically as part of [Stainless](https://stainlessapi.com/)'s release process. See [our docs](https://app.stainlessapi.com/docs/guides/publish) for more details.
+We've used the included commits to determine the [semver version number](https://semver.org/#semantic-versioning-specification-semver) for this Pull Request. Alternatively, you can manually set the version number in the title of this Pull Request.
+
 For a better experience, it is recommended to use either rebase-merge or squash-merge when merging this pull request ([see details](https://github.com/stainless-api/release-please/#linear-git-commit-history-use-squash-merge)).
 
 _More technical details can be found at [stainless-api/release-please](https://github.com/stainless-api/release-please)_.
@@ -117,7 +125,9 @@ exports['LinkedVersions plugin should allow multiple groups of linked versions 3
 </details>
 
 ---
-This Pull Request has been generated automatically as part of [Stainless](https://stainlessapi.com/)'s release process.
+This Pull Request has been generated automatically as part of [Stainless](https://stainlessapi.com/)'s release process. See [our docs](https://app.stainlessapi.com/docs/guides/publish) for more details.
+We've used the included commits to determine the [semver version number](https://semver.org/#semantic-versioning-specification-semver) for this Pull Request. Alternatively, you can manually set the version number in the title of this Pull Request.
+
 For a better experience, it is recommended to use either rebase-merge or squash-merge when merging this pull request ([see details](https://github.com/stainless-api/release-please/#linear-git-commit-history-use-squash-merge)).
 
 _More technical details can be found at [stainless-api/release-please](https://github.com/stainless-api/release-please)_.
@@ -140,7 +150,9 @@ exports['LinkedVersions plugin should group pull requests 1'] = `
 * some bugfix ([aaaaaa](https://github.com/fake-owner/fake-repo/commit/aaaaaa))
 
 ---
-This Pull Request has been generated automatically as part of [Stainless](https://stainlessapi.com/)'s release process.
+This Pull Request has been generated automatically as part of [Stainless](https://stainlessapi.com/)'s release process. See [our docs](https://app.stainlessapi.com/docs/guides/publish) for more details.
+We've used the included commits to determine the [semver version number](https://semver.org/#semantic-versioning-specification-semver) for this Pull Request. Alternatively, you can manually set the version number in the title of this Pull Request.
+
 For a better experience, it is recommended to use either rebase-merge or squash-merge when merging this pull request ([see details](https://github.com/stainless-api/release-please/#linear-git-commit-history-use-squash-merge)).
 
 _More technical details can be found at [stainless-api/release-please](https://github.com/stainless-api/release-please)_.
@@ -172,7 +184,9 @@ exports['LinkedVersions plugin should group pull requests 2'] = `
 </details>
 
 ---
-This Pull Request has been generated automatically as part of [Stainless](https://stainlessapi.com/)'s release process.
+This Pull Request has been generated automatically as part of [Stainless](https://stainlessapi.com/)'s release process. See [our docs](https://app.stainlessapi.com/docs/guides/publish) for more details.
+We've used the included commits to determine the [semver version number](https://semver.org/#semantic-versioning-specification-semver) for this Pull Request. Alternatively, you can manually set the version number in the title of this Pull Request.
+
 For a better experience, it is recommended to use either rebase-merge or squash-merge when merging this pull request ([see details](https://github.com/stainless-api/release-please/#linear-git-commit-history-use-squash-merge)).
 
 _More technical details can be found at [stainless-api/release-please](https://github.com/stainless-api/release-please)_.
@@ -214,7 +228,9 @@ exports['LinkedVersions plugin should sync versions pull requests 1'] = `
 </details>
 
 ---
-This Pull Request has been generated automatically as part of [Stainless](https://stainlessapi.com/)'s release process.
+This Pull Request has been generated automatically as part of [Stainless](https://stainlessapi.com/)'s release process. See [our docs](https://app.stainlessapi.com/docs/guides/publish) for more details.
+We've used the included commits to determine the [semver version number](https://semver.org/#semantic-versioning-specification-semver) for this Pull Request. Alternatively, you can manually set the version number in the title of this Pull Request.
+
 For a better experience, it is recommended to use either rebase-merge or squash-merge when merging this pull request ([see details](https://github.com/stainless-api/release-please/#linear-git-commit-history-use-squash-merge)).
 
 _More technical details can be found at [stainless-api/release-please](https://github.com/stainless-api/release-please)_.
