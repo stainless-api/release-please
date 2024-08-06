@@ -25,12 +25,15 @@ exports['PullRequestBody toString can handle a single entries 1'] = `
 some special notes go here
 
 ---
-This Pull Request has been generated automatically as part of [Stainless](https://stainlessapi.com/)'s release process. See [our docs](https://app.stainlessapi.com/docs/guides/publish) for more details.
-We've used the included commits to determine the [semver version number](https://semver.org/#semantic-versioning-specification-semver) for this Pull Request. Alternatively, you can manually set the version number in the title of this Pull Request.
+This pull request is managed by Stainless's [GitHub App](https://github.com/apps/stainless-app).
 
-For a better experience, it is recommended to use either rebase-merge or squash-merge when merging this pull request ([see details](https://github.com/stainless-api/release-please/#linear-git-commit-history-use-squash-merge)).
+The [semver version number](https://semver.org/#semantic-versioning-specification-semver) is based on included [commit messages](https://www.conventionalcommits.org/en/v1.0.0/). Alternatively, you can manually set the version number in the title of this pull request.
 
-_More technical details can be found at [stainless-api/release-please](https://github.com/stainless-api/release-please)_.
+For a better experience, it is recommended to use either rebase-merge or squash-merge when merging this pull request.
+
+🔗 Stainless [website](https://www.stainlessapi.com)
+📚 Read the [docs](https://app.stainlessapi.com/docs)
+🙋 [Reach out](mailto:support@stainlessapi.com) for help or questions
 `
 
 exports['PullRequestBody toString can handle a single entries forced components 1'] = `
@@ -44,12 +47,15 @@ some special notes go here
 </details>
 
 ---
-This Pull Request has been generated automatically as part of [Stainless](https://stainlessapi.com/)'s release process. See [our docs](https://app.stainlessapi.com/docs/guides/publish) for more details.
-We've used the included commits to determine the [semver version number](https://semver.org/#semantic-versioning-specification-semver) for this Pull Request. Alternatively, you can manually set the version number in the title of this Pull Request.
+This pull request is managed by Stainless's [GitHub App](https://github.com/apps/stainless-app).
 
-For a better experience, it is recommended to use either rebase-merge or squash-merge when merging this pull request ([see details](https://github.com/stainless-api/release-please/#linear-git-commit-history-use-squash-merge)).
+The [semver version number](https://semver.org/#semantic-versioning-specification-semver) is based on included [commit messages](https://www.conventionalcommits.org/en/v1.0.0/). Alternatively, you can manually set the version number in the title of this pull request.
 
-_More technical details can be found at [stainless-api/release-please](https://github.com/stainless-api/release-please)_.
+For a better experience, it is recommended to use either rebase-merge or squash-merge when merging this pull request.
+
+🔗 Stainless [website](https://www.stainlessapi.com)
+📚 Read the [docs](https://app.stainlessapi.com/docs)
+🙋 [Reach out](mailto:support@stainlessapi.com) for help or questions
 `
 
 exports['PullRequestBody toString can handle componently entries 1'] = `
@@ -68,12 +74,15 @@ more special notes go here
 </details>
 
 ---
-This Pull Request has been generated automatically as part of [Stainless](https://stainlessapi.com/)'s release process. See [our docs](https://app.stainlessapi.com/docs/guides/publish) for more details.
-We've used the included commits to determine the [semver version number](https://semver.org/#semantic-versioning-specification-semver) for this Pull Request. Alternatively, you can manually set the version number in the title of this Pull Request.
+This pull request is managed by Stainless's [GitHub App](https://github.com/apps/stainless-app).
 
-For a better experience, it is recommended to use either rebase-merge or squash-merge when merging this pull request ([see details](https://github.com/stainless-api/release-please/#linear-git-commit-history-use-squash-merge)).
+The [semver version number](https://semver.org/#semantic-versioning-specification-semver) is based on included [commit messages](https://www.conventionalcommits.org/en/v1.0.0/). Alternatively, you can manually set the version number in the title of this pull request.
 
-_More technical details can be found at [stainless-api/release-please](https://github.com/stainless-api/release-please)_.
+For a better experience, it is recommended to use either rebase-merge or squash-merge when merging this pull request.
+
+🔗 Stainless [website](https://www.stainlessapi.com)
+📚 Read the [docs](https://app.stainlessapi.com/docs)
+🙋 [Reach out](mailto:support@stainlessapi.com) for help or questions
 `
 
 exports['PullRequestBody toString can handle multiple entries 1'] = `
@@ -92,10 +101,13 @@ more special notes go here
 </details>
 
 ---
-This Pull Request has been generated automatically as part of [Stainless](https://stainlessapi.com/)'s release process. See [our docs](https://app.stainlessapi.com/docs/guides/publish) for more details.
-We've used the included commits to determine the [semver version number](https://semver.org/#semantic-versioning-specification-semver) for this Pull Request. Alternatively, you can manually set the version number in the title of this Pull Request.
+This pull request is managed by Stainless's [GitHub App](https://github.com/apps/stainless-app).
 
-For a better experience, it is recommended to use either rebase-merge or squash-merge when merging this pull request ([see details](https://github.com/stainless-api/release-please/#linear-git-commit-history-use-squash-merge)).
+The [semver version number](https://semver.org/#semantic-versioning-specification-semver) is based on included [commit messages](https://www.conventionalcommits.org/en/v1.0.0/). Alternatively, you can manually set the version number in the title of this pull request.
 
-_More technical details can be found at [stainless-api/release-please](https://github.com/stainless-api/release-please)_.
+For a better experience, it is recommended to use either rebase-merge or squash-merge when merging this pull request.
+
+🔗 Stainless [website](https://www.stainlessapi.com)
+📚 Read the [docs](https://app.stainlessapi.com/docs)
+🙋 [Reach out](mailto:support@stainlessapi.com) for help or questions
 `
