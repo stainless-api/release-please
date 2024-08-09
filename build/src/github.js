@@ -1697,8 +1697,14 @@ class GitHub {
                     (e.errors || []).find(err => err.type === 'UNPROCESSABLE' &&
                         (err.message.includes('Pull request is in clean status') ||
                             err.message.includes('Protected branch rules not configured for this branch')))) {
-                    this.logger.debug('Auto-merge cannot be enabled - user probably has auto-merge disabled for their repo');
-                    return 'none';
+                    this.logger.debug('PR can be merged directly, do it instead of via GitHub auto-merge');
+                    await this.octokit.pulls.merge({
+                        owner: this.repository.owner,
+                        repo: this.repository.repo,
+                        pull_number: pullRequestNumber,
+                        merge_method: mergeMethod,
+                    });
+                    return 'direct-merged';
                 }
                 else {
                     throw e;

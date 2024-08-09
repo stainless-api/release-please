@@ -594,14 +594,18 @@ class Manifest {
             fork: this.fork,
             draft: pullRequest.draft,
         });
+        let directlyMerged = false;
         const autoMerge = this.pullRequestAutoMergeOption(pullRequest);
         if (autoMerge) {
-            await this.github.enablePullRequestAutoMerge(newPullRequest.number, autoMerge.mergeMethod);
+            const result = await this.github.enablePullRequestAutoMerge(newPullRequest.number, autoMerge.mergeMethod);
+            directlyMerged = result === 'direct-merged';
         }
-        this.github.addPullRequestReviewers({
-            pullRequestNumber: newPullRequest.number,
-            reviewers: this.reviewers,
-        });
+        if (!directlyMerged) {
+            this.github.addPullRequestReviewers({
+                pullRequestNumber: newPullRequest.number,
+                reviewers: this.reviewers,
+            });
+        }
         return newPullRequest;
     }
     /// only update an existing pull request if it has release note changes
@@ -617,14 +621,18 @@ class Manifest {
             signoffUser: this.signoffUser,
             pullRequestOverflowHandler: this.pullRequestOverflowHandler,
         });
+        let directlyMerged = false;
         const autoMerge = this.pullRequestAutoMergeOption(pullRequest);
         if (autoMerge) {
-            await this.github.enablePullRequestAutoMerge(updatedPullRequest.number, autoMerge.mergeMethod);
+            const result = await this.github.enablePullRequestAutoMerge(updatedPullRequest.number, autoMerge.mergeMethod);
+            directlyMerged = result === 'direct-merged';
         }
-        this.github.addPullRequestReviewers({
-            pullRequestNumber: updatedPullRequest.number,
-            reviewers: this.reviewers,
-        });
+        if (!directlyMerged) {
+            this.github.addPullRequestReviewers({
+                pullRequestNumber: updatedPullRequest.number,
+                reviewers: this.reviewers,
+            });
+        }
         return updatedPullRequest;
     }
     /// only update an snoozed pull request if it has release note changes
@@ -641,14 +649,18 @@ class Manifest {
         });
         // TODO: consider leaving the snooze label
         await this.github.removeIssueLabels([exports.SNOOZE_LABEL], snoozed.number);
+        let directlyMerged = false;
         const autoMerge = this.pullRequestAutoMergeOption(pullRequest);
         if (autoMerge) {
-            await this.github.enablePullRequestAutoMerge(updatedPullRequest.number, autoMerge.mergeMethod);
+            const result = await this.github.enablePullRequestAutoMerge(updatedPullRequest.number, autoMerge.mergeMethod);
+            directlyMerged = result === 'direct-merged';
         }
-        this.github.addPullRequestReviewers({
-            pullRequestNumber: updatedPullRequest.number,
-            reviewers: this.reviewers,
-        });
+        if (!directlyMerged) {
+            this.github.addPullRequestReviewers({
+                pullRequestNumber: updatedPullRequest.number,
+                reviewers: this.reviewers,
+            });
+        }
         return updatedPullRequest;
     }
     async *findMergedReleasePullRequests() {

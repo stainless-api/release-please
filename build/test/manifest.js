@@ -3853,7 +3853,7 @@ version = "3.0.0"
             });
             const enablePullRequestAutoMergeStub = sandbox
                 .stub(github, 'enablePullRequestAutoMerge')
-                .resolves('none');
+                .resolves('direct-merged');
             const addPullRequestReviewersStub = sandbox
                 .stub(github, 'addPullRequestReviewers')
                 .resolves();
@@ -4067,7 +4067,8 @@ version = "3.0.0"
             (0, chai_1.expect)(createPullRequestStub.callCount).to.equal(6);
             sinon.assert.calledWith(createPullRequestStub, sinon.match.has('headBranchName', sinon.match.string), 'main', 'main', sinon.match.string, sinon.match.array, sinon.match.object);
             (0, chai_1.expect)(enablePullRequestAutoMergeStub.callCount).to.equal(1);
-            (0, chai_1.expect)(addPullRequestReviewersStub.callCount).to.equal(6);
+            // only called when not auto-merged
+            (0, chai_1.expect)(addPullRequestReviewersStub.callCount).to.equal(5);
         });
         (0, mocha_1.it)('enables auto-merge when filters are provided (filters: only commit type, match-all)', async () => {
             const createPullRequestStub = sandbox
@@ -4083,7 +4084,7 @@ version = "3.0.0"
             });
             const enablePullRequestAutoMergeStub = sandbox
                 .stub(github, 'enablePullRequestAutoMerge')
-                .resolves('none');
+                .resolves('direct-merged');
             const addPullRequestReviewersStub = sandbox
                 .stub(github, 'addPullRequestReviewers')
                 .resolves();
@@ -4237,7 +4238,8 @@ version = "3.0.0"
             (0, chai_1.expect)(createPullRequestStub.callCount).to.equal(4);
             sinon.assert.calledWith(createPullRequestStub, sinon.match.has('headBranchName', sinon.match.string), 'main', 'main', sinon.match.string, sinon.match.array, sinon.match.object);
             (0, chai_1.expect)(enablePullRequestAutoMergeStub.callCount).to.equal(3);
-            (0, chai_1.expect)(addPullRequestReviewersStub.callCount).to.equal(4);
+            // only called when not auto-merged
+            (0, chai_1.expect)(addPullRequestReviewersStub.callCount).to.equal(1);
         });
         (0, mocha_1.it)('enables auto-merge when filters are provided (filters: build-patch-minor version bump, commit filters, match-at-least-one)', async () => {
             const createPullRequestStub = sandbox
@@ -4253,7 +4255,7 @@ version = "3.0.0"
             });
             const enablePullRequestAutoMergeStub = sandbox
                 .stub(github, 'enablePullRequestAutoMerge')
-                .resolves('none');
+                .resolves('direct-merged');
             const addPullRequestReviewersStub = sandbox
                 .stub(github, 'addPullRequestReviewers')
                 .resolves();
@@ -4554,7 +4556,8 @@ version = "3.0.0"
             (0, chai_1.expect)(createPullRequestStub.callCount).to.equal(7);
             sinon.assert.calledWith(createPullRequestStub, sinon.match.has('headBranchName', sinon.match.string), 'main', 'main', sinon.match.string, sinon.match.array, sinon.match.object);
             (0, chai_1.expect)(enablePullRequestAutoMergeStub.callCount).to.equal(4);
-            (0, chai_1.expect)(addPullRequestReviewersStub.callCount).to.equal(7);
+            // only called when not auto-merged
+            (0, chai_1.expect)(addPullRequestReviewersStub.callCount).to.equal(3);
         });
         (0, mocha_1.it)('updates an existing pull request', async () => {
             sandbox
