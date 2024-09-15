@@ -29,8 +29,8 @@ describe('AppJson', () => {
         'utf8'
       );
       const packageJson = new AppJson({
-        version: Version.parse('3.2.1'),
-        expoSDKVersion: Version.parse('44.0.0'),
+        version: Version.parseOne('3.2.1'),
+        expoSDKVersion: Version.parseOne('44.0.0'),
       });
       const newContent = packageJson.updateContent(oldContent);
       snapshot(newContent.replace(/\r\n/g, '\n'));

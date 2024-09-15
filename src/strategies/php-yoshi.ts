@@ -106,7 +106,7 @@ export class PHPYoshi extends BaseStrategy {
           this.addPath(`${directory}/VERSION`),
           this.changesBranch
         );
-        const version = Version.parse(contents.parsedContent);
+        const version = Version.parseOne(contents.parsedContent);
         const composer = await this.github.getFileJson<ComposerJson>(
           this.addPath(`${directory}/composer.json`),
           this.changesBranch

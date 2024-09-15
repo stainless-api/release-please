@@ -31,7 +31,7 @@ describe('GenericToml', () => {
       ).replace(/\r\n/g, '\n');
       const updater = new GenericToml(
         '$.package.version',
-        Version.parse('v2.3.4')
+        Version.parseOne('v2.3.4')
       );
       const newContent = updater.updateContent(oldContent);
       snapshot(newContent);
@@ -43,7 +43,7 @@ describe('GenericToml', () => {
       ).replace(/\r\n/g, '\n');
       const updater = new GenericToml(
         "$['dev-dependencies']..version",
-        Version.parse('v2.3.4')
+        Version.parseOne('v2.3.4')
       );
       const newContent = updater.updateContent(oldContent);
       snapshot(newContent);
@@ -53,7 +53,10 @@ describe('GenericToml', () => {
         resolve(fixturesPath, './Cargo.toml'),
         'utf8'
       ).replace(/\r\n/g, '\n');
-      const updater = new GenericToml('$.nonExistent', Version.parse('v2.3.4'));
+      const updater = new GenericToml(
+        '$.nonExistent',
+        Version.parseOne('v2.3.4')
+      );
       const newContent = updater.updateContent(oldContent);
       expect(newContent).to.eql(oldContent);
     });
@@ -62,7 +65,10 @@ describe('GenericToml', () => {
         resolve(fixturesPath, './Cargo.toml'),
         'utf8'
       ).replace(/\r\n/g, '\n');
-      const updater = new GenericToml('bad jsonpath', Version.parse('v2.3.4'));
+      const updater = new GenericToml(
+        'bad jsonpath',
+        Version.parseOne('v2.3.4')
+      );
       assert.throws(() => {
         updater.updateContent(oldContent);
       });
@@ -72,7 +78,7 @@ describe('GenericToml', () => {
         resolve(fixturesPath, './toml/invalid.txt'),
         'utf8'
       ).replace(/\r\n/g, '\n');
-      const updater = new GenericToml('$.boo', Version.parse('v2.3.4'));
+      const updater = new GenericToml('$.boo', Version.parseOne('v2.3.4'));
       const newContent = updater.updateContent(oldContent);
       expect(newContent).to.eql(oldContent);
     });
@@ -83,7 +89,7 @@ describe('GenericToml', () => {
       ).replace(/\r\n/g, '\n');
       const updater = new GenericToml(
         '$.package.version',
-        Version.parse('v2.3.4')
+        Version.parseOne('v2.3.4')
       );
       const newContent = updater.updateContent(oldContent);
       expect(newContent).not.to.eql(oldContent);

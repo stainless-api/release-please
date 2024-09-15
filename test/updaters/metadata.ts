@@ -29,7 +29,7 @@ describe('metadata.yaml', () => {
         'utf8'
       ).replace(/\r\n/g, '\n');
       const version = new MetadataVersion({
-        version: Version.parse('2.1.0'),
+        version: Version.parseOne('2.1.0'),
       });
       const newContent = version.updateContent(oldContent);
       snapshot(newContent);

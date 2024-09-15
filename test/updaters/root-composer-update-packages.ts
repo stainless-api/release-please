@@ -25,14 +25,14 @@ describe('composer-update-package.json', () => {
   describe('updateContent', () => {
     it('updates all versions in root composer file', async () => {
       const versions = new Map<string, Version>();
-      versions.set('google/cloud-automl', Version.parse('0.8.0'));
-      versions.set('google/cloud-talent', Version.parse('1.0.0'));
+      versions.set('google/cloud-automl', Version.parseOne('0.8.0'));
+      versions.set('google/cloud-talent', Version.parseOne('1.0.0'));
       const oldContent = readFileSync(
         resolve(fixturesPath, './composer-update-packages.json'),
         'utf8'
       ).replace(/\r\n/g, '\n');
       const composer = new RootComposerUpdatePackages({
-        version: Version.parse('1.0.0'),
+        version: Version.parseOne('1.0.0'),
         versionsMap: versions,
       });
       const newContent = composer.updateContent(oldContent);
