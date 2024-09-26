@@ -23,6 +23,7 @@ const helpers_2 = require("../helpers");
 const tag_name_1 = require("../../src/util/tag-name");
 const version_1 = require("../../src/version");
 const changelog_1 = require("../../src/updaters/changelog");
+const github_imports_go_1 = require("../../src/updaters/go/github-imports-go");
 const sandbox = sinon.createSandbox();
 const COMMITS = [
     ...(0, helpers_2.buildMockConventionalCommit)('fix(deps): update dependency com.google.cloud:google-cloud-storage to v1.120.0'),
@@ -37,6 +38,9 @@ const COMMITS = [
             repo: 'go-test-repo',
             defaultBranch: 'main',
         });
+        sandbox
+            .stub(github, 'findFilesByGlobAndRef')
+            .resolves(['file-with-imports-v2.go']);
     });
     (0, mocha_1.afterEach)(() => {
         sandbox.restore();
@@ -91,6 +95,24 @@ const COMMITS = [
             });
             const updates = release.updates;
             (0, helpers_1.assertHasUpdate)(updates, 'CHANGELOG.md', changelog_1.Changelog);
+        });
+        (0, mocha_1.it)('finds and updates a go file with an import', async () => {
+            const strategy = new go_1.Go({
+                targetBranch: 'main',
+                github,
+                component: 'google-cloud-automl',
+            });
+            sandbox
+                .stub(github, 'getFileContentsOnBranch')
+                .resolves((0, helpers_1.buildGitHubFileContent)('./test/updaters/fixtures', 'file-with-imports-v2.go'));
+            sandbox.stub(github, 'findFilesByFilenameAndRef').resolves([]);
+            const latestRelease = undefined;
+            const release = await strategy.buildReleasePullRequest({
+                commits: COMMITS,
+                latestRelease,
+            });
+            const updates = release.updates;
+            (0, helpers_1.assertHasUpdate)(updates, 'file-with-imports-v2.go', github_imports_go_1.GithubImportsGo);
         });
     });
 });

@@ -1761,6 +1761,8 @@ version = "3.0.0"
                 .stub(github, 'findFilesByFilenameAndRef')
                 .withArgs('version.py', 'next', 'path/c')
                 .resolves([]);
+            // need to avoid making a request for go versioning
+            sandbox.stub(github, 'findFilesByGlobAndRef').resolves([]);
             const addIssueLabelsStub = sandbox
                 .stub(github, 'addIssueLabels')
                 .withArgs([manifest_1.DEFAULT_CUSTOM_VERSION_LABEL], 111)

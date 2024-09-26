@@ -18,6 +18,7 @@ const base_1 = require("./base");
 const changelog_1 = require("../updaters/changelog");
 const version_go_1 = require("../updaters/go/version-go");
 const path_1 = require("path");
+const github_imports_go_1 = require("../updaters/go/github-imports-go");
 const CHANGELOG_SECTIONS = [
     { type: 'feat', section: 'Features' },
     { type: 'fix', section: 'Bug Fixes' },
@@ -60,6 +61,16 @@ class GoYoshi extends base_1.BaseStrategy {
                 version,
             }),
         });
+        const allFiles = await this.github.findFilesByGlobAndRef('**/*.go', this.changesBranch);
+        for (const file of allFiles) {
+            updates.push({
+                path: this.addPath(file),
+                createIfMissing: false,
+                updater: new github_imports_go_1.GithubImportsGo({
+                    version,
+                }),
+            });
+        }
         return updates;
     }
     async postProcessCommits(commits) {
