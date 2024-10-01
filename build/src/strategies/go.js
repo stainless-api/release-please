@@ -30,8 +30,10 @@ class Go extends base_1.BaseStrategy {
                 changelogEntry: options.changelogEntry,
             }),
         });
-        const allFiles = await this.github.findFilesByGlobAndRef('**/*.go', this.changesBranch);
-        for (const file of allFiles) {
+        const goFiles = await this.github.findFilesByGlobAndRef('**/*.go', this.changesBranch);
+        // handle code snippets in markdown files as well
+        const mdFiles = await this.github.findFilesByGlobAndRef('**/*.md', this.changesBranch);
+        for (const file of [...goFiles, ...mdFiles]) {
             updates.push({
                 path: this.addPath(file),
                 createIfMissing: true,

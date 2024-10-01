@@ -40,7 +40,10 @@ const COMMITS = [
         });
         sandbox
             .stub(github, 'findFilesByGlobAndRef')
-            .resolves(['file-with-imports-v2.go']);
+            .withArgs('**/*.go', 'main')
+            .resolves(['file-with-imports-v2.go'])
+            .withArgs('**/*.md', 'main')
+            .resolves([]);
     });
     (0, mocha_1.afterEach)(() => {
         sandbox.restore();

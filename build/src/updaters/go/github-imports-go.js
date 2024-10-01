@@ -7,7 +7,7 @@ class GithubImportsGo extends default_1.DefaultUpdater {
         if (this.version.major < 2) {
             return content;
         }
-        return content.replace(/"github\.com\/([^/]+)\/([^/]+)(\/v([1-9]\d*))?\/(.+)"/g, (_, user, repo, __, ___, path) => `"github.com/${user}/${repo}/v${this.version.major.toString()}/${path}"`);
+        return content.replace(/"(https:\/\/pkg.go.dev\/)?github\.com\/([^/]+)\/([^/]+)(\/v([1-9]\d*))?(\/[^"]+)?"/g, (_, prefix, user, repo, ___, ____, path) => `"${prefix !== null && prefix !== void 0 ? prefix : ''}github.com/${user}/${repo}${this.version.major < 2 ? '' : '/v' + this.version.major.toString()}${path !== null && path !== void 0 ? path : ''}"`);
     }
 }
 exports.GithubImportsGo = GithubImportsGo;
