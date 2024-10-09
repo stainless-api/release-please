@@ -18,6 +18,7 @@ exports.Go = void 0;
 const changelog_1 = require("../updaters/changelog");
 const base_1 = require("./base");
 const github_imports_go_1 = require("../updaters/go/github-imports-go");
+const go_mod_1 = require("../updaters/go/go-mod");
 class Go extends base_1.BaseStrategy {
     async buildUpdates(options) {
         const updates = [];
@@ -28,6 +29,13 @@ class Go extends base_1.BaseStrategy {
             updater: new changelog_1.Changelog({
                 version,
                 changelogEntry: options.changelogEntry,
+            }),
+        });
+        updates.push({
+            path: this.addPath('go.mod'),
+            createIfMissing: false,
+            updater: new go_mod_1.GoModUpdater({
+                version,
             }),
         });
         const goFiles = await this.github.findFilesByGlobAndRef('**/*.go', this.changesBranch);

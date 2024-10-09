@@ -19,6 +19,7 @@ const changelog_1 = require("../updaters/changelog");
 const version_go_1 = require("../updaters/go/version-go");
 const path_1 = require("path");
 const github_imports_go_1 = require("../updaters/go/github-imports-go");
+const go_mod_1 = require("../updaters/go/go-mod");
 const CHANGELOG_SECTIONS = [
     { type: 'feat', section: 'Features' },
     { type: 'fix', section: 'Bug Fixes' },
@@ -58,6 +59,13 @@ class GoYoshi extends base_1.BaseStrategy {
             path: this.addPath('internal/version.go'),
             createIfMissing: false,
             updater: new version_go_1.VersionGo({
+                version,
+            }),
+        });
+        updates.push({
+            path: this.addPath('go.mod'),
+            createIfMissing: false,
+            updater: new go_mod_1.GoModUpdater({
                 version,
             }),
         });
