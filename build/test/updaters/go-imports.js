@@ -14,24 +14,40 @@ const fixturesPath = './test/updaters/fixtures/go';
         const v3File = (0, fs_1.readFileSync)((0, path_1.resolve)(fixturesPath, 'file-with-imports-v3.go'), 'utf8');
         (0, mocha_1.it)('makes no changes if the old version has a major version of 1 and the new version also has a major version of 1', async () => {
             const importsUpdater = new github_imports_go_1.GithubImportsGo({
+                repository: {
+                    owner: 'cloudflare',
+                    repo: 'cloudflare-go',
+                },
                 version: version_1.Version.parse('1.0.0'),
             });
             (0, chai_1.expect)(importsUpdater.updateContent(v1File)).to.equal(v1File);
         });
         (0, mocha_1.it)('updates the version in the imports if the old version has a major version of 1 and the new version has a major version of 2', async () => {
             const importsUpdater = new github_imports_go_1.GithubImportsGo({
+                repository: {
+                    owner: 'cloudflare',
+                    repo: 'cloudflare-go',
+                },
                 version: version_1.Version.parse('2.0.0'),
             });
             (0, chai_1.expect)(importsUpdater.updateContent(v1File)).to.equal(v2File);
         });
         (0, mocha_1.it)('makes no changes if the old version has a major version of 2 and the new version also has a major version of 2', async () => {
             const importsUpdater = new github_imports_go_1.GithubImportsGo({
+                repository: {
+                    owner: 'cloudflare',
+                    repo: 'cloudflare-go',
+                },
                 version: version_1.Version.parse('2.0.0'),
             });
             (0, chai_1.expect)(importsUpdater.updateContent(v2File)).to.equal(v2File);
         });
         (0, mocha_1.it)('updates the version in the imports if the old version has a major version of 2 and the new version has a major version of 3', async () => {
             const importsUpdater = new github_imports_go_1.GithubImportsGo({
+                repository: {
+                    owner: 'cloudflare',
+                    repo: 'cloudflare-go',
+                },
                 version: version_1.Version.parse('3.0.0'),
             });
             (0, chai_1.expect)(importsUpdater.updateContent(v2File)).to.equal(v3File);
@@ -43,24 +59,40 @@ const fixturesPath = './test/updaters/fixtures/go';
         const v3MdFile = (0, fs_1.readFileSync)((0, path_1.resolve)(fixturesPath, 'file-with-go-snippet-v3.md'), 'utf8');
         (0, mocha_1.it)('makes no changes if the old version has a major version of 1 and the new version also has a major version of 1', async () => {
             const importsUpdater = new github_imports_go_1.GithubImportsGo({
+                repository: {
+                    owner: 'cloudflare',
+                    repo: 'cloudflare-go',
+                },
                 version: version_1.Version.parse('1.0.0'),
             });
             (0, chai_1.expect)(importsUpdater.updateContent(v1MdFile)).to.equal(v1MdFile);
         });
         (0, mocha_1.it)('updates the version in the imports if the old version has a major version of 1 and the new version has a major version of 2', async () => {
             const importsUpdater = new github_imports_go_1.GithubImportsGo({
+                repository: {
+                    owner: 'cloudflare',
+                    repo: 'cloudflare-go',
+                },
                 version: version_1.Version.parse('2.0.0'),
             });
             (0, chai_1.expect)(importsUpdater.updateContent(v1MdFile)).to.equal(v2MdFile);
         });
         (0, mocha_1.it)('makes no changes if the old version has a major version of 2 and the new version also has a major version of 2', async () => {
             const importsUpdater = new github_imports_go_1.GithubImportsGo({
+                repository: {
+                    owner: 'cloudflare',
+                    repo: 'cloudflare-go',
+                },
                 version: version_1.Version.parse('2.0.0'),
             });
             (0, chai_1.expect)(importsUpdater.updateContent(v2MdFile)).to.equal(v2MdFile);
         });
         (0, mocha_1.it)('updates the version in the imports if the old version has a major version of 2 and the new version has a major version of 3', async () => {
             const importsUpdater = new github_imports_go_1.GithubImportsGo({
+                repository: {
+                    owner: 'cloudflare',
+                    repo: 'cloudflare-go',
+                },
                 version: version_1.Version.parse('3.0.0'),
             });
             (0, chai_1.expect)(importsUpdater.updateContent(v2MdFile)).to.equal(v3MdFile);

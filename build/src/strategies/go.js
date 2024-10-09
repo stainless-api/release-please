@@ -47,6 +47,7 @@ class Go extends base_1.BaseStrategy {
                 createIfMissing: true,
                 updater: new github_imports_go_1.GithubImportsGo({
                     version,
+                    repository: this.repository,
                 }),
             });
         }

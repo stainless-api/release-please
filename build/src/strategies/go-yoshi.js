@@ -78,6 +78,7 @@ class GoYoshi extends base_1.BaseStrategy {
                 createIfMissing: false,
                 updater: new github_imports_go_1.GithubImportsGo({
                     version,
+                    repository: this.repository,
                 }),
             });
         }
