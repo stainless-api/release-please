@@ -153,9 +153,7 @@ class GitHub {
                 branch: pullRequest.headBranchName,
                 repo: this.repository.repo,
                 owner: this.repository.owner,
-            }, message, true, {
-                filesPerCommit: 1000000, // set a really high limit to effectively put all of the files in one commit
-            });
+            }, message, true);
             // create pull request, unless one already exists
             let pullRequestNumber;
             if (options === null || options === void 0 ? void 0 : options.existingPrNumber) {
