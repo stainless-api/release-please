@@ -610,11 +610,11 @@ class Manifest {
     }
     /// only update an existing pull request if it has release note changes
     async maybeUpdateExistingPullRequest(existing, pullRequest) {
-        // If unchanged, no need to push updates
+        // If the body and title are unchanged, update anyways since some commits that are not included in the PR body
+        // may have been added
         if (existing.title === pullRequest.title.toString() &&
             existing.body === pullRequest.body.toString()) {
-            this.logger.info(`PR https://github.com/${this.repository.owner}/${this.repository.repo}/pull/${existing.number} remained the same`);
-            return undefined;
+            this.logger.info(`PR https://github.com/${this.repository.owner}/${this.repository.repo}/pull/${existing.number} remained the same - continuing anyways`);
         }
         const updatedPullRequest = await this.github.updatePullRequest(existing.number, pullRequest, this.targetBranch, this.changesBranch, {
             fork: this.fork,
