@@ -1141,7 +1141,7 @@ class GitHub {
                 ? Buffer.from(content.content, 'base64').toString('utf8')
                 : undefined;
             const updatedContent = update.updater.updateContent(contentText, this.logger);
-            if (updatedContent) {
+            if (updatedContent !== contentText) {
                 changes.set(update.path, {
                     content: updatedContent,
                     originalContent: (content === null || content === void 0 ? void 0 : content.parsedContent) || null,
