@@ -31,6 +31,7 @@ const COMMITS = [
     ...(0, helpers_2.buildMockConventionalCommit)('fix(deps): update dependency com.google.cloud:google-cloud-spanner to v1.50.0'),
     ...(0, helpers_2.buildMockConventionalCommit)('chore: update common templates'),
 ];
+const BREAKING_CHANGE = (0, helpers_2.buildMockConventionalCommit)('feat!: breaking change');
 (0, mocha_1.describe)('Go', () => {
     let github;
     (0, mocha_1.beforeEach)(async () => {
@@ -110,9 +111,13 @@ const COMMITS = [
                 .stub(github, 'getFileContentsOnBranch')
                 .resolves((0, helpers_1.buildGitHubFileContent)('./test/updaters/fixtures/go', 'file-with-imports-v2.go'));
             sandbox.stub(github, 'findFilesByFilenameAndRef').resolves([]);
-            const latestRelease = undefined;
+            const latestRelease = {
+                tag: new tag_name_1.TagName(version_1.Version.parse('1.0.0'), 'some-go-package'),
+                sha: 'abc123',
+                notes: 'some notes',
+            };
             const release = await strategy.buildReleasePullRequest({
-                commits: COMMITS,
+                commits: [...COMMITS, ...BREAKING_CHANGE],
                 latestRelease,
             });
             const updates = release.updates;
@@ -128,9 +133,13 @@ const COMMITS = [
                 .stub(github, 'getFileContentsOnBranch')
                 .resolves((0, helpers_1.buildGitHubFileContent)('./test/updaters/fixtures/go', 'file-with-imports-v2.go'));
             sandbox.stub(github, 'findFilesByFilenameAndRef').resolves([]);
-            const latestRelease = undefined;
+            const latestRelease = {
+                tag: new tag_name_1.TagName(version_1.Version.parse('1.0.0'), 'some-go-package'),
+                sha: 'abc123',
+                notes: 'some notes',
+            };
             const release = await strategy.buildReleasePullRequest({
-                commits: COMMITS,
+                commits: [...COMMITS, ...BREAKING_CHANGE],
                 latestRelease,
             });
             const updates = release.updates;
