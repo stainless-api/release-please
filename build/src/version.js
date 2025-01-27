@@ -79,6 +79,9 @@ class Version {
         if (this.build !== other.build) {
             return 'build';
         }
+        if (this.preRelease !== other.preRelease) {
+            return 'preRelease';
+        }
         return 'none';
     }
 }

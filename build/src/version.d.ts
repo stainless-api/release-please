@@ -30,6 +30,6 @@ export declare class Version {
      * @returns {string}
      */
     toString(): string;
-    compareBump(other: Version): 'major' | 'minor' | 'patch' | 'build' | 'none';
+    compareBump(other: Version): 'major' | 'minor' | 'patch' | 'build' | 'preRelease' | 'none';
 }
 export type VersionsMap = Map<string, Version>;

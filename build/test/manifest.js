@@ -1054,6 +1054,28 @@ function pullRequestBody(path) {
                 (0, helpers_1.assertHasUpdate)(pullRequest.updates, '.release-please-manifest.json');
                 (0, chai_1.expect)(pullRequest.headRefName).to.eql('release-please--branches--main');
             });
+            (0, mocha_1.it)('should identify prerelease bumps as such', async () => {
+                var _a, _b;
+                const manifest = new manifest_1.Manifest(github, 'main', {
+                    '.': {
+                        releaseType: 'simple',
+                        versioning: 'prerelease',
+                    },
+                }, {
+                    '.': version_1.Version.parse('0.1.0-alpha.28'),
+                });
+                const pullRequests = await manifest.buildPullRequests([], []);
+                (0, chai_1.expect)(pullRequests).lengthOf(1);
+                const pullRequest = pullRequests[0];
+                (0, chai_1.expect)((_a = pullRequest.version) === null || _a === void 0 ? void 0 : _a.toString()).to.eql('0.1.0-alpha.29');
+                (0, chai_1.expect)((_b = pullRequest.previousVersion) === null || _b === void 0 ? void 0 : _b.toString()).to.eql('0.1.0-alpha.28');
+                (0, chai_1.expect)(pullRequest.version.compareBump(pullRequest.previousVersion)).to.eql('preRelease');
+                // simple release type updates the changelog and version.txt
+                (0, helpers_1.assertHasUpdate)(pullRequest.updates, 'CHANGELOG.md');
+                (0, helpers_1.assertHasUpdate)(pullRequest.updates, 'version.txt');
+                (0, helpers_1.assertHasUpdate)(pullRequest.updates, '.release-please-manifest.json');
+                (0, chai_1.expect)(pullRequest.headRefName).to.eql('release-please--branches--main');
+            });
             (0, mocha_1.it)('should honour the manifestFile argument in Manifest.fromManifest', async () => {
                 const getFileContentsStub = sandbox
                     .stub(github, 'getFileContentsOnBranch')

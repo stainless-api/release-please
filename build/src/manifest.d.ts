@@ -222,7 +222,7 @@ export type AutoMergeOption = {
     /**
      * Only auto merge if the version bump match the filter
      */
-    versionBumpFilter?: ('major' | 'minor' | 'patch' | 'build')[];
+    versionBumpFilter?: ('major' | 'minor' | 'patch' | 'build' | 'preRelease')[];
 };
 export declare class Manifest {
     private repository;
