@@ -714,6 +714,7 @@ class Manifest {
                         pullRequest,
                         draft: (_a = config.draft) !== null && _a !== void 0 ? _a : this.draft,
                         prerelease: hasPrereleaseLabel ||
+                            config.forcePrerelease ||
                             (config.prerelease && !!release.tag.version.preRelease),
                     });
                 }
@@ -1317,7 +1318,7 @@ async function latestReleaseVersion(github, branchToScan, releaseFilter, config,
     return candidateTagVersion.sort((a, b) => b.compare(a))[0];
 }
 function mergeReleaserConfig(defaultConfig, pathConfig) {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _0, _1, _2, _3;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _0, _1, _2, _3, _4;
     return {
         releaseType: (_b = (_a = pathConfig.releaseType) !== null && _a !== void 0 ? _a : defaultConfig.releaseType) !== null && _b !== void 0 ? _b : 'node',
         bumpMinorPreMajor: (_c = pathConfig.bumpMinorPreMajor) !== null && _c !== void 0 ? _c : defaultConfig.bumpMinorPreMajor,
@@ -1331,21 +1332,22 @@ function mergeReleaserConfig(defaultConfig, pathConfig) {
         skipGithubRelease: (_l = pathConfig.skipGithubRelease) !== null && _l !== void 0 ? _l : defaultConfig.skipGithubRelease,
         draft: (_m = pathConfig.draft) !== null && _m !== void 0 ? _m : defaultConfig.draft,
         prerelease: (_o = pathConfig.prerelease) !== null && _o !== void 0 ? _o : defaultConfig.prerelease,
-        component: (_p = pathConfig.component) !== null && _p !== void 0 ? _p : defaultConfig.component,
-        packageName: (_q = pathConfig.packageName) !== null && _q !== void 0 ? _q : defaultConfig.packageName,
-        versionFile: (_r = pathConfig.versionFile) !== null && _r !== void 0 ? _r : defaultConfig.versionFile,
-        extraFiles: (_s = pathConfig.extraFiles) !== null && _s !== void 0 ? _s : defaultConfig.extraFiles,
-        includeComponentInTag: (_t = pathConfig.includeComponentInTag) !== null && _t !== void 0 ? _t : defaultConfig.includeComponentInTag,
-        includeVInTag: (_u = pathConfig.includeVInTag) !== null && _u !== void 0 ? _u : defaultConfig.includeVInTag,
-        tagSeparator: (_v = pathConfig.tagSeparator) !== null && _v !== void 0 ? _v : defaultConfig.tagSeparator,
-        pullRequestTitlePattern: (_w = pathConfig.pullRequestTitlePattern) !== null && _w !== void 0 ? _w : defaultConfig.pullRequestTitlePattern,
-        pullRequestHeader: (_x = pathConfig.pullRequestHeader) !== null && _x !== void 0 ? _x : defaultConfig.pullRequestHeader,
-        separatePullRequests: (_y = pathConfig.separatePullRequests) !== null && _y !== void 0 ? _y : defaultConfig.separatePullRequests,
-        skipSnapshot: (_z = pathConfig.skipSnapshot) !== null && _z !== void 0 ? _z : defaultConfig.skipSnapshot,
-        initialVersion: (_0 = pathConfig.initialVersion) !== null && _0 !== void 0 ? _0 : defaultConfig.initialVersion,
-        extraLabels: (_1 = pathConfig.extraLabels) !== null && _1 !== void 0 ? _1 : defaultConfig.extraLabels,
-        excludePaths: (_2 = pathConfig.excludePaths) !== null && _2 !== void 0 ? _2 : defaultConfig.excludePaths,
-        reviewers: (_3 = pathConfig.reviewers) !== null && _3 !== void 0 ? _3 : defaultConfig.reviewers,
+        forcePrerelease: (_p = pathConfig.forcePrerelease) !== null && _p !== void 0 ? _p : defaultConfig.forcePrerelease,
+        component: (_q = pathConfig.component) !== null && _q !== void 0 ? _q : defaultConfig.component,
+        packageName: (_r = pathConfig.packageName) !== null && _r !== void 0 ? _r : defaultConfig.packageName,
+        versionFile: (_s = pathConfig.versionFile) !== null && _s !== void 0 ? _s : defaultConfig.versionFile,
+        extraFiles: (_t = pathConfig.extraFiles) !== null && _t !== void 0 ? _t : defaultConfig.extraFiles,
+        includeComponentInTag: (_u = pathConfig.includeComponentInTag) !== null && _u !== void 0 ? _u : defaultConfig.includeComponentInTag,
+        includeVInTag: (_v = pathConfig.includeVInTag) !== null && _v !== void 0 ? _v : defaultConfig.includeVInTag,
+        tagSeparator: (_w = pathConfig.tagSeparator) !== null && _w !== void 0 ? _w : defaultConfig.tagSeparator,
+        pullRequestTitlePattern: (_x = pathConfig.pullRequestTitlePattern) !== null && _x !== void 0 ? _x : defaultConfig.pullRequestTitlePattern,
+        pullRequestHeader: (_y = pathConfig.pullRequestHeader) !== null && _y !== void 0 ? _y : defaultConfig.pullRequestHeader,
+        separatePullRequests: (_z = pathConfig.separatePullRequests) !== null && _z !== void 0 ? _z : defaultConfig.separatePullRequests,
+        skipSnapshot: (_0 = pathConfig.skipSnapshot) !== null && _0 !== void 0 ? _0 : defaultConfig.skipSnapshot,
+        initialVersion: (_1 = pathConfig.initialVersion) !== null && _1 !== void 0 ? _1 : defaultConfig.initialVersion,
+        extraLabels: (_2 = pathConfig.extraLabels) !== null && _2 !== void 0 ? _2 : defaultConfig.extraLabels,
+        excludePaths: (_3 = pathConfig.excludePaths) !== null && _3 !== void 0 ? _3 : defaultConfig.excludePaths,
+        reviewers: (_4 = pathConfig.reviewers) !== null && _4 !== void 0 ? _4 : defaultConfig.reviewers,
     };
 }
 /**

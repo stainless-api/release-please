@@ -387,6 +387,7 @@ const createReleaseCommand = {
                 packageName: argv.packageName,
                 draft: argv.draft,
                 prerelease: argv.prerelease,
+                forcePrerelease: argv.forcePrerelease,
                 includeComponentInTag: argv.monorepoTags,
                 includeVInTag: argv.includeVInTags,
             }, extractManifestOptions(argv), argv.path);

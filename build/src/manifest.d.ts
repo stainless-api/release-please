@@ -49,6 +49,7 @@ export interface ReleaserConfig {
     skipGithubRelease?: boolean;
     draft?: boolean;
     prerelease?: boolean;
+    forcePrerelease?: boolean;
     draftPullRequest?: boolean;
     component?: string;
     packageName?: string;
@@ -95,6 +96,7 @@ interface ReleaserConfigJson {
     'skip-github-release'?: boolean;
     draft?: boolean;
     prerelease?: boolean;
+    forcePrerelease?: boolean;
     'draft-pull-request'?: boolean;
     label?: string;
     'release-label'?: string;
@@ -135,6 +137,7 @@ export interface ManifestOptions {
     sequentialCalls?: boolean;
     draft?: boolean;
     prerelease?: boolean;
+    forcePrerelease?: boolean;
     draftPullRequest?: boolean;
     groupPullRequestTitlePattern?: string;
     releaseSearchDepth?: number;

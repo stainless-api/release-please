@@ -5665,6 +5665,72 @@ version = "3.0.0"
             (0, chai_1.expect)(releases[0].prerelease).to.be.false;
             (0, chai_1.expect)(releases[0].tag.toString()).to.eql('release-brancher-v1.3.1');
         });
+        (0, mocha_1.it)('should build prerelease releases when forcePrerelease is true', async () => {
+            mockPullRequests(github, [], [
+                {
+                    headBranchName: 'release-please/branches/main',
+                    baseBranchName: 'main',
+                    number: 1234,
+                    title: 'chore: release main',
+                    body: pullRequestBody('release-notes/single-manifest-pre-major.txt'),
+                    labels: ['autorelease: pending'],
+                    files: [''],
+                    sha: 'abc123',
+                },
+            ]);
+            const getFileContentsStub = sandbox.stub(github, 'getFileContentsOnBranch');
+            getFileContentsStub
+                .withArgs('package.json', 'main')
+                .resolves((0, helpers_1.buildGitHubFileRaw)(JSON.stringify({ name: '@google-cloud/release-brancher' })));
+            const manifest = new manifest_1.Manifest(github, 'main', {
+                '.': {
+                    releaseType: 'node',
+                    prerelease: true,
+                    forcePrerelease: true,
+                },
+            }, {
+                '.': version_1.Version.parse('0.1.0'),
+            });
+            const releases = await manifest.buildReleases();
+            (0, chai_1.expect)(releases).lengthOf(1);
+            (0, chai_1.expect)(releases[0].name).to.eql('release-brancher: v0.2.0');
+            (0, chai_1.expect)(releases[0].draft).to.be.undefined;
+            (0, chai_1.expect)(releases[0].prerelease).to.be.true;
+            (0, chai_1.expect)(releases[0].tag.toString()).to.eql('release-brancher-v0.2.0');
+        });
+        (0, mocha_1.it)('should build prerelease releases from non-prerelease when forcePrerelease is true', async () => {
+            mockPullRequests(github, [], [
+                {
+                    headBranchName: 'release-please/branches/main',
+                    baseBranchName: 'main',
+                    number: 1234,
+                    title: 'chore: release main',
+                    body: pullRequestBody('release-notes/single-manifest.txt'),
+                    labels: ['autorelease: pending'],
+                    files: [''],
+                    sha: 'abc123',
+                },
+            ]);
+            const getFileContentsStub = sandbox.stub(github, 'getFileContentsOnBranch');
+            getFileContentsStub
+                .withArgs('package.json', 'main')
+                .resolves((0, helpers_1.buildGitHubFileRaw)(JSON.stringify({ name: '@google-cloud/release-brancher' })));
+            const manifest = new manifest_1.Manifest(github, 'main', {
+                '.': {
+                    releaseType: 'node',
+                    prerelease: true,
+                    forcePrerelease: true,
+                },
+            }, {
+                '.': version_1.Version.parse('1.3.0'),
+            });
+            const releases = await manifest.buildReleases();
+            (0, chai_1.expect)(releases).lengthOf(1);
+            (0, chai_1.expect)(releases[0].name).to.eql('release-brancher: v1.3.1');
+            (0, chai_1.expect)(releases[0].draft).to.be.undefined;
+            (0, chai_1.expect)(releases[0].prerelease).to.be.true;
+            (0, chai_1.expect)(releases[0].tag.toString()).to.eql('release-brancher-v1.3.1');
+        });
         (0, mocha_1.it)('should skip component in tag', async () => {
             mockPullRequests(github, [], [
                 {
