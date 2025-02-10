@@ -29,6 +29,7 @@ class Ruby extends base_1.BaseStrategy {
         this.tagSeparator = '/';
     }
     async buildUpdates(options) {
+        var _a;
         const updates = [];
         const version = options.newVersion;
         updates.push({
@@ -50,11 +51,29 @@ class Ruby extends base_1.BaseStrategy {
             }),
         });
         updates.push({
+            path: `rbi/${versionFile}i`,
+            createIfMissing: false,
+            updater: new version_rb_1.VersionRB({
+                version,
+            }),
+        });
+        updates.push({
+            path: `sig/${versionFile}s`,
+            createIfMissing: false,
+            updater: new version_rb_1.VersionRB({
+                version,
+            }),
+        });
+        updates.push({
             path: this.addPath('Gemfile.lock'),
             createIfMissing: false,
             updater: new gemfile_lock_1.GemfileLock({
                 version,
-                gemName: this.component || '',
+                gemName: this.component ||
+                    (
+                    // grab the gem name from the version file path if it's not provided via the component
+                    (_a = this.versionFile.match(/lib\/(.*)\/version.rb/)) === null || _a === void 0 ? void 0 : _a[1]) ||
+                    '',
             }),
         });
         return updates;

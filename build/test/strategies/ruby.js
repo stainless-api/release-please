@@ -93,9 +93,11 @@ const COMMITS = [
                 latestRelease,
             });
             const updates = release.updates;
-            (0, chai_1.expect)(updates).lengthOf(3);
+            (0, chai_1.expect)(updates).lengthOf(5);
             (0, helpers_1.assertHasUpdate)(updates, 'CHANGELOG.md', changelog_1.Changelog);
             (0, helpers_1.assertHasUpdate)(updates, 'lib/google/cloud/automl/version.rb', version_rb_1.VersionRB);
+            (0, helpers_1.assertHasUpdate)(updates, 'sig/lib/google/cloud/automl/version.rbs', version_rb_1.VersionRB);
+            (0, helpers_1.assertHasUpdate)(updates, 'rbi/lib/google/cloud/automl/version.rbi', version_rb_1.VersionRB);
             (0, helpers_1.assertHasUpdate)(updates, 'Gemfile.lock', gemfile_lock_1.GemfileLock);
         });
         (0, mocha_1.it)('allows overriding version file', async () => {
@@ -111,9 +113,11 @@ const COMMITS = [
                 latestRelease,
             });
             const updates = release.updates;
-            (0, chai_1.expect)(updates).lengthOf(3);
+            (0, chai_1.expect)(updates).lengthOf(5);
             (0, helpers_1.assertHasUpdate)(updates, 'CHANGELOG.md', changelog_1.Changelog);
             (0, helpers_1.assertHasUpdate)(updates, 'lib/foo/version.rb', version_rb_1.VersionRB);
+            (0, helpers_1.assertHasUpdate)(updates, 'sig/lib/foo/version.rbs', version_rb_1.VersionRB);
+            (0, helpers_1.assertHasUpdate)(updates, 'rbi/lib/foo/version.rbi', version_rb_1.VersionRB);
             (0, helpers_1.assertHasUpdate)(updates, 'Gemfile.lock', gemfile_lock_1.GemfileLock);
         });
         // TODO: add tests for tag separator
