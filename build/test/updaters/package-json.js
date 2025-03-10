@@ -19,6 +19,7 @@ const snapshot = require("snap-shot-it");
 const mocha_1 = require("mocha");
 const package_json_1 = require("../../src/updaters/node/package-json");
 const version_1 = require("../../src/version");
+const chai_1 = require("chai");
 const fixturesPath = './test/updaters/fixtures';
 (0, mocha_1.describe)('PackageJson', () => {
     (0, mocha_1.describe)('updateContent', () => {
@@ -29,6 +30,14 @@ const fixturesPath = './test/updaters/fixtures';
             });
             const newContent = packageJson.updateContent(oldContent);
             snapshot(newContent.replace(/\r\n/g, '\n'));
+        });
+        (0, mocha_1.it)('does not reformat the content', async () => {
+            const oldContent = (0, fs_1.readFileSync)((0, path_1.resolve)(fixturesPath, './package-formatting.json'), 'utf8');
+            const packageJson = new package_json_1.PackageJson({
+                version: version_1.Version.parse('0.1.1'),
+            });
+            const newContent = packageJson.updateContent(oldContent);
+            (0, chai_1.expect)(oldContent.replace('"version": "0.1.0"', '"version": "0.1.1"')).to.eq(newContent);
         });
     });
 });

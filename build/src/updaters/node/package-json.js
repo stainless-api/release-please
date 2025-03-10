@@ -14,7 +14,6 @@
 // limitations under the License.
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PackageJson = void 0;
-const json_stringify_1 = require("../../util/json-stringify");
 const logger_1 = require("../../util/logger");
 const default_1 = require("../default");
 /**
@@ -27,10 +26,8 @@ class PackageJson extends default_1.DefaultUpdater {
      * @returns {string} The updated content
      */
     updateContent(content, logger = logger_1.logger) {
-        const parsed = JSON.parse(content);
-        logger.info(`updating from ${parsed.version} to ${this.version}`);
-        parsed.version = this.version.toString();
-        return (0, json_stringify_1.jsonStringify)(parsed, content);
+        logger.info(`updating to ${this.version}`);
+        return content.replace(/"version": ".*"/, `"version": "${this.version}"`);
     }
 }
 exports.PackageJson = PackageJson;
