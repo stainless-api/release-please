@@ -245,11 +245,7 @@ describe('Node', () => {
       const updater = update.updater as SamplesPackageJson;
       expect(updater.packageName).to.equal('google-cloud-automl-pkg');
       assertHasUpdate(updates, 'package.json', PackageJson);
-      assertHasUpdate(
-        updates,
-        'packages/mcp-server/src/server.ts',
-        McpServer
-      );
+      assertHasUpdate(updates, 'packages/mcp-server/src/server.ts', McpServer);
     });
   });
 });
