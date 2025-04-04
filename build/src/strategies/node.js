@@ -22,6 +22,7 @@ const changelog_1 = require("../updaters/changelog");
 const package_json_1 = require("../updaters/node/package-json");
 const errors_1 = require("../errors");
 const filter_commits_1 = require("../util/filter-commits");
+const mcp_server_1 = require("../updaters/node/mcp-server");
 class Node extends base_1.BaseStrategy {
     async buildUpdates(options) {
         var _a;
@@ -59,6 +60,13 @@ class Node extends base_1.BaseStrategy {
             createIfMissing: false,
             cachedFileContents: this.pkgJsonContents,
             updater: new package_json_1.PackageJson({
+                version,
+            }),
+        });
+        updates.push({
+            path: this.addPath('packages/mcp-server/src/server.ts'),
+            createIfMissing: false,
+            updater: new mcp_server_1.McpServer({
                 version,
             }),
         });

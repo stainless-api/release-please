@@ -30,6 +30,7 @@ const changelog_json_1 = require("../../src/updaters/changelog-json");
 const assert = require("assert");
 const errors_1 = require("../../src/errors");
 const snapshot = require("snap-shot-it");
+const mcp_server_1 = require("../../src/updaters/node/mcp-server");
 nock.disableNetConnect();
 const sandbox = sinon.createSandbox();
 const fixturesPath = './test/fixtures/strategies/node';
@@ -213,6 +214,7 @@ const ISO_DATE_REGEX = /[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\.[
             const updater = update.updater;
             (0, chai_1.expect)(updater.packageName).to.equal('google-cloud-automl-pkg');
             (0, helpers_1.assertHasUpdate)(updates, 'package.json', package_json_1.PackageJson);
+            (0, helpers_1.assertHasUpdate)(updates, 'packages/mcp-server/src/server.ts', mcp_server_1.McpServer);
         });
     });
 });
