@@ -13,13 +13,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 Object.defineProperty(exports, "__esModule", { value: true });
-const fs_1 = require("fs");
-const path_1 = require("path");
-const snapshot = require("snap-shot-it");
-const mocha_1 = require("mocha");
 const chai_1 = require("chai");
+const fs_1 = require("fs");
+const mocha_1 = require("mocha");
+const path_1 = require("path");
 const version_rb_1 = require("../../src/updaters/ruby/version-rb");
 const version_1 = require("../../src/version");
+const snapshot = require("snap-shot-it");
 const fixturesPath = './test/updaters/fixtures';
 (0, mocha_1.describe)('version.rb', () => {
     (0, mocha_1.describe)('updateContent', () => {
@@ -30,8 +30,14 @@ const fixturesPath = './test/updaters/fixtures';
             ['0.2.0', '"0.1.0"', '"0.2.0"', true, 'minor'],
             ['0.2.1', '"0.2.0"', '"0.2.1"', true, 'patch'],
             ['0.2.11', '"0.2.10"', '"0.2.11"', true, 'long patch'],
-            ['1.0.0-alpha1', '"0.9.0"', '"1.0.0-alpha1"', true, 'prerelease'],
-            ['1.0.0-beta', '"1.0.0-alpha1"', '"1.0.0-beta"', true, 'prerelease bump'],
+            ['1.0.0-alpha1', '"0.9.0"', '"1.0.0.pre.alpha1"', true, 'prerelease'],
+            [
+                '1.0.0-beta',
+                '"1.0.0-alpha1"',
+                '"1.0.0.pre.beta"',
+                true,
+                'prerelease bump',
+            ],
             ['1.0.0', '"1.0.0.beta"', '"1.0.0"', true, 'major'],
             ['1.0.1', '"1.0.0"', '"1.0.1"', true, 'major patch'],
             ['1.0.0', '"1.0"', '"1.0"', false, 'ignored'],

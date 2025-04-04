@@ -24,11 +24,13 @@ exports.RUBY_VERSION_REGEX = /((\d+).(\d)+.(\d+)(.\w+.*)?)/g;
  * @param useDotPrePreleaseSeperator Use a `.` seperator for prereleases rather then `-`
  * @returns a ruby compatible version string
  */
-function stringifyRubyVersion(version, useDotPrePreleaseSeperator = false) {
+function stringifyRubyVersion(version, useDotPrePreleaseSeperator = true) {
     if (!useDotPrePreleaseSeperator) {
         return version.toString();
     }
-    return `${version.major}.${version.minor}.${version.patch}${version.preRelease ? `.${version.preRelease}` : ''}`;
+    return `${version.major}.${version.minor}.${version.patch}${version.preRelease
+        ? `.pre.${version.preRelease.replace(/^[.-]|[.-]$/g, '')}`
+        : ''}`;
 }
 exports.stringifyRubyVersion = stringifyRubyVersion;
 /**
