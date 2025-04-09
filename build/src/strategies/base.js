@@ -28,6 +28,7 @@ const generic_1 = require("../updaters/generic");
 const generic_json_1 = require("../updaters/generic-json");
 const generic_xml_1 = require("../updaters/generic-xml");
 const pom_xml_1 = require("../updaters/java/pom-xml");
+const readme_1 = require("../updaters/ruby/readme");
 const generic_yaml_1 = require("../updaters/generic-yaml");
 const generic_toml_1 = require("../updaters/generic-toml");
 const errors_1 = require("../errors");
@@ -325,6 +326,13 @@ If you instead want to use the version number \`${newVersion}\` generated from c
                                 path: this.addPath(path),
                                 createIfMissing: false,
                                 updater: new pom_xml_1.PomXml(version),
+                            });
+                            break;
+                        case 'ruby-readme':
+                            extraFileUpdates.push({
+                                path: this.addPath(path),
+                                createIfMissing: false,
+                                updater: new readme_1.RubyReadMeUpdater({ version }),
                             });
                             break;
                         default:

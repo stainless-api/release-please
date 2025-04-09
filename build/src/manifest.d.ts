@@ -36,7 +36,13 @@ type ExtraTomlFile = {
     jsonpath: string;
     glob?: boolean;
 };
-export type ExtraFile = string | ExtraJsonFile | ExtraYamlFile | ExtraXmlFile | ExtraPomFile | ExtraTomlFile;
+type ExtraRubyReadMeFile = {
+    type: 'ruby-readme';
+    path: string;
+    jsonpath: string;
+    glob?: boolean;
+};
+export type ExtraFile = string | ExtraJsonFile | ExtraYamlFile | ExtraXmlFile | ExtraPomFile | ExtraTomlFile | ExtraRubyReadMeFile;
 /**
  * These are configurations provided to each strategy per-path.
  */
