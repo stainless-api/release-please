@@ -30,7 +30,7 @@ describe('ChangelogUpdater', () => {
       ).replace(/\r\n/g, '\n');
       const changelog = new Changelog({
         changelogEntry: '## 2.0.0\n\n* added a new foo to bar.',
-        version: Version.parse('1.0.0'),
+        version: Version.parseOne('1.0.0'),
       });
       const newContent = changelog.updateContent(oldContent);
       snapshot(newContent);
@@ -43,7 +43,7 @@ describe('ChangelogUpdater', () => {
       ).replace(/\r\n/g, '\n');
       const changelog = new Changelog({
         changelogEntry: '## 2.0.0\n\n* added a new foo to bar.',
-        version: Version.parse('1.0.0'),
+        version: Version.parseOne('1.0.0'),
       });
       const newContent = changelog.updateContent(oldContent);
       snapshot(newContent);
@@ -56,7 +56,7 @@ describe('ChangelogUpdater', () => {
       ).replace(/\r\n/g, '\n');
       const changelog = new Changelog({
         changelogEntry: '## 0.7.0\n\n* added a new foo to bar.',
-        version: Version.parse('0.7.0'),
+        version: Version.parseOne('0.7.0'),
       });
       const newContent = changelog.updateContent(oldContent);
       snapshot(newContent);
@@ -65,7 +65,7 @@ describe('ChangelogUpdater', () => {
     it('populates a new CHANGELOG if none exists', async () => {
       const changelog = new Changelog({
         changelogEntry: '## 2.0.0\n\n* added a new foo to bar.',
-        version: Version.parse('1.0.0'),
+        version: Version.parseOne('1.0.0'),
       });
       const newContent = changelog.updateContent(undefined);
       snapshot(newContent);
@@ -78,7 +78,7 @@ describe('ChangelogUpdater', () => {
       ).replace(/\r\n/g, '\n');
       const changelog = new Changelog({
         changelogEntry: '## 1.0.0\n\n* added a new foo to bar.',
-        version: Version.parse('1.0.0'),
+        version: Version.parseOne('1.0.0'),
         versionHeaderRegex: '\n## Version [0-9[]+',
       });
       const newContent = changelog.updateContent(oldContent);
@@ -92,7 +92,7 @@ describe('ChangelogUpdater', () => {
       ).replace(/\r\n/g, '\n');
       const changelog = new Changelog({
         changelogEntry: '## 1.0.0\n\n* added a new foo to bar.',
-        version: Version.parse('1.0.0'),
+        version: Version.parseOne('1.0.0'),
       });
       const newContent = changelog.updateContent(oldContent);
       snapshot(newContent);

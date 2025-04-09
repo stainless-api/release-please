@@ -26,7 +26,7 @@ describe('PyProjectToml', () => {
   it('refuses to update something that is not a valid pyproject', async () => {
     const oldContent = '[woops]\nindeed = true';
     const pyProject = new PyProjectToml({
-      version: Version.parse('0.6.0'),
+      version: Version.parseOne('0.6.0'),
     });
     expect(() => {
       pyProject.updateContent(oldContent);
@@ -36,7 +36,7 @@ describe('PyProjectToml', () => {
   it('refuses to update when version is missing', async () => {
     const oldContent = "[project]\nname = 'project'";
     const pyProject = new PyProjectToml({
-      version: Version.parse('0.6.0'),
+      version: Version.parseOne('0.6.0'),
     });
     expect(() => {
       pyProject.updateContent(oldContent);
@@ -52,7 +52,7 @@ describe('pyproject-project.toml', () => {
         'utf8'
       ).replace(/\r\n/g, '\n');
       const version = new PyProjectToml({
-        version: Version.parse('0.6.0'),
+        version: Version.parseOne('0.6.0'),
       });
       const newContent = version.updateContent(oldContent);
       snapshot(newContent);
@@ -68,7 +68,7 @@ describe('pyproject-poetry.toml', () => {
         'utf8'
       ).replace(/\r\n/g, '\n');
       const version = new PyProjectToml({
-        version: Version.parse('0.6.0'),
+        version: Version.parseOne('0.6.0'),
       });
       const newContent = version.updateContent(oldContent);
       snapshot(newContent);

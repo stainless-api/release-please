@@ -54,7 +54,7 @@ export function buildMockPackageUpdate(
     createIfMissing: false,
     cachedFileContents,
     updater: new CargoToml({
-      version: Version.parse(manifest.package?.version || 'FIXME'),
+      version: Version.parseOne(manifest.package?.version || 'FIXME'),
     }),
   };
 }

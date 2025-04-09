@@ -45,7 +45,7 @@ export class Expo extends Node {
   async getExpoSDKVersion(): Promise<Version> {
     const pkgJsonContents = await this.getPkgJsonContents();
     const pkg = JSON.parse(pkgJsonContents.parsedContent);
-    return Version.parse(
+    return Version.parseOne(
       pkg.dependencies?.expo ||
         pkg.devDependencies?.expo ||
         pkg.peerDependencies?.expo ||

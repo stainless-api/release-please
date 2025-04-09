@@ -31,7 +31,7 @@ describe('GenericXml', () => {
       ).replace(/\r\n/g, '\n');
       const updater = new GenericXml(
         '//Project/PropertyGroup/Version',
-        Version.parse('v2.3.4')
+        Version.parseOne('v2.3.4')
       );
       const newContent = updater.updateContent(oldContent);
       snapshot(newContent);
@@ -43,7 +43,7 @@ describe('GenericXml', () => {
       ).replace(/\r\n/g, '\n');
       const updater = new GenericXml(
         '//project/nonExistent',
-        Version.parse('v2.3.4')
+        Version.parseOne('v2.3.4')
       );
       const newContent = updater.updateContent(oldContent);
       expect(newContent).to.eql(oldContent);
@@ -53,7 +53,10 @@ describe('GenericXml', () => {
         resolve(fixturesPath, './Foo.csproj'),
         'utf8'
       ).replace(/\r\n/g, '\n');
-      const updater = new GenericXml('//Project/@Sdk', Version.parse('v2.3.4'));
+      const updater = new GenericXml(
+        '//Project/@Sdk',
+        Version.parseOne('v2.3.4')
+      );
       const newContent = updater.updateContent(oldContent);
       snapshot(newContent);
     });

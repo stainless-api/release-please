@@ -299,7 +299,7 @@ export function buildMockCandidatePullRequest(
   versionString: string,
   options: MockCandidatePullRequestOptions = {}
 ): CandidateReleasePullRequest {
-  const version = Version.parse(versionString);
+  const version = Version.parseOne(versionString);
   return {
     path,
     pullRequest: {
@@ -381,7 +381,7 @@ export function mockPullRequests(
 
 export function mockReleaseData(count: number): ReleaseData[] {
   const releaseData: ReleaseData[] = [];
-  const version = Version.parse('1.2.3');
+  const version = Version.parseOne('1.2.3');
   for (let i = 0; i < count; i++) {
     releaseData.push({
       component: `component${i}`,

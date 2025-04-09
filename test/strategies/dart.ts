@@ -75,7 +75,7 @@ describe('Dart', () => {
         packageName: 'some-dart-package',
       });
       const latestRelease = {
-        tag: new TagName(Version.parse('0.123.4'), 'some-dart-package'),
+        tag: new TagName(Version.parseOne('0.123.4'), 'some-dart-package'),
         sha: 'abc123',
         notes: 'some notes',
       };
@@ -97,7 +97,7 @@ describe('Dart', () => {
         ),
       ];
       const latestRelease = {
-        tag: new TagName(Version.parse('0.123.4'), 'hello_world'),
+        tag: new TagName(Version.parseOne('0.123.4'), 'hello_world'),
         sha: 'abc123',
         notes: 'some notes',
       };
@@ -129,7 +129,7 @@ describe('Dart', () => {
         ),
       ];
       const latestRelease = {
-        tag: new TagName(Version.parse('0.123.4'), 'some-dart-package'),
+        tag: new TagName(Version.parseOne('0.123.4'), 'some-dart-package'),
         sha: 'abc123',
         notes: 'some notes',
       };

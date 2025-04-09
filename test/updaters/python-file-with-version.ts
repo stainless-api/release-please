@@ -29,7 +29,7 @@ describe('version.py', () => {
         'utf8'
       ).replace(/\r\n/g, '\n');
       const version = new PythonFileWithVersion({
-        version: Version.parse('0.6.0'),
+        version: Version.parseOne('0.6.0'),
       });
       const newContent = version.updateContent(oldContent);
       snapshot(newContent);
@@ -40,7 +40,7 @@ describe('version.py', () => {
         'utf8'
       ).replace(/\r\n/g, '\n');
       const version = new PythonFileWithVersion({
-        version: Version.parse('0.5.11'),
+        version: Version.parseOne('0.5.11'),
       });
       const newContent = version.updateContent(oldContent);
       snapshot(newContent);
@@ -56,7 +56,7 @@ describe('project/__init__.py', () => {
         'utf8'
       ).replace(/\r\n/g, '\n');
       const version = new PythonFileWithVersion({
-        version: Version.parse('0.6.0'),
+        version: Version.parseOne('0.6.0'),
       });
       const newContent = version.updateContent(oldContent);
       snapshot(newContent);
@@ -72,7 +72,7 @@ describe('src/project/__init__.py', () => {
         'utf8'
       ).replace(/\r\n/g, '\n');
       const version = new PythonFileWithVersion({
-        version: Version.parse('0.6.0'),
+        version: Version.parseOne('0.6.0'),
       });
       const newContent = version.updateContent(oldContent);
       snapshot(newContent);

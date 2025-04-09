@@ -306,9 +306,9 @@ export abstract class BaseStrategy implements Strategy {
       this.logger.warn(
         `Setting version for ${this.path} from release-as configuration`
       );
-      newVersion = Version.parse(this.releaseAs);
+      newVersion = Version.parseOne(this.releaseAs);
     } else if (releaseAsNote) {
-      newVersion = Version.parse(releaseAsNote.text);
+      newVersion = Version.parseOne(releaseAsNote.text);
     } else if (latestRelease) {
       newVersion = await this.versioningStrategy.bump(
         latestRelease.tag.version,
@@ -757,10 +757,10 @@ If you instead want to use the version number \`${newVersion}\` generated from c
    */
   protected initialReleaseVersion(): Version {
     if (this.initialVersion) {
-      return Version.parse(this.initialVersion);
+      return Version.parseOne(this.initialVersion);
     }
 
-    return Version.parse('0.0.1');
+    return Version.parseOne('0.0.1');
   }
 
   /**

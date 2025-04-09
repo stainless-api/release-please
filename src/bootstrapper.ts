@@ -46,7 +46,7 @@ export class Bootstrapper {
     this.targetBranch = targetBranch;
     this.manifestFile = manifestFile;
     this.configFile = configFile;
-    this.initialVersion = Version.parse(initialVersionString);
+    this.initialVersion = Version.parseOne(initialVersionString);
   }
 
   async bootstrap(path: string, config: ReleaserConfig): Promise<PullRequest> {

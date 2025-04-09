@@ -85,7 +85,7 @@ describe('Java', () => {
         });
 
         const latestRelease = {
-          tag: new TagName(Version.parse('2.3.3')),
+          tag: new TagName(Version.parseOne('2.3.3')),
           sha: 'abc123',
           notes: 'some notes',
         };
@@ -111,7 +111,7 @@ describe('Java', () => {
         });
 
         const latestRelease = {
-          tag: new TagName(Version.parse('2.3.3')),
+          tag: new TagName(Version.parseOne('2.3.3')),
           sha: 'abc123',
           notes: 'some notes',
         };
@@ -140,7 +140,7 @@ describe('Java', () => {
         });
 
         const latestRelease = {
-          tag: new TagName(Version.parse('2.3.3')),
+          tag: new TagName(Version.parseOne('2.3.3')),
           sha: 'abc123',
           notes: 'some notes',
         };
@@ -166,7 +166,7 @@ describe('Java', () => {
         });
 
         const latestRelease = {
-          tag: new TagName(Version.parse('2.3.4-SNAPSHOT')),
+          tag: new TagName(Version.parseOne('2.3.4-SNAPSHOT')),
           sha: 'abc123',
           notes: 'some notes',
         };
@@ -186,7 +186,7 @@ describe('Java', () => {
         });
 
         const latestRelease = {
-          tag: new TagName(Version.parse('2.3.3')),
+          tag: new TagName(Version.parseOne('2.3.3')),
           sha: 'abc123',
           notes: 'some notes',
         };
@@ -215,7 +215,7 @@ describe('Java', () => {
         });
 
         const latestRelease = {
-          tag: new TagName(Version.parse('2.3.3')),
+          tag: new TagName(Version.parseOne('2.3.3')),
           sha: 'abc123',
           notes: 'some notes',
         };
@@ -236,7 +236,7 @@ describe('Java', () => {
         });
 
         const latestRelease = {
-          tag: new TagName(Version.parse('2.3.3')),
+          tag: new TagName(Version.parseOne('2.3.3')),
           sha: 'abc123',
           notes: 'some notes',
         };
@@ -274,7 +274,7 @@ describe('Java', () => {
         });
 
         const latestRelease = {
-          tag: new TagName(Version.parse('2.3.3')),
+          tag: new TagName(Version.parseOne('2.3.3')),
           sha: 'abc123',
           notes: 'some notes',
         };
@@ -344,7 +344,7 @@ describe('Java', () => {
         });
 
         const latestRelease = {
-          tag: new TagName(Version.parse('2.3.3'), 'test-sample'),
+          tag: new TagName(Version.parseOne('2.3.3'), 'test-sample'),
           sha: 'abc123',
           notes: 'some notes',
         };
@@ -376,7 +376,7 @@ describe('Java', () => {
         });
 
         const latestRelease = {
-          tag: new TagName(Version.parse('2.3.3'), 'test-sample'),
+          tag: new TagName(Version.parseOne('2.3.3'), 'test-sample'),
           sha: 'abc123',
           notes: 'some notes',
         };

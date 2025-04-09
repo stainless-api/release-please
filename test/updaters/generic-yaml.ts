@@ -29,7 +29,7 @@ describe('GenericYaml', () => {
         resolve(fixturesPath, './helm/Chart.yaml'),
         'utf8'
       ).replace(/\r\n/g, '\n');
-      const updater = new GenericYaml('$.version', Version.parse('v2.3.4'));
+      const updater = new GenericYaml('$.version', Version.parseOne('v2.3.4'));
       const newContent = updater.updateContent(oldContent);
       snapshot(newContent);
     });
@@ -40,7 +40,7 @@ describe('GenericYaml', () => {
       ).replace(/\r\n/g, '\n');
       const updater = new GenericYaml(
         '$.packages..version',
-        Version.parse('v2.3.4')
+        Version.parseOne('v2.3.4')
       );
       const newContent = updater.updateContent(oldContent);
       snapshot(newContent);
@@ -52,7 +52,7 @@ describe('GenericYaml', () => {
       ).replace(/\r\n/g, '\n');
       const updater = new GenericYaml(
         '$.dependencies..version',
-        Version.parse('v2.3.4')
+        Version.parseOne('v2.3.4')
       );
       const newContent = updater.updateContent(oldContent);
       snapshot(newContent);
@@ -62,7 +62,10 @@ describe('GenericYaml', () => {
         resolve(fixturesPath, './helm/Chart.yaml'),
         'utf8'
       ).replace(/\r\n/g, '\n');
-      const updater = new GenericYaml('$.nonExistent', Version.parse('v2.3.4'));
+      const updater = new GenericYaml(
+        '$.nonExistent',
+        Version.parseOne('v2.3.4')
+      );
       const newContent = updater.updateContent(oldContent);
       expect(newContent).to.eql(oldContent);
     });
@@ -71,7 +74,10 @@ describe('GenericYaml', () => {
         resolve(fixturesPath, './helm/Chart.yaml'),
         'utf8'
       ).replace(/\r\n/g, '\n');
-      const updater = new GenericYaml('bad jsonpath', Version.parse('v2.3.4'));
+      const updater = new GenericYaml(
+        'bad jsonpath',
+        Version.parseOne('v2.3.4')
+      );
       assert.throws(() => {
         updater.updateContent(oldContent);
       });
@@ -81,7 +87,7 @@ describe('GenericYaml', () => {
         resolve(fixturesPath, './yaml/invalid.txt'),
         'utf8'
       ).replace(/\r\n/g, '\n');
-      const updater = new GenericYaml('$.boo', Version.parse('v2.3.4'));
+      const updater = new GenericYaml('$.boo', Version.parseOne('v2.3.4'));
       const newContent = updater.updateContent(oldContent);
       expect(newContent).to.eql(oldContent);
     });
@@ -90,7 +96,7 @@ describe('GenericYaml', () => {
         resolve(fixturesPath, './yaml/multi.yaml'),
         'utf8'
       ).replace(/\r\n/g, '\n');
-      const updater = new GenericYaml('$.version', Version.parse('v2.3.4'));
+      const updater = new GenericYaml('$.version', Version.parseOne('v2.3.4'));
       const newContent = updater.updateContent(oldContent);
       snapshot(newContent);
     });
