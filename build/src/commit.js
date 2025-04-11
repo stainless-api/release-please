@@ -81,9 +81,30 @@ function toConventionalChangelogFormat(ast) {
     });
     // [<any body-text except pre-footer>]
     if (body) {
+        const migrationMessage = {
+            title: 'Migration',
+            text: '',
+        };
+        let hasMigration = false;
         visit(body, ['text', 'newline'], (node) => {
             headerCommit.body += node.value;
+            if (node.value.includes('# Migration')) {
+                hasMigration = true;
+            }
+            if (hasMigration) {
+                migrationMessage.text += node.value;
+            }
         });
+        if (migrationMessage.text !== '') {
+            // remove leading # Migration\n
+            migrationMessage.text = migrationMessage.text
+                .split('\n')
+                .slice(1)
+                .join('\n')
+                .trim();
+            migrationMessage.text = '**Migration:** ' + migrationMessage.text;
+            headerCommit.notes.push(migrationMessage);
+        }
     }
     // Extract BREAKING CHANGE notes, regardless of whether they fall in
     // summary, body, or footer:
@@ -128,7 +149,7 @@ function toConventionalChangelogFormat(ast) {
         }
     });
     if (breaking.text !== '')
-        headerCommit.notes.push(breaking);
+        headerCommit.notes.unshift(breaking);
     // Populates references array from footers:
     // references: [{
     //    action: 'Closes',

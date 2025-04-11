@@ -215,6 +215,12 @@ const helpers_1 = require("./helpers");
     //   expect(conventionalCommits[0].type).to.equal('docs');
     //   expect(conventionalCommits[0].scope).is.null;
     // });
+    (0, mocha_1.it)('handles migration messages', async () => {
+        const commits = [(0, helpers_1.buildCommitFromFixture)('migration-message')];
+        const conventionalCommits = (0, commit_1.parseConventionalCommits)(commits);
+        (0, chai_1.expect)(conventionalCommits[0].notes[1].title).to.eql('Migration');
+        (0, chai_1.expect)(conventionalCommits[0].notes[1].text).to.eql('**Migration:** my message');
+    });
 });
 function assertHasCommit(commits, bareMessage) {
     const found = commits.find(commit => commit.bareMessage.includes(bareMessage));

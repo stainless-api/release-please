@@ -94,7 +94,10 @@ const version_1 = require("../../src/version");
                     type: 'fix',
                     scope: null,
                     bareMessage: 'some bugfix',
-                    notes: [{ title: 'BREAKING CHANGE', text: 'some bugfix' }],
+                    notes: [
+                        { title: 'BREAKING CHANGE', text: 'some bugfix' },
+                        { title: 'Migration', text: '**Migration:** migration note' },
+                    ],
                     references: [],
                     breaking: true,
                 },

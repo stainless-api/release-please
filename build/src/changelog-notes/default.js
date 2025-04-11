@@ -58,7 +58,7 @@ class DefaultChangelogNotes {
         })
             .map(commit => {
             const notes = commit.notes
-                .filter(note => note.title === 'BREAKING CHANGE')
+                .filter(note => note.title === 'BREAKING CHANGE' || note.title === 'Migration')
                 .map(note => replaceIssueLink(note, context.host, context.owner, context.repository));
             return {
                 body: '', // commit.body,
