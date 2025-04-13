@@ -29,7 +29,7 @@ describe('GenericJson', () => {
         resolve(fixturesPath, './esy.json'),
         'utf8'
       ).replace(/\r\n/g, '\n');
-      const updater = new GenericJson('$.version', Version.parse('v2.3.4'));
+      const updater = new GenericJson('$.version', Version.parseOne('v2.3.4'));
       const newContent = updater.updateContent(oldContent);
       snapshot(newContent);
     });
@@ -40,7 +40,7 @@ describe('GenericJson', () => {
       ).replace(/\r\n/g, '\n');
       const updater = new GenericJson(
         '$.packages..version',
-        Version.parse('v2.3.4')
+        Version.parseOne('v2.3.4')
       );
       const newContent = updater.updateContent(oldContent);
       snapshot(newContent);
@@ -50,7 +50,10 @@ describe('GenericJson', () => {
         resolve(fixturesPath, './esy.json'),
         'utf8'
       ).replace(/\r\n/g, '\n');
-      const updater = new GenericJson('$.nonExistent', Version.parse('v2.3.4'));
+      const updater = new GenericJson(
+        '$.nonExistent',
+        Version.parseOne('v2.3.4')
+      );
       const newContent = updater.updateContent(oldContent);
       expect(newContent).to.eql(oldContent);
     });
@@ -59,7 +62,10 @@ describe('GenericJson', () => {
         resolve(fixturesPath, './esy.json'),
         'utf8'
       ).replace(/\r\n/g, '\n');
-      const updater = new GenericJson('bad jsonpath', Version.parse('v2.3.4'));
+      const updater = new GenericJson(
+        'bad jsonpath',
+        Version.parseOne('v2.3.4')
+      );
       assert.throws(() => {
         updater.updateContent(oldContent);
       });

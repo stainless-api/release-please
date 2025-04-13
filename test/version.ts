@@ -21,7 +21,7 @@ describe('Version', () => {
   describe('parse', () => {
     it('can read a plain semver', async () => {
       const input = '1.23.45';
-      const version = Version.parse(input);
+      const version = Version.parseOne(input);
       expect(version.major).to.equal(1);
       expect(version.minor).to.equal(23);
       expect(version.patch).to.equal(45);
@@ -31,7 +31,7 @@ describe('Version', () => {
     });
     it('can read a SNAPSHOT version', async () => {
       const input = '1.23.45-SNAPSHOT';
-      const version = Version.parse(input);
+      const version = Version.parseOne(input);
       expect(version.major).to.equal(1);
       expect(version.minor).to.equal(23);
       expect(version.patch).to.equal(45);
@@ -41,7 +41,7 @@ describe('Version', () => {
     });
     it('can read a beta version', async () => {
       const input = '1.23.45-beta';
-      const version = Version.parse(input);
+      const version = Version.parseOne(input);
       expect(version.major).to.equal(1);
       expect(version.minor).to.equal(23);
       expect(version.patch).to.equal(45);
@@ -51,7 +51,7 @@ describe('Version', () => {
     });
     it('can read a beta SNAPSHOT version', async () => {
       const input = '1.23.45-beta-SNAPSHOT';
-      const version = Version.parse(input);
+      const version = Version.parseOne(input);
       expect(version.major).to.equal(1);
       expect(version.minor).to.equal(23);
       expect(version.patch).to.equal(45);
@@ -61,7 +61,7 @@ describe('Version', () => {
     });
     it('can read an lts version', async () => {
       const input = '1.23.45-sp.1';
-      const version = Version.parse(input);
+      const version = Version.parseOne(input);
       expect(version.major).to.equal(1);
       expect(version.minor).to.equal(23);
       expect(version.patch).to.equal(45);
@@ -71,7 +71,7 @@ describe('Version', () => {
     });
     it('can read an lts beta version', async () => {
       const input = '1.23.45-beta-sp.1';
-      const version = Version.parse(input);
+      const version = Version.parseOne(input);
       expect(version.major).to.equal(1);
       expect(version.minor).to.equal(23);
       expect(version.patch).to.equal(45);
@@ -81,7 +81,7 @@ describe('Version', () => {
     });
     it('can read an lts snapshot version', async () => {
       const input = '1.23.45-sp.1-SNAPSHOT';
-      const version = Version.parse(input);
+      const version = Version.parseOne(input);
       expect(version.major).to.equal(1);
       expect(version.minor).to.equal(23);
       expect(version.patch).to.equal(45);
@@ -91,7 +91,7 @@ describe('Version', () => {
     });
     it('can read an lts beta snapshot version', async () => {
       const input = '1.23.45-beta-sp.1-SNAPSHOT';
-      const version = Version.parse(input);
+      const version = Version.parseOne(input);
       expect(version.major).to.equal(1);
       expect(version.minor).to.equal(23);
       expect(version.patch).to.equal(45);
@@ -100,7 +100,7 @@ describe('Version', () => {
     });
     it('can read a plain semver with build', async () => {
       const input = '1.23.45+678';
-      const version = Version.parse(input);
+      const version = Version.parseOne(input);
       expect(version.major).to.equal(1);
       expect(version.minor).to.equal(23);
       expect(version.patch).to.equal(45);
@@ -110,7 +110,7 @@ describe('Version', () => {
     });
     it('can read a plain semver with alphanumeric build', async () => {
       const input = '1.23.45+678abc';
-      const version = Version.parse(input);
+      const version = Version.parseOne(input);
       expect(version.major).to.equal(1);
       expect(version.minor).to.equal(23);
       expect(version.patch).to.equal(45);
@@ -120,7 +120,7 @@ describe('Version', () => {
     });
     it('can read a semver with pre-release and build', async () => {
       const input = '1.23.45-beta.123+678';
-      const version = Version.parse(input);
+      const version = Version.parseOne(input);
       expect(version.major).to.equal(1);
       expect(version.minor).to.equal(23);
       expect(version.patch).to.equal(45);
@@ -131,16 +131,16 @@ describe('Version', () => {
   });
   describe('compare', () => {
     it('should handle pre-release versions', () => {
-      const comparison = Version.parse('1.2.3').compare(
-        Version.parse('1.2.3-alpha')
+      const comparison = Version.parseOne('1.2.3').compare(
+        Version.parseOne('1.2.3-alpha')
       );
       expect(comparison).to.eql(1);
     });
     it('should sort in ascending order using compare', () => {
       const input = [
-        Version.parse('1.2.3'),
-        Version.parse('1.2.3-alpha'),
-        Version.parse('2.2.0'),
+        Version.parseOne('1.2.3'),
+        Version.parseOne('1.2.3-alpha'),
+        Version.parseOne('2.2.0'),
       ];
       const output = input.sort((a, b) => a.compare(b));
       expect(output.map(version => version.toString())).to.eql([

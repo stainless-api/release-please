@@ -30,7 +30,7 @@ describe('PackageJson', () => {
         'utf8'
       );
       const packageJson = new PackageJson({
-        version: Version.parse('14.0.0'),
+        version: Version.parseOne('14.0.0'),
       });
       const newContent = packageJson.updateContent(oldContent);
       snapshot(newContent.replace(/\r\n/g, '\n'));

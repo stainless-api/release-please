@@ -21,7 +21,7 @@ import {expect} from 'chai';
 import {Version} from '../../src/version';
 
 const fixturesPath = './test/updaters/fixtures';
-const FAKE_VERSION = Version.parse('1.2.3');
+const FAKE_VERSION = Version.parseOne('1.2.3');
 
 describe('CargoToml', () => {
   describe('updateContent', () => {
@@ -58,7 +58,7 @@ describe('CargoToml', () => {
         resolve(fixturesPath, './Cargo.toml'),
         'utf8'
       ).replace(/\r\n/g, '\n');
-      const newVersion = Version.parse('14.0.0');
+      const newVersion = Version.parseOne('14.0.0');
       const versions = new Map();
       versions.set('rust-test-repo', newVersion);
       const cargoToml = new CargoToml({
@@ -74,7 +74,7 @@ describe('CargoToml', () => {
         resolve(fixturesPath, './Cargo.toml'),
         'utf8'
       ).replace(/\r\n/g, '\n');
-      const newVersion = Version.parse('12.0.0');
+      const newVersion = Version.parseOne('12.0.0');
       const versions = new Map();
       versions.set('normal-dep', '2.0.0');
       versions.set('dev-dep', '2.0.0');

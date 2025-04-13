@@ -337,7 +337,7 @@ describe('DefaultChangelogNotes', () => {
       const notes = await changelogNotes.buildNotes(commits, notesOptions);
       const pullRequestBody = new PullRequestBody([
         {
-          version: Version.parse('1.2.3'),
+          version: Version.parseOne('1.2.3'),
           notes,
         },
       ]);

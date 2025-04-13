@@ -95,7 +95,7 @@ describe('JavaYoshi', () => {
         .withArgs('versions.txt', 'main')
         .resolves(buildGitHubFileContent(fixturesPath, 'versions.txt'));
       const latestRelease = {
-        tag: new TagName(Version.parse('0.123.4'), 'google-cloud-automl'),
+        tag: new TagName(Version.parseOne('0.123.4'), 'google-cloud-automl'),
         sha: 'abc123',
         notes: 'some notes',
       };
@@ -123,7 +123,7 @@ describe('JavaYoshi', () => {
           buildGitHubFileContent(fixturesPath, 'versions-released.txt')
         );
       const latestRelease = {
-        tag: new TagName(Version.parse('0.123.4'), 'google-cloud-automl'),
+        tag: new TagName(Version.parseOne('0.123.4'), 'google-cloud-automl'),
         sha: 'abc123',
         notes: 'some notes',
       };
@@ -159,7 +159,7 @@ describe('JavaYoshi', () => {
           )
         );
       const latestRelease = {
-        tag: new TagName(Version.parse('0.123.4'), 'google-cloud-automl'),
+        tag: new TagName(Version.parseOne('0.123.4'), 'google-cloud-automl'),
         sha: 'abc123',
         notes: 'some notes',
       };
@@ -196,7 +196,7 @@ describe('JavaYoshi', () => {
         .withArgs('versions.txt', 'main')
         .throws(new FileNotFoundError('versions.txt'));
       const latestRelease = {
-        tag: new TagName(Version.parse('0.123.4'), 'google-cloud-automl'),
+        tag: new TagName(Version.parseOne('0.123.4'), 'google-cloud-automl'),
         sha: 'abc123',
         notes: 'some notes',
       };

@@ -107,7 +107,7 @@ export class CustomVersionUpdate implements VersionUpdater {
    * @returns {Version} The bumped version
    */
   bump(_version: Version): Version {
-    return Version.parse(this.versionString);
+    return Version.parseOne(this.versionString);
   }
 }
 

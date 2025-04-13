@@ -208,7 +208,7 @@ export class JavaYoshi extends Java {
         continue;
       }
       if (isPromotion && isStableArtifact(versionKey)) {
-        versionsMap.set(versionKey, Version.parse('1.0.0'));
+        versionsMap.set(versionKey, Version.parseOne('1.0.0'));
       } else {
         const newVersion = await this.versioningStrategy.bump(
           version,

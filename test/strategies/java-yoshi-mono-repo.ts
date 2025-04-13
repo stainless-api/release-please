@@ -102,7 +102,7 @@ describe('JavaYoshiMonoRepo', () => {
         .withArgs('versions.txt', 'main')
         .resolves(buildGitHubFileContent(fixturesPath, 'versions.txt'));
       const latestRelease = {
-        tag: new TagName(Version.parse('0.123.4'), 'google-cloud-automl'),
+        tag: new TagName(Version.parseOne('0.123.4'), 'google-cloud-automl'),
         sha: 'abc123',
         notes: 'some notes',
       };
@@ -130,7 +130,7 @@ describe('JavaYoshiMonoRepo', () => {
           buildGitHubFileContent(fixturesPath, 'versions-released.txt')
         );
       const latestRelease = {
-        tag: new TagName(Version.parse('0.123.4'), 'google-cloud-automl'),
+        tag: new TagName(Version.parseOne('0.123.4'), 'google-cloud-automl'),
         sha: 'abc123',
         notes: 'some notes',
       };
@@ -166,7 +166,7 @@ describe('JavaYoshiMonoRepo', () => {
           )
         );
       const latestRelease = {
-        tag: new TagName(Version.parse('0.123.4'), 'google-cloud-automl'),
+        tag: new TagName(Version.parseOne('0.123.4'), 'google-cloud-automl'),
         sha: 'abc123',
         notes: 'some notes',
       };

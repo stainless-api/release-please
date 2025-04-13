@@ -29,7 +29,7 @@ describe('DuneProject', () => {
         'utf8'
       ).replace(/\r\n/g, '\n');
       const version = new DuneProject({
-        version: Version.parse('0.6.0'),
+        version: Version.parseOne('0.6.0'),
       });
       const newContent = version.updateContent(oldContent);
       snapshot(newContent);

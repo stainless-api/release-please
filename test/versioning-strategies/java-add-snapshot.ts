@@ -25,7 +25,7 @@ describe('JavaAddSnapshot', () => {
   describe('with DefaultVersioning', () => {
     it('should bump to snapshot', async () => {
       const strategy = new JavaAddSnapshot(new DefaultVersioningStrategy({}));
-      const oldVersion = Version.parse('1.2.3');
+      const oldVersion = Version.parseOne('1.2.3');
       const newVersion = await strategy.bump(oldVersion, []);
       expect(newVersion.toString()).to.equal('1.2.4-SNAPSHOT');
     });
@@ -36,7 +36,7 @@ describe('JavaAddSnapshot', () => {
       const strategy = new JavaAddSnapshot(
         new ServicePackVersioningStrategy({})
       );
-      const oldVersion = Version.parse('1.2.3');
+      const oldVersion = Version.parseOne('1.2.3');
       const newVersion = await strategy.bump(oldVersion, []);
       expect(newVersion.toString()).to.equal('1.2.3-sp.1-SNAPSHOT');
     });
@@ -45,7 +45,7 @@ describe('JavaAddSnapshot', () => {
       const strategy = new JavaAddSnapshot(
         new ServicePackVersioningStrategy({})
       );
-      const oldVersion = Version.parse('1.2.3-sp.1');
+      const oldVersion = Version.parseOne('1.2.3-sp.1');
       const newVersion = await strategy.bump(oldVersion, []);
       expect(newVersion.toString()).to.equal('1.2.3-sp.2-SNAPSHOT');
     });
@@ -54,7 +54,7 @@ describe('JavaAddSnapshot', () => {
   describe('with AlwaysBumpPatch', () => {
     it('should bump to snapshot', async () => {
       const strategy = new JavaAddSnapshot(new AlwaysBumpPatch({}));
-      const oldVersion = Version.parse('1.2.3');
+      const oldVersion = Version.parseOne('1.2.3');
       const newVersion = await strategy.bump(oldVersion, []);
       expect(newVersion.toString()).to.equal('1.2.4-SNAPSHOT');
     });

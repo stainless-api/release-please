@@ -526,7 +526,7 @@ function buildMockPackageUpdate(
     path,
     createIfMissing: false,
     cachedFileContents,
-    updater: new PomXml(Version.parse(newVersionString)),
+    updater: new PomXml(Version.parseOne(newVersionString)),
   };
 }
 

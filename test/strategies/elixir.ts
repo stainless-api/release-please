@@ -68,7 +68,7 @@ describe('Elixir', () => {
         component: 'some-elixir-package',
       });
       const latestRelease = {
-        tag: new TagName(Version.parse('0.123.4'), 'some-elixir-package'),
+        tag: new TagName(Version.parseOne('0.123.4'), 'some-elixir-package'),
         sha: 'abc123',
         notes: 'some notes',
       };

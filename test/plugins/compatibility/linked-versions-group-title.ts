@@ -44,7 +44,7 @@ export function buildMockPackageUpdate(
     createIfMissing: false,
     cachedFileContents,
     updater: new CargoToml({
-      version: Version.parse(manifest.package?.version || 'FIXME'),
+      version: Version.parseOne(manifest.package?.version || 'FIXME'),
     }),
   };
 }
@@ -133,8 +133,8 @@ describe('Plugin compatibility', () => {
           },
         },
         {
-          '.': Version.parse('1.0.0'),
-          'packages/nodeA': Version.parse('1.0.0'),
+          '.': Version.parseOne('1.0.0'),
+          'packages/nodeA': Version.parseOne('1.0.0'),
         },
         {
           plugins: [

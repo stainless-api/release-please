@@ -29,7 +29,7 @@ describe('PHPManifest', () => {
         'utf8'
       ).replace(/\r\n/g, '\n');
       const composer = new PHPClientVersion({
-        version: Version.parse('0.8.0'),
+        version: Version.parseOne('0.8.0'),
       });
       const newContent = composer.updateContent(oldContent);
       snapshot(newContent);
@@ -40,7 +40,7 @@ describe('PHPManifest', () => {
         'utf8'
       ).replace(/\r\n/g, '\n');
       const composer = new PHPClientVersion({
-        version: Version.parse('0.8.0'),
+        version: Version.parseOne('0.8.0'),
       });
       const newContent = composer.updateContent(oldContent);
       snapshot(newContent);

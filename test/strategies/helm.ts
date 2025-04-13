@@ -74,7 +74,7 @@ describe('Helm', () => {
         packageName: 'some-helm-package',
       });
       const latestRelease = {
-        tag: new TagName(Version.parse('0.123.4'), 'some-helm-package'),
+        tag: new TagName(Version.parseOne('0.123.4'), 'some-helm-package'),
         sha: 'abc123',
         notes: 'some notes',
       };
@@ -91,7 +91,7 @@ describe('Helm', () => {
         github,
       });
       const latestRelease = {
-        tag: new TagName(Version.parse('0.123.4'), 'helm-test-repo'),
+        tag: new TagName(Version.parseOne('0.123.4'), 'helm-test-repo'),
         sha: 'abc123',
         notes: 'some notes',
       };

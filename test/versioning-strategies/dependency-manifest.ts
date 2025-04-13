@@ -57,21 +57,21 @@ describe('DependencyManifest', () => {
     ];
     it('can bump a major', async () => {
       const strategy = new DependencyManifest({});
-      const oldVersion = Version.parse('1.2.3');
+      const oldVersion = Version.parseOne('1.2.3');
       const newVersion = await strategy.bump(oldVersion, commits);
       expect(newVersion.toString()).to.equal('2.0.0');
     });
 
     it('can bump a major on pre major for breaking change', async () => {
       const strategy = new DependencyManifest({});
-      const oldVersion = Version.parse('0.1.2');
+      const oldVersion = Version.parseOne('0.1.2');
       const newVersion = await strategy.bump(oldVersion, commits);
       expect(newVersion.toString()).to.equal('1.0.0');
     });
 
     it('can bump a minor pre major for breaking change', async () => {
       const strategy = new DependencyManifest({bumpMinorPreMajor: true});
-      const oldVersion = Version.parse('0.1.2');
+      const oldVersion = Version.parseOne('0.1.2');
       const newVersion = await strategy.bump(oldVersion, commits);
       expect(newVersion.toString()).to.equal('0.2.0');
     });
@@ -115,13 +115,13 @@ describe('DependencyManifest', () => {
     ];
     it('can bump a minor', async () => {
       const strategy = new DependencyManifest({});
-      const oldVersion = Version.parse('1.2.3');
+      const oldVersion = Version.parseOne('1.2.3');
       const newVersion = await strategy.bump(oldVersion, commits);
       expect(newVersion.toString()).to.equal('1.3.0');
     });
     it('can bump a minor pre-major', async () => {
       const strategy = new DependencyManifest({});
-      const oldVersion = Version.parse('0.1.2');
+      const oldVersion = Version.parseOne('0.1.2');
       const newVersion = await strategy.bump(oldVersion, commits);
       expect(newVersion.toString()).to.equal('0.2.0');
     });
@@ -129,7 +129,7 @@ describe('DependencyManifest', () => {
       const strategy = new DependencyManifest({
         bumpPatchForMinorPreMajor: true,
       });
-      const oldVersion = Version.parse('0.1.2');
+      const oldVersion = Version.parseOne('0.1.2');
       const newVersion = await strategy.bump(oldVersion, commits);
       expect(newVersion.toString()).to.equal('0.1.3');
     });
@@ -162,7 +162,7 @@ describe('DependencyManifest', () => {
     ];
     it('can bump a patch', async () => {
       const strategy = new DependencyManifest({});
-      const oldVersion = Version.parse('1.2.3');
+      const oldVersion = Version.parseOne('1.2.3');
       const newVersion = await strategy.bump(oldVersion, commits);
       expect(newVersion.toString()).to.equal('1.2.4');
     });
@@ -184,7 +184,7 @@ describe('DependencyManifest', () => {
         },
       ];
       const strategy = new DependencyManifest({});
-      const oldVersion = Version.parse('1.2.3');
+      const oldVersion = Version.parseOne('1.2.3');
       const newVersion = await strategy.bump(oldVersion, commits);
       expect(newVersion.toString()).to.equal('1.2.4');
     });
@@ -203,7 +203,7 @@ describe('DependencyManifest', () => {
         },
       ];
       const strategy = new DependencyManifest({});
-      const oldVersion = Version.parse('1.2.3');
+      const oldVersion = Version.parseOne('1.2.3');
       const newVersion = await strategy.bump(oldVersion, commits);
       expect(newVersion.toString()).to.equal('1.3.0');
     });
@@ -224,7 +224,7 @@ describe('DependencyManifest', () => {
       const strategy = new DependencyManifest({
         bumpPatchForMinorPreMajor: true,
       });
-      const oldVersion = Version.parse('0.1.2');
+      const oldVersion = Version.parseOne('0.1.2');
       const newVersion = await strategy.bump(oldVersion, commits);
       expect(newVersion.toString()).to.equal('0.1.3');
     });
@@ -245,7 +245,7 @@ describe('DependencyManifest', () => {
       const strategy = new DependencyManifest({
         bumpMinorPreMajor: true,
       });
-      const oldVersion = Version.parse('0.1.2');
+      const oldVersion = Version.parseOne('0.1.2');
       const newVersion = await strategy.bump(oldVersion, commits);
       expect(newVersion.toString()).to.equal('0.2.0');
     });
@@ -266,7 +266,7 @@ describe('DependencyManifest', () => {
       const strategy = new DependencyManifest({
         bumpMinorPreMajor: true,
       });
-      const oldVersion = Version.parse('1.2.3');
+      const oldVersion = Version.parseOne('1.2.3');
       const newVersion = await strategy.bump(oldVersion, commits);
       expect(newVersion.toString()).to.equal('2.0.0');
     });

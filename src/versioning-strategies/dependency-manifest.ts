@@ -96,9 +96,9 @@ function buildDependencyUpdates(
     const versionString = match[2];
     let version: Version;
     try {
-      version = Version.parse(versionString);
+      version = Version.parseOne(versionString);
     } catch {
-      version = Version.parse(`${versionString}.0.0`);
+      version = Version.parseOne(`${versionString}.0.0`);
     }
 
     // commits are sorted by latest first, so if there is a collision,

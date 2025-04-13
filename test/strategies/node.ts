@@ -86,7 +86,7 @@ describe('Node', () => {
         packageName: 'some-node-package',
       });
       const latestRelease = {
-        tag: new TagName(Version.parse('0.123.4'), 'some-node-package'),
+        tag: new TagName(Version.parseOne('0.123.4'), 'some-node-package'),
         sha: 'abc123',
         notes: 'some notes',
       };
@@ -108,7 +108,7 @@ describe('Node', () => {
         ),
       ];
       const latestRelease = {
-        tag: new TagName(Version.parse('0.123.4'), 'node-test-repo'),
+        tag: new TagName(Version.parseOne('0.123.4'), 'node-test-repo'),
         sha: 'abc123',
         notes: 'some notes',
       };
@@ -138,7 +138,7 @@ describe('Node', () => {
         ),
       ];
       const latestRelease = {
-        tag: new TagName(Version.parse('0.123.4'), 'node-test-repo'),
+        tag: new TagName(Version.parseOne('0.123.4'), 'node-test-repo'),
         sha: 'abc123',
         notes: 'some notes',
       };
@@ -164,7 +164,7 @@ describe('Node', () => {
         github,
       });
       const latestRelease = {
-        tag: new TagName(Version.parse('0.123.4'), 'some-node-package'),
+        tag: new TagName(Version.parseOne('0.123.4'), 'some-node-package'),
         sha: 'abc123',
         notes: 'some notes',
       };

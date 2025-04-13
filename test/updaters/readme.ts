@@ -29,7 +29,7 @@ describe('README.md', () => {
         'utf8'
       ).replace(/\r\n/g, '\n');
       const version = new ReadMe({
-        version: Version.parse('2.1.0'),
+        version: Version.parseOne('2.1.0'),
       });
       const newContent = version.updateContent(oldContent);
       snapshot(newContent);

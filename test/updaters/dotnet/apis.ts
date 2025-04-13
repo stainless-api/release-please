@@ -30,7 +30,7 @@ describe('Apis', () => {
       ).replace(/\r\n/g, '\n');
       const updater = new Apis(
         'Google.Cloud.SecurityCenter.V1',
-        Version.parse('2.12.0')
+        Version.parseOne('2.12.0')
       );
       const newContent = updater.updateContent(oldContent);
       snapshot(newContent);
