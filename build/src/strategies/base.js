@@ -152,8 +152,8 @@ class BaseStrategy {
     async buildReleasePullRequest({ commits, existingPullRequest, labels = [], latestRelease, draft, manifestPath, }) {
         var _a;
         const conventionalCommits = await this.postProcessCommits(commits);
-        this.logger.info(`Considering: ${conventionalCommits.length} commits`);
-        if (conventionalCommits.length === 0) {
+        this.logger.info(`Considering: ${commits.length} commits`);
+        if (commits.length === 0) {
             this.logger.info(`No commits for path: ${this.path}, skipping`);
             return undefined;
         }
