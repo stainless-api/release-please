@@ -152,11 +152,7 @@ class BaseStrategy {
     async buildReleasePullRequest({ commits, existingPullRequest, labels = [], latestRelease, draft, manifestPath, }) {
         var _a;
         const conventionalCommits = await this.postProcessCommits(commits);
-        this.logger.info(`Considering: ${commits.length} commits`);
-        if (commits.length === 0) {
-            this.logger.info(`No commits for path: ${this.path}, skipping`);
-            return undefined;
-        }
+        this.logger.info(`Considering: ${commits.length} conventional commits`);
         const component = await this.getComponent();
         this.logger.debug('component:', component);
         const releaseAsCommit = conventionalCommits.find(conventionalCommit => conventionalCommit.notes.find(note => note.title === 'RELEASE AS'));
