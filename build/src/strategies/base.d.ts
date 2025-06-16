@@ -118,7 +118,7 @@ export declare abstract class BaseStrategy implements Strategy {
      *   open a pull request.
      */
     buildReleasePullRequest({ commits, existingPullRequest, labels, latestRelease, draft, manifestPath, }: {
-        commits: ConventionalCommit[];
+        commits: Commit[];
         latestRelease?: Release;
         draft?: boolean;
         labels?: string[];

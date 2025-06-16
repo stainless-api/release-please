@@ -397,16 +397,14 @@ class Manifest {
             const branchName = (await strategy.getBranchName()).toString();
             const existingPR = openPullRequests.find(pr => pr.headBranchName === branchName) ||
                 snoozedPullRequests.find(pr => pr.headBranchName === branchName);
-            const releasePullRequest = commitsPerPath[path]
-                ? await strategy.buildReleasePullRequest({
-                    commits: pathCommits,
-                    latestRelease,
-                    draft: (_a = config.draftPullRequest) !== null && _a !== void 0 ? _a : this.draftPullRequest,
-                    labels: this.labels,
-                    existingPullRequest: existingPR,
-                    manifestPath: this.manifestPath,
-                })
-                : undefined;
+            const releasePullRequest = await strategy.buildReleasePullRequest({
+                commits: commitsPerPath[path],
+                latestRelease,
+                draft: (_a = config.draftPullRequest) !== null && _a !== void 0 ? _a : this.draftPullRequest,
+                labels: this.labels,
+                existingPullRequest: existingPR,
+                manifestPath: this.manifestPath,
+            });
             this.logger.debug(`path: ${path}`);
             this.logger.debug(`releasePullRequest.headRefName: ${releasePullRequest === null || releasePullRequest === void 0 ? void 0 : releasePullRequest.headRefName}`);
             if (releasePullRequest) {

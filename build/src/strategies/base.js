@@ -17,6 +17,7 @@ exports.BaseStrategy = void 0;
 const manifest_1 = require("../manifest");
 const default_1 = require("../versioning-strategies/default");
 const default_2 = require("../changelog-notes/default");
+const commit_1 = require("../commit");
 const version_1 = require("../version");
 const tag_name_1 = require("../util/tag-name");
 const logger_1 = require("../util/logger");
@@ -151,8 +152,19 @@ class BaseStrategy {
      */
     async buildReleasePullRequest({ commits, existingPullRequest, labels = [], latestRelease, draft, manifestPath, }) {
         var _a;
-        const conventionalCommits = await this.postProcessCommits(commits);
-        this.logger.info(`Considering: ${commits.length} conventional commits`);
+        this.logger.info(`Considering: ${commits.length} raw commits`);
+        const mergeCommitRegex = /^Merge pull request #\d+ from [^/]+\/release-please(--[\w-]+)+$/;
+        // if there are no commits that are not release pr merge commits, there's nothing to include in a new release PR
+        if (commits.every(c => mergeCommitRegex.test(c.message))) {
+            this.logger.info(`No commits to consider for ${this.path}, all commits are merges of release PRs`);
+            return;
+        }
+        // do not parse commits if they are already conventional commits
+        let conventionalCommits = commits[0] && 'type' in commits[0]
+            ? commits
+            : (0, commit_1.parseConventionalCommits)(commits, this.logger);
+        conventionalCommits = await this.postProcessCommits(conventionalCommits);
+        this.logger.info(`Considering: ${conventionalCommits.length} conventional commits`);
         const component = await this.getComponent();
         this.logger.debug('component:', component);
         const releaseAsCommit = conventionalCommits.find(conventionalCommit => conventionalCommit.notes.find(note => note.title === 'RELEASE AS'));
