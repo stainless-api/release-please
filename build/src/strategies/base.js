@@ -154,8 +154,9 @@ class BaseStrategy {
         var _a;
         this.logger.info(`Considering: ${commits.length} raw commits`);
         const mergeCommitRegex = /^Merge pull request #\d+ from [^/]+\/release-please(--[\w-]+)+$/;
-        // if there are no commits that are not release pr merge commits, there's nothing to include in a new release PR
-        if (commits.every(c => mergeCommitRegex.test(c.message))) {
+        // if there are no commits that are not either release pr merge commits or metadata commits,
+        // there's nothing to include in a new release PR
+        if (commits.every(c => mergeCommitRegex.test(c.message) || c.message === 'codegen metadata')) {
             this.logger.info(`No commits to consider for ${this.path}, all commits are merges of release PRs`);
             return;
         }
