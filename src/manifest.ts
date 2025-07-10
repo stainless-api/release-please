@@ -41,7 +41,6 @@ import {
   ConfigurationError,
   isOctokitRequestError,
   isOctokitGraphqlResponseError,
-  AggregateError,
 } from './errors';
 import {ManifestPlugin} from './plugin';
 import {
