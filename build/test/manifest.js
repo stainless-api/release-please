@@ -1753,31 +1753,9 @@ function pullRequestBody(path) {
                 'path/c': '3.0.0',
                 'path/d': '4.0.0',
             })))
-                .withArgs('.release-please-manifest.json', 'release-please--branches--main--changes--next--components--pkg1')
-                .resolves((0, helpers_1.buildGitHubFileRaw)(JSON.stringify({
-                'path/a': '1.0.1',
-            })))
-                .withArgs('.release-please-manifest.json', 'release-please--branches--main--changes--next--components--pkg2')
-                .resolves((0, helpers_1.buildGitHubFileRaw)(JSON.stringify({
-                'path/b': '2.0.1',
-            })))
                 .withArgs('path/b/package.json', 'next')
                 .resolves((0, helpers_1.buildGitHubFileRaw)(JSON.stringify({
                 name: 'pkg2',
-            })))
-                .withArgs('.release-please-manifest.json', 'release-please--branches--main--changes--next--components--pkg3')
-                .resolves((0, helpers_1.buildGitHubFileRaw)(JSON.stringify({
-                'path/c': '3.0.1',
-            })))
-                .withArgs('path/c/setup.py', 'next')
-                .resolves((0, helpers_1.buildGitHubFileRaw)(`
-name = "pkg3"
-description = "Something"
-version = "3.0.0"
-`))
-                .withArgs('.release-please-manifest.json', 'release-please--branches--main--changes--next--components--pkg4')
-                .resolves((0, helpers_1.buildGitHubFileRaw)(JSON.stringify({
-                'path/d': '4.0.1',
             })));
             const findFilesByFilenameAndRefStub = sandbox
                 .stub(github, 'findFilesByFilenameAndRef')
@@ -1799,7 +1777,7 @@ version = "3.0.0"
             const manifest = await manifest_1.Manifest.fromManifest(github, 'main', undefined, undefined, { changesBranch: 'next' });
             const pullRequests = await manifest.buildPullRequests([
                 {
-                    title: 'chore(main): release v6.7.9-alpha.1', // version from title differs from PR manifest
+                    title: 'chore(main): release v6.7.9-alpha.1', // version from title differs from expected 4.0.1
                     body: 'some content',
                     headBranchName: 'release-please--branches--main--changes--next--components--pkg1',
                     baseBranchName: 'main',
@@ -1808,7 +1786,7 @@ version = "3.0.0"
                     files: [],
                 },
                 {
-                    title: 'chore(main): release v7.8.9', // version from title differs from PR manifest
+                    title: 'chore(main): release v7.8.9', // version from title differs from expected 4.0.1
                     body: 'some content',
                     headBranchName: 'release-please--branches--main--changes--next--components--pkg2',
                     baseBranchName: 'main',
@@ -1817,7 +1795,7 @@ version = "3.0.0"
                     files: [],
                 },
                 {
-                    title: 'chore(main): release 8.9.0', // version from title differs from PR manifest
+                    title: 'chore(main): release 8.9.0', // version from title differs from expected 4.0.1
                     body: 'some content',
                     headBranchName: 'release-please--branches--main--changes--next--components--pkg3',
                     baseBranchName: 'main',
@@ -1826,7 +1804,7 @@ version = "3.0.0"
                     files: [],
                 },
                 {
-                    title: 'chore(main): release v9.0.1', // version from title differs from PR manifest
+                    title: 'chore(main): release v9.0.1', // version from title differs from expected 4.0.1
                     body: 'some content',
                     headBranchName: 'release-please--branches--main--changes--next--components--pkg4',
                     baseBranchName: 'main',
@@ -1840,9 +1818,9 @@ version = "3.0.0"
             (0, chai_1.expect)((_b = pullRequests[1].version) === null || _b === void 0 ? void 0 : _b.toString()).to.eql('7.8.9');
             (0, chai_1.expect)((_c = pullRequests[2].version) === null || _c === void 0 ? void 0 : _c.toString()).to.eql('8.9.0');
             (0, chai_1.expect)((_d = pullRequests[3].version) === null || _d === void 0 ? void 0 : _d.toString()).to.eql('9.0.1');
-            sinon.assert.called(getFileContentsOnBranchStub);
             sinon.assert.called(addIssueLabelsStub);
             sinon.assert.called(findFilesByFilenameAndRefStub);
+            sinon.assert.called(getFileContentsOnBranchStub);
             (0, chai_1.expect)(commentCount).to.eql(4);
         });
         (0, mocha_1.it)('should always use PR title version when labelled as custom version', async () => {

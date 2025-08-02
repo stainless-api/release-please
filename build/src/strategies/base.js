@@ -150,7 +150,7 @@ class BaseStrategy {
      *   open for this path/component. Returns undefined if we should not
      *   open a pull request.
      */
-    async buildReleasePullRequest({ commits, existingPullRequest, labels = [], latestRelease, draft, manifestPath, }) {
+    async buildReleasePullRequest({ commits, existingPullRequest, labels = [], latestRelease, draft, }) {
         var _a;
         this.logger.info(`Considering: ${commits.length} raw commits`);
         const mergeCommitRegex = /^Merge pull request #\d+ from [^/]+\/release-please(--[\w-]+)+$/;
@@ -219,9 +219,7 @@ To set a custom version be sure to use the [semantic versioning format](https://
             else {
                 // look at the manifest from release branch and compare against version from PR title
                 try {
-                    const manifest = (await this.github.getFileJson(manifestPath || manifest_1.DEFAULT_RELEASE_PLEASE_MANIFEST, existingPullRequest.headBranchName)) || {};
-                    const componentVersion = manifest[component || '.'];
-                    if (componentVersion !== (existingPRTitleVersion === null || existingPRTitleVersion === void 0 ? void 0 : existingPRTitleVersion.toString())) {
+                    if (newVersion.toString() !== existingPRTitleVersion.toString()) {
                         // version from title has been edited, add custom version label, a comment, and use the title version
                         this.github.addIssueLabels([manifest_1.DEFAULT_CUSTOM_VERSION_LABEL], existingPullRequest.number);
                         this.github.commentOnIssue(`

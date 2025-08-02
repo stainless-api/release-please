@@ -117,13 +117,12 @@ export declare abstract class BaseStrategy implements Strategy {
      *   open for this path/component. Returns undefined if we should not
      *   open a pull request.
      */
-    buildReleasePullRequest({ commits, existingPullRequest, labels, latestRelease, draft, manifestPath, }: {
+    buildReleasePullRequest({ commits, existingPullRequest, labels, latestRelease, draft, }: {
         commits: Commit[];
         latestRelease?: Release;
         draft?: boolean;
         labels?: string[];
         existingPullRequest?: PullRequest;
-        manifestPath?: string;
     }): Promise<ReleasePullRequest | undefined>;
     private extraFilePaths;
     protected extraFileUpdates(version: Version, versionsMap: VersionsMap): Promise<Update[]>;
