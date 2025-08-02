@@ -2483,17 +2483,6 @@ describe('Manifest', () => {
         .stub(github, 'getFileContentsOnBranch')
         .withArgs('release-please-config.json', 'next')
         .resolves(buildGitHubFileRaw(JSON.stringify(config)))
-        .withArgs('.release-please-manifest.json', 'next')
-        .resolves(
-          buildGitHubFileRaw(
-            JSON.stringify({
-              'path/a': '1.0.0',
-              'path/b': '2.0.0',
-              'path/c': '3.0.0',
-              'path/d': '4.0.0',
-            })
-          )
-        )
         .withArgs('path/b/package.json', 'next')
         .resolves(
           buildGitHubFileRaw(
@@ -2592,9 +2581,9 @@ version = "3.0.0"
       expect(pullRequests[1].version?.toString()).to.eql('7.8.9');
       expect(pullRequests[2].version?.toString()).to.eql('8.9.0');
       expect(pullRequests[3].version?.toString()).to.eql('9.0.1');
-      sinon.assert.called(getFileContentsOnBranchStub);
       sinon.assert.called(addIssueLabelsStub);
       sinon.assert.called(findFilesByFilenameAndRefStub);
+      sinon.assert.called(getFileContentsOnBranchStub);
       expect(commentCount).to.eql(4);
     });
 
