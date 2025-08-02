@@ -22,7 +22,6 @@ import {
   MANIFEST_PULL_REQUEST_TITLE_PATTERN,
   ExtraFile,
   DEFAULT_CUSTOM_VERSION_LABEL,
-  DEFAULT_RELEASE_PLEASE_MANIFEST,
 } from '../manifest';
 import {DefaultVersioningStrategy} from '../versioning-strategies/default';
 import {DefaultChangelogNotes} from '../changelog-notes/default';
@@ -275,14 +274,12 @@ export abstract class BaseStrategy implements Strategy {
     labels = [],
     latestRelease,
     draft,
-    manifestPath,
   }: {
     commits: Commit[];
     latestRelease?: Release;
     draft?: boolean;
     labels?: string[];
     existingPullRequest?: PullRequest;
-    manifestPath?: string;
   }): Promise<ReleasePullRequest | undefined> {
     this.logger.info(`Considering: ${commits.length} raw commits`);
 
