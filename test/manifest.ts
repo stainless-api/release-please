@@ -2501,16 +2501,6 @@ describe('Manifest', () => {
               name: 'pkg2',
             })
           )
-        )
-        .withArgs('path/c/setup.py', 'next')
-        .resolves(
-          buildGitHubFileRaw(
-            `
-name = "pkg3"
-description = "Something"
-version = "3.0.0"
-`
-          )
         );
 
       const findFilesByFilenameAndRefStub = sandbox
