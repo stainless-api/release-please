@@ -391,13 +391,7 @@ To set a custom version be sure to use the [semantic versioning format](https://
       } else {
         // look at the manifest from release branch and compare against version from PR title
         try {
-          const manifest =
-            (await this.github.getFileJson<Record<string, string>>(
-              manifestPath || DEFAULT_RELEASE_PLEASE_MANIFEST,
-              existingPullRequest.headBranchName
-            )) || {};
-          const componentVersion = manifest[component || '.'];
-          if (componentVersion !== existingPRTitleVersion?.toString()) {
+          if (newVersion.toString() !== existingPRTitleVersion.toString()) {
             // version from title has been edited, add custom version label, a comment, and use the title version
             this.github.addIssueLabels(
               [DEFAULT_CUSTOM_VERSION_LABEL],
