@@ -23,7 +23,7 @@ const helpers_2 = require("../helpers");
 const tag_name_1 = require("../../src/util/tag-name");
 const version_1 = require("../../src/version");
 const changelog_1 = require("../../src/updaters/changelog");
-const root_composer_update_packages_1 = require("../../src/updaters/php/root-composer-update-packages");
+// import {RootComposerUpdatePackages} from '../../src/updaters/php/root-composer-update-packages';
 const sandbox = sinon.createSandbox();
 const COMMITS = [
     ...(0, helpers_2.buildMockConventionalCommit)('fix(deps): update dependency com.google.cloud:google-cloud-storage to v1.120.0'),
@@ -91,9 +91,13 @@ const COMMITS = [
                 latestRelease,
             });
             const updates = release.updates;
-            (0, chai_1.expect)(updates).lengthOf(2);
+            // Stainless EDIT: we removed updates to the composer.json file
+            (0, chai_1.expect)(updates).lengthOf(1);
             (0, helpers_1.assertHasUpdate)(updates, 'CHANGELOG.md', changelog_1.Changelog);
-            (0, helpers_1.assertHasUpdate)(updates, 'composer.json', root_composer_update_packages_1.RootComposerUpdatePackages);
+            // Original:
+            // expect(updates).lengthOf(2);
+            // assertHasUpdate(updates, 'CHANGELOG.md', Changelog);
+            // assertHasUpdate(updates, 'composer.json', RootComposerUpdatePackages);
         });
     });
 });

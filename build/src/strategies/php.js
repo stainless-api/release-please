@@ -17,7 +17,7 @@ exports.PHP = void 0;
 // Generic
 const changelog_1 = require("../updaters/changelog");
 // PHP Specific.
-const root_composer_update_packages_1 = require("../updaters/php/root-composer-update-packages");
+// import {RootComposerUpdatePackages} from '../updaters/php/root-composer-update-packages';
 const base_1 = require("./base");
 const CHANGELOG_SECTIONS = [
     { type: 'feat', section: 'Features' },
@@ -51,15 +51,21 @@ class PHP extends base_1.BaseStrategy {
                 changelogEntry: options.changelogEntry,
             }),
         });
+        /**
+    
+         STAINLESS-EDIT: Note from Hao & Jacob: In Packagist we want to prefer using the github tag rather than
+         composer version. Releases can be skipped if the tag version misaligns with the composer version.
+    
         // update composer.json
         updates.push({
-            path: this.addPath('composer.json'),
-            createIfMissing: false,
-            updater: new root_composer_update_packages_1.RootComposerUpdatePackages({
-                version,
-                versionsMap,
-            }),
-        });
+          path: this.addPath('composer.json'),
+          createIfMissing: false,
+          updater: new RootComposerUpdatePackages({
+            version,
+            versionsMap,
+          }),
+          });
+        */
         return updates;
     }
 }
