@@ -22,7 +22,7 @@ import {buildMockConventionalCommit} from '../helpers';
 import {TagName} from '../../src/util/tag-name';
 import {Version} from '../../src/version';
 import {Changelog} from '../../src/updaters/changelog';
-import {RootComposerUpdatePackages} from '../../src/updaters/php/root-composer-update-packages';
+// import {RootComposerUpdatePackages} from '../../src/updaters/php/root-composer-update-packages';
 
 const sandbox = sinon.createSandbox();
 
