@@ -22,7 +22,7 @@ import {buildMockConventionalCommit} from '../helpers';
 import {TagName} from '../../src/util/tag-name';
 import {Version} from '../../src/version';
 import {Changelog} from '../../src/updaters/changelog';
-import {RootComposerUpdatePackages} from '../../src/updaters/php/root-composer-update-packages';
+// import {RootComposerUpdatePackages} from '../../src/updaters/php/root-composer-update-packages';
 
 const sandbox = sinon.createSandbox();
 
@@ -95,9 +95,14 @@ describe('PHP', () => {
         latestRelease,
       });
       const updates = release!.updates;
-      expect(updates).lengthOf(2);
+      // Stainless EDIT: we removed updates to the composer.json file
+      expect(updates).lengthOf(1);
       assertHasUpdate(updates, 'CHANGELOG.md', Changelog);
-      assertHasUpdate(updates, 'composer.json', RootComposerUpdatePackages);
+
+      // Original:
+      // expect(updates).lengthOf(2);
+      // assertHasUpdate(updates, 'CHANGELOG.md', Changelog);
+      // assertHasUpdate(updates, 'composer.json', RootComposerUpdatePackages);
     });
   });
 });

@@ -15,7 +15,7 @@
 // Generic
 import {Changelog} from '../updaters/changelog';
 // PHP Specific.
-import {RootComposerUpdatePackages} from '../updaters/php/root-composer-update-packages';
+// import {RootComposerUpdatePackages} from '../updaters/php/root-composer-update-packages';
 import {BaseStrategy, BuildUpdatesOptions, BaseStrategyOptions} from './base';
 import {Update} from '../update';
 import {VersionsMap} from '../version';
@@ -57,6 +57,11 @@ export class PHP extends BaseStrategy {
       }),
     });
 
+    /**
+
+     STAINLESS-EDIT: Note from Hao & Jacob: In Packagist we want to prefer using the github tag rather than
+     composer version. Releases can be skipped if the tag version misaligns with the composer version.
+
     // update composer.json
     updates.push({
       path: this.addPath('composer.json'),
@@ -65,7 +70,8 @@ export class PHP extends BaseStrategy {
         version,
         versionsMap,
       }),
-    });
+      });
+    */
 
     return updates;
   }
