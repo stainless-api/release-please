@@ -17,7 +17,7 @@ import {expect} from 'chai';
 import {GitHub} from '../../src/github';
 import {Ruby} from '../../src/strategies/ruby';
 import * as sinon from 'sinon';
-import {assertHasUpdate} from '../helpers';
+import {assertHasUpdate, buildGitHubFileRaw} from '../helpers';
 import {buildMockConventionalCommit} from '../helpers';
 import {TagName} from '../../src/util/tag-name';
 import {Version} from '../../src/version';
@@ -25,6 +25,14 @@ import {Changelog} from '../../src/updaters/changelog';
 import {VersionRB} from '../../src/updaters/ruby/version-rb';
 import {GemfileLock} from '../../src/updaters/ruby/gemfile-lock';
 import {PullRequestBody} from '../../src/util/pull-request-body';
+
+const GEM_NAME = 'google-cloud-automl-gem';
+
+const GEMFILE_CONTENTS = `
+Gem::Specification.new do |gem|
+  gem.name = "${GEM_NAME}"
+end
+`;
 
 const sandbox = sinon.createSandbox();
 
@@ -46,7 +54,18 @@ describe('Ruby', () => {
       repo: 'ruby-test-repo',
       defaultBranch: 'main',
     });
+
+    const fileFilesStub = sandbox.stub(github, 'findFilesByGlobAndRef');
+    fileFilesStub
+      .withArgs('*.gemspec', 'main')
+      .resolves(['google-cloud-automl.gemspec']);
+
+    const getFileContentsStub = sandbox.stub(github, 'getFileContentsOnBranch');
+    getFileContentsStub
+      .withArgs('google-cloud-automl.gemspec', 'main')
+      .resolves(buildGitHubFileRaw(GEMFILE_CONTENTS));
   });
+
   afterEach(() => {
     sandbox.restore();
   });
@@ -91,7 +110,11 @@ describe('Ruby', () => {
         github,
         component: 'google-cloud-automl',
       });
-      const latestRelease = undefined;
+      const latestRelease = {
+        tag: new TagName(Version.parse('0.123.4'), 'google-cloud-automl'),
+        sha: 'abc123',
+        notes: 'some notes',
+      };
       const release = await strategy.buildReleasePullRequest({
         commits: COMMITS,
         latestRelease,
@@ -110,7 +133,20 @@ describe('Ruby', () => {
         'rbi/lib/google/cloud/automl/version.rbi',
         VersionRB
       );
-      assertHasUpdate(updates, 'Gemfile.lock', GemfileLock);
+
+      const gemfileLockUpdate = assertHasUpdate(
+        updates,
+        'Gemfile.lock',
+        GemfileLock
+      );
+
+      // gemfile lock updater should be able to update content that includes the gem name from
+      // the gemspec file
+      expect(
+        gemfileLockUpdate.updater.updateContent(
+          `${GEM_NAME} (${latestRelease.tag.version})`
+        )
+      ).to.eql(`${GEM_NAME} (${release!.version})`);
     });
     it('allows overriding version file', async () => {
       const strategy = new Ruby({
