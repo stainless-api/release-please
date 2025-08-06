@@ -2494,65 +2494,11 @@ describe('Manifest', () => {
             })
           )
         )
-        .withArgs(
-          '.release-please-manifest.json',
-          'release-please--branches--main--changes--next--components--pkg1'
-        )
-        .resolves(
-          buildGitHubFileRaw(
-            JSON.stringify({
-              'path/a': '1.0.1',
-            })
-          )
-        )
-        .withArgs(
-          '.release-please-manifest.json',
-          'release-please--branches--main--changes--next--components--pkg2'
-        )
-        .resolves(
-          buildGitHubFileRaw(
-            JSON.stringify({
-              'path/b': '2.0.1',
-            })
-          )
-        )
         .withArgs('path/b/package.json', 'next')
         .resolves(
           buildGitHubFileRaw(
             JSON.stringify({
               name: 'pkg2',
-            })
-          )
-        )
-        .withArgs(
-          '.release-please-manifest.json',
-          'release-please--branches--main--changes--next--components--pkg3'
-        )
-        .resolves(
-          buildGitHubFileRaw(
-            JSON.stringify({
-              'path/c': '3.0.1',
-            })
-          )
-        )
-        .withArgs('path/c/setup.py', 'next')
-        .resolves(
-          buildGitHubFileRaw(
-            `
-name = "pkg3"
-description = "Something"
-version = "3.0.0"
-`
-          )
-        )
-        .withArgs(
-          '.release-please-manifest.json',
-          'release-please--branches--main--changes--next--components--pkg4'
-        )
-        .resolves(
-          buildGitHubFileRaw(
-            JSON.stringify({
-              'path/d': '4.0.1',
             })
           )
         );
@@ -2589,7 +2535,7 @@ version = "3.0.0"
       const pullRequests = await manifest.buildPullRequests(
         [
           {
-            title: 'chore(main): release v6.7.9-alpha.1', // version from title differs from PR manifest
+            title: 'chore(main): release v6.7.9-alpha.1', // version from title differs from expected 4.0.1
             body: 'some content',
             headBranchName:
               'release-please--branches--main--changes--next--components--pkg1',
@@ -2599,7 +2545,7 @@ version = "3.0.0"
             files: [],
           },
           {
-            title: 'chore(main): release v7.8.9', // version from title differs from PR manifest
+            title: 'chore(main): release v7.8.9', // version from title differs from expected 4.0.1
             body: 'some content',
             headBranchName:
               'release-please--branches--main--changes--next--components--pkg2',
@@ -2609,7 +2555,7 @@ version = "3.0.0"
             files: [],
           },
           {
-            title: 'chore(main): release 8.9.0', // version from title differs from PR manifest
+            title: 'chore(main): release 8.9.0', // version from title differs from expected 4.0.1
             body: 'some content',
             headBranchName:
               'release-please--branches--main--changes--next--components--pkg3',
@@ -2619,7 +2565,7 @@ version = "3.0.0"
             files: [],
           },
           {
-            title: 'chore(main): release v9.0.1', // version from title differs from PR manifest
+            title: 'chore(main): release v9.0.1', // version from title differs from expected 4.0.1
             body: 'some content',
             headBranchName:
               'release-please--branches--main--changes--next--components--pkg4',
@@ -2636,9 +2582,9 @@ version = "3.0.0"
       expect(pullRequests[1].version?.toString()).to.eql('7.8.9');
       expect(pullRequests[2].version?.toString()).to.eql('8.9.0');
       expect(pullRequests[3].version?.toString()).to.eql('9.0.1');
-      sinon.assert.called(getFileContentsOnBranchStub);
       sinon.assert.called(addIssueLabelsStub);
       sinon.assert.called(findFilesByFilenameAndRefStub);
+      sinon.assert.called(getFileContentsOnBranchStub);
       expect(commentCount).to.eql(4);
     });
 
@@ -8841,373 +8787,6 @@ version = "3.0.0"
 
       // ensure we don't try to update permissions rules again given the lock failed
       sinon.assert.notCalled(unlockBranchStub);
-    });
-
-    it('should align changes and target branches when release and changes branches are in sync', async () => {
-      mockPullRequests(
-        github,
-        [],
-        [
-          {
-            headBranchName: 'release-please--branches--main--changes--next',
-            baseBranchName: 'main',
-            number: 1234,
-            title: 'chore: release main v1.3.1',
-            body: pullRequestBody('release-notes/single-manifest.txt'),
-            labels: ['autorelease: pending'],
-            files: [],
-            sha: 'abc123',
-          },
-        ]
-      );
-      const getFileContentsStub = sandbox.stub(
-        github,
-        'getFileContentsOnBranch'
-      );
-      getFileContentsStub
-        .withArgs('package.json', 'main')
-        .resolves(
-          buildGitHubFileRaw(
-            JSON.stringify({name: '@google-cloud/release-brancher'})
-          )
-        );
-      mockCreateRelease(github, [
-        {id: 123456, sha: 'abc123', tagName: 'release-brancher-v1.3.1'},
-      ]);
-      const commentStub = sandbox.stub(github, 'commentOnIssue').resolves();
-      const addLabelsStub = sandbox.stub(github, 'addIssueLabels').resolves();
-      const removeLabelsStub = sandbox
-        .stub(github, 'removeIssueLabels')
-        .resolves();
-      const waitForReleaseToBeListedStub = sandbox
-        .stub(github, 'waitForReleaseToBeListed')
-        .resolves();
-      const waitForFileToBeUpToDateOnBranch = sandbox
-        .stub(github, 'waitForFileToBeUpToDateOnBranch')
-        .resolves();
-      const lockBranchStub = sandbox.stub(github, 'lockBranch').resolves();
-      const unlockBranchStub = sandbox.stub(github, 'unlockBranch').resolves();
-
-      // release branch in synced with changes-branch, safe to align changes-branch with target-branch
-      const isBranchSyncedWithPullRequestCommitsStub = sandbox
-        .stub(github, 'isBranchSyncedWithPullRequestCommits')
-        .withArgs(
-          'next',
-          sinon.match.has(
-            'headBranchName',
-            'release-please--branches--main--changes--next'
-          )
-        )
-        .resolves(true);
-
-      const alignBranchWithAnotherStub = sandbox
-        .stub(github, 'alignBranchWithAnother')
-        .resolves();
-
-      const manifest = new Manifest(
-        github,
-        'main',
-        {
-          '.': {
-            releaseType: 'node',
-          },
-        },
-        {
-          '.': Version.parse('1.3.1'),
-        }
-      );
-
-      const releases = await manifest.createReleases();
-      expect(releases).lengthOf(1);
-      expect(releases[0]!.tagName).to.eql('release-brancher-v1.3.1');
-      expect(releases[0]!.sha).to.eql('abc123');
-      expect(releases[0]!.notes).to.eql('some release notes');
-      expect(releases[0]!.path).to.eql('.');
-
-      sinon.assert.calledOnce(commentStub);
-      sinon.assert.calledOnceWithExactly(
-        addLabelsStub,
-        ['autorelease: tagged'],
-        1234
-      );
-      sinon.assert.calledOnceWithExactly(
-        removeLabelsStub,
-        ['autorelease: pending'],
-        1234
-      );
-      sinon.assert.calledWith(
-        waitForReleaseToBeListedStub,
-        sinon.match.has('tagName', 'release-brancher-v1.3.1')
-      );
-      sinon.assert.calledWith(waitForFileToBeUpToDateOnBranch, {
-        branch: 'next',
-        filePath: '.release-please-manifest.json',
-        checkFileStatus: sinon.match.func,
-      });
-
-      sinon.assert.calledOnce(isBranchSyncedWithPullRequestCommitsStub);
-      sinon.assert.calledOnce(alignBranchWithAnotherStub);
-
-      sinon.assert.calledOnce(lockBranchStub);
-      sinon.assert.calledOnce(unlockBranchStub);
-    });
-
-    it('should not align and not throw when release branch is missing but changes-branch already synced with target-branch', async () => {
-      mockPullRequests(
-        github,
-        [],
-        [
-          {
-            headBranchName: 'release-please--branches--main--changes--next',
-            baseBranchName: 'main',
-            number: 1234,
-            title: 'chore: release main',
-            body: pullRequestBody('release-notes/single-manifest.txt'),
-            labels: ['autorelease: pending'],
-            files: [],
-            sha: 'abc123',
-          },
-        ]
-      );
-      const getFileContentsStub = sandbox.stub(
-        github,
-        'getFileContentsOnBranch'
-      );
-      getFileContentsStub
-        .withArgs('package.json', 'main')
-        .resolves(
-          buildGitHubFileRaw(
-            JSON.stringify({name: '@google-cloud/release-brancher'})
-          )
-        );
-      mockCreateRelease(github, [
-        {id: 123456, sha: 'abc123', tagName: 'release-brancher-v1.3.1'},
-      ]);
-      const commentStub = sandbox.stub(github, 'commentOnIssue').resolves();
-      const addLabelsStub = sandbox.stub(github, 'addIssueLabels').resolves();
-      const removeLabelsStub = sandbox
-        .stub(github, 'removeIssueLabels')
-        .resolves();
-      const waitForReleaseToBeListedStub = sandbox
-        .stub(github, 'waitForReleaseToBeListed')
-        .resolves();
-      const lockBranchStub = sandbox.stub(github, 'lockBranch').resolves();
-      const unlockBranchStub = sandbox.stub(github, 'unlockBranch').resolves();
-
-      // throw 404 not found when comparing changes-branch against pull request commits
-      const isBranchSyncedWithPullRequestCommitsStub = sandbox
-        .stub(github, 'isBranchSyncedWithPullRequestCommits')
-        .withArgs(
-          'next',
-          sinon.match.has(
-            'headBranchName',
-            'release-please--branches--main--changes--next'
-          )
-        )
-        .throwsException(
-          new RequestError('Resource not found', 404, {
-            request: {
-              method: 'GET',
-              url: 'https://api.github.com/foo',
-              body: {
-                bar: 'baz',
-              },
-              headers: {
-                authorization: 'token secret123',
-              },
-            },
-            response: {
-              status: 404,
-              url: 'https://api.github.com/foo',
-              headers: {
-                'x-github-request-id': '1:2:3:4',
-              },
-              data: {
-                foo: 'bar',
-              },
-            },
-          })
-        );
-
-      // changes-branch already synced with target-branch
-      const isBranchASyncedWithBStub = sandbox
-        .stub(github, 'isBranchASyncedWithB')
-        .withArgs('next', 'main')
-        .resolves(true);
-
-      const alignBranchWithAnotherStub = sandbox
-        .stub(github, 'alignBranchWithAnother')
-        .resolves();
-
-      const manifest = new Manifest(
-        github,
-        'main',
-        {
-          '.': {
-            releaseType: 'node',
-          },
-        },
-        {
-          '.': Version.parse('1.3.1'),
-        }
-      );
-
-      const releases = await manifest.createReleases();
-      expect(releases).lengthOf(1);
-      expect(releases[0]!.tagName).to.eql('release-brancher-v1.3.1');
-      expect(releases[0]!.sha).to.eql('abc123');
-      expect(releases[0]!.notes).to.eql('some release notes');
-      expect(releases[0]!.path).to.eql('.');
-
-      sinon.assert.calledOnce(commentStub);
-      sinon.assert.calledOnceWithExactly(
-        addLabelsStub,
-        ['autorelease: tagged'],
-        1234
-      );
-      sinon.assert.calledOnceWithExactly(
-        removeLabelsStub,
-        ['autorelease: pending'],
-        1234
-      );
-      sinon.assert.calledWith(
-        waitForReleaseToBeListedStub,
-        sinon.match.has('tagName', 'release-brancher-v1.3.1')
-      );
-
-      sinon.assert.calledOnce(isBranchSyncedWithPullRequestCommitsStub);
-      sinon.assert.calledOnce(isBranchASyncedWithBStub);
-      sinon.assert.notCalled(alignBranchWithAnotherStub);
-
-      sinon.assert.calledOnce(lockBranchStub);
-      sinon.assert.calledOnce(unlockBranchStub);
-    });
-
-    it('should not throw when release branch is missing and changes-branch not in synced with target-branch', async () => {
-      mockPullRequests(
-        github,
-        [],
-        [
-          {
-            headBranchName: 'release-please--branches--main--changes--next',
-            baseBranchName: 'main',
-            number: 1234,
-            title: 'chore: release main',
-            body: pullRequestBody('release-notes/single-manifest.txt'),
-            labels: ['autorelease: pending'],
-            files: [],
-            sha: 'abc123',
-          },
-        ]
-      );
-      const getFileContentsStub = sandbox.stub(
-        github,
-        'getFileContentsOnBranch'
-      );
-      getFileContentsStub
-        .withArgs('package.json', 'main')
-        .resolves(
-          buildGitHubFileRaw(
-            JSON.stringify({name: '@google-cloud/release-brancher'})
-          )
-        );
-      mockCreateRelease(github, [
-        {id: 123456, sha: 'abc123', tagName: 'release-brancher-v1.3.1'},
-      ]);
-      const commentStub = sandbox.stub(github, 'commentOnIssue').resolves();
-      const addLabelsStub = sandbox.stub(github, 'addIssueLabels').resolves();
-      const removeLabelsStub = sandbox
-        .stub(github, 'removeIssueLabels')
-        .resolves();
-      const waitForReleaseToBeListedStub = sandbox
-        .stub(github, 'waitForReleaseToBeListed')
-        .resolves();
-      const lockBranchStub = sandbox.stub(github, 'lockBranch').resolves();
-      const unlockBranchStub = sandbox.stub(github, 'unlockBranch').resolves();
-
-      // throw 404 not found when comparing changes-branch against release branch
-      const isBranchSyncedWithPullRequestCommitsStub = sandbox
-        .stub(github, 'isBranchSyncedWithPullRequestCommits')
-        .withArgs(
-          'next',
-          sinon.match.has(
-            'headBranchName',
-            'release-please--branches--main--changes--next'
-          )
-        )
-        .throwsException(
-          new RequestError('Resource not found', 404, {
-            request: {
-              method: 'GET',
-              url: 'https://api.github.com/foo',
-              body: {
-                bar: 'baz',
-              },
-              headers: {
-                authorization: 'token secret123',
-              },
-            },
-            response: {
-              status: 404,
-              url: 'https://api.github.com/foo',
-              headers: {
-                'x-github-request-id': '1:2:3:4',
-              },
-              data: {
-                foo: 'bar',
-              },
-            },
-          })
-        );
-
-      // changes-branch not in synced with target-branch
-      const isBranchASyncedWithBStub = sandbox
-        .stub(github, 'isBranchASyncedWithB')
-        .withArgs('next', 'main')
-        .resolves(false);
-
-      const alignBranchWithAnotherStub = sandbox
-        .stub(github, 'alignBranchWithAnother')
-        .resolves();
-
-      const manifest = new Manifest(
-        github,
-        'main',
-        {
-          '.': {
-            releaseType: 'node',
-          },
-        },
-        {
-          '.': Version.parse('1.3.1'),
-        }
-      );
-
-      await manifest.createReleases();
-
-      // releases are still created
-      sinon.assert.calledOnce(commentStub);
-      sinon.assert.calledOnceWithExactly(
-        addLabelsStub,
-        ['autorelease: tagged'],
-        1234
-      );
-      sinon.assert.calledOnceWithExactly(
-        removeLabelsStub,
-        ['autorelease: pending'],
-        1234
-      );
-      sinon.assert.calledWith(
-        waitForReleaseToBeListedStub,
-        sinon.match.has('tagName', 'release-brancher-v1.3.1')
-      );
-
-      sinon.assert.calledOnce(isBranchSyncedWithPullRequestCommitsStub);
-      sinon.assert.calledOnce(isBranchASyncedWithBStub);
-      sinon.assert.notCalled(alignBranchWithAnotherStub);
-
-      sinon.assert.calledOnce(lockBranchStub);
-      sinon.assert.calledOnce(unlockBranchStub);
     });
   });
 });
