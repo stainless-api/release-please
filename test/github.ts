@@ -35,7 +35,6 @@ import {
 import {fail} from 'assert';
 import {PullRequestBody} from '../src/util/pull-request-body';
 import {PullRequestTitle} from '../src/util/pull-request-title';
-import * as codeSuggesterCommitAndPush from 'code-suggester/build/src/github/commit-and-push';
 import {HttpsProxyAgent} from 'https-proxy-agent';
 import {HttpProxyAgent} from 'http-proxy-agent';
 import {Commit} from '../src/commit';
@@ -1112,25 +1111,9 @@ describe('GitHub', () => {
 
   describe('updatePullRequest', () => {
     it('handles a ref branch different from the base branch', async () => {
-      const forkBranchStub = sandbox
-        .stub(github, <any>'forkBranch') // eslint-disable-line @typescript-eslint/no-explicit-any
-        .withArgs('release-please--branches--main--changes--next', 'next')
+      const upsertReleaseBranch = sandbox
+        .stub(github, <any>'upsertReleaseBranch') // eslint-disable-line @typescript-eslint/no-explicit-any
         .resolves('the-pull-request-branch-sha');
-
-      const commitAndPushStub = sandbox
-        .stub(codeSuggesterCommitAndPush, 'commitAndPush')
-        .withArgs(
-          sinon.match.any,
-          'the-pull-request-branch-sha',
-          sinon.match.any,
-          sinon.match.has(
-            'branch',
-            'release-please--branches--main--changes--next'
-          ),
-          sinon.match.string,
-          true
-        )
-        .resolves();
 
       const getPullRequestStub = sandbox
         .stub(github, 'getPullRequest')
@@ -1171,19 +1154,16 @@ describe('GitHub', () => {
       };
 
       await github.updatePullRequest(123, pullRequest, 'main', 'next');
-      sinon.assert.calledOnce(forkBranchStub);
-      sinon.assert.calledOnce(commitAndPushStub);
+      sinon.assert.calledOnce(upsertReleaseBranch);
       sinon.assert.calledOnce(getPullRequestStub);
       req.done();
     });
 
     it('handles a PR body that is too big', async () => {
-      const commitAndPushStub = sandbox
-        .stub(codeSuggesterCommitAndPush, 'commitAndPush')
-        .resolves();
-      const forkBranchStub = sandbox
-        .stub(github, <any>'forkBranch') // eslint-disable-line @typescript-eslint/no-explicit-any
+      const upsertReleaseBranch = sandbox
+        .stub(github, <any>'upsertReleaseBranch') // eslint-disable-line @typescript-eslint/no-explicit-any
         .resolves('the-pull-request-branch-sha');
+
       req = req.patch('/repos/fake/fake/pulls/123').reply(200, {
         number: 123,
         title: 'updated-title',
@@ -1225,8 +1205,7 @@ describe('GitHub', () => {
         pullRequestOverflowHandler,
       });
       sinon.assert.calledOnce(handleOverflowStub);
-      sinon.assert.calledOnce(commitAndPushStub);
-      sinon.assert.calledOnce(forkBranchStub);
+      sinon.assert.calledOnce(upsertReleaseBranch);
       sinon.assert.calledOnce(getPullRequestStub);
       req.done();
     });

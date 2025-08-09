@@ -12,7 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {commitAndPush} from 'code-suggester/build/src/github/commit-and-push';
+import {
+  createTree,
+  generateTreeObjects,
+} from 'code-suggester/build/src/github/commit-and-push';
 import {addLabels} from 'code-suggester/build/src/github/labels';
 import {setupLogger} from 'code-suggester/build/src/logger';
 
@@ -1275,27 +1278,7 @@ export class GitHub {
       updates: Update[],
       options?: CreatePullRequestOptions
     ): Promise<PullRequest> => {
-      const changes = await this.buildChangeSet(updates, refBranch);
-
-      // create release branch
-      const pullRequestBranchSha = await this.forkBranch(
-        pullRequest.headBranchName,
-        refBranch
-      );
-
-      // commit and push changeset
-      await commitAndPush(
-        this.octokit,
-        pullRequestBranchSha,
-        changes,
-        {
-          branch: pullRequest.headBranchName,
-          repo: this.repository.repo,
-          owner: this.repository.owner,
-        },
-        message,
-        true
-      );
+      await this.upsertReleaseBranch(pullRequest, refBranch, message, updates);
 
       // create pull request, unless one already exists
       let pullRequestNumber: number;
@@ -1331,6 +1314,127 @@ export class GitHub {
       );
 
       return await this.getPullRequest(pullRequestNumber);
+    }
+  );
+
+  upsertReleaseBranch = wrapAsync(
+    async (
+      pullRequest: PullRequest,
+      refBranch: string,
+      message: string,
+      updates: Update[]
+    ): Promise<void> => {
+      this.logger.debug(
+        {
+          pullRequest: pullRequest.headBranchName,
+          refBranch: refBranch,
+          message: message,
+          updates: updates.length,
+        },
+        'upserting release branch'
+      );
+
+      const changes = await this.buildChangeSet(updates, refBranch);
+
+      const refSHA = await this.getBranchSha(refBranch);
+
+      this.logger.debug(
+        {
+          refBranch: refBranch,
+          refSHA: refSHA,
+          changes: changes.size,
+        },
+        'found ref branch SHA'
+      );
+
+      if (!refSHA) {
+        throw new Error(
+          `could not find branch ${refBranch} in repository ${this.repository.owner}/${this.repository.repo}`
+        );
+      }
+
+      const tree = generateTreeObjects(changes);
+
+      const treeSha = await createTree(
+        this.octokit,
+        this.repository,
+        refSHA,
+        tree
+      );
+
+      this.logger.debug(
+        {
+          treeSha: treeSha,
+        },
+        'created tree'
+      );
+
+      const {data: newCommit} = await this.octokit.git.createCommit({
+        ...this.repository,
+        message,
+        tree: treeSha,
+        parents: [refSHA],
+      });
+
+      this.logger.debug(
+        {
+          newCommit: newCommit.sha,
+        },
+        'created commit'
+      );
+
+      const ref = `heads/${pullRequest.headBranchName}`;
+      try {
+        // try to update existing branch
+        await this.octokit.git.updateRef({
+          ...this.repository,
+          ref,
+          sha: newCommit.sha,
+          force: true,
+        });
+
+        this.logger.debug(
+          {
+            ref: ref,
+            newCommit: newCommit.sha,
+          },
+          'updated existing branch'
+        );
+      } catch (error) {
+        if (
+          error &&
+          typeof error === 'object' &&
+          'status' in error &&
+          error.status === 422 &&
+          'message' in error &&
+          typeof error.message === 'string' &&
+          error.message.includes('does not exist')
+        ) {
+          this.logger.debug(
+            {
+              ref: ref,
+            },
+            'branch does not exist, creating it'
+          );
+
+          // branch doesn't exist, create it
+          await this.octokit.git.createRef({
+            ...this.repository,
+            ref: `refs/${ref}`,
+            sha: newCommit.sha,
+          });
+
+          this.logger.debug(
+            {
+              ref: ref,
+              newCommit: newCommit.sha,
+            },
+            'created new branch'
+          );
+        } else {
+          throw error;
+        }
+      }
     }
   );
 
