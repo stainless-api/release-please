@@ -79,12 +79,14 @@ export class Java extends BaseStrategy {
     labels = [],
     latestRelease,
     draft,
+    manifestPath,
   }: {
     commits: ConventionalCommit[];
     latestRelease?: Release;
     draft?: boolean;
     labels?: string[];
     existingPullRequest?: PullRequest;
+    manifestPath?: string;
   }): Promise<ReleasePullRequest | undefined> {
     if (await this.needsSnapshot(commits, latestRelease)) {
       this.logger.info('Repository needs a snapshot bump.');
@@ -100,6 +102,7 @@ export class Java extends BaseStrategy {
       latestRelease,
       draft,
       labels,
+      manifestPath,
     });
   }
 
