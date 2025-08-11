@@ -29,7 +29,6 @@ const errors_1 = require("../src/errors");
 const assert_1 = require("assert");
 const pull_request_body_1 = require("../src/util/pull-request-body");
 const pull_request_title_1 = require("../src/util/pull-request-title");
-const codeSuggesterCommitAndPush = require("code-suggester/build/src/github/commit-and-push");
 const https_proxy_agent_1 = require("https-proxy-agent");
 const http_proxy_agent_1 = require("http-proxy-agent");
 const helpers_1 = require("./helpers");
@@ -855,14 +854,9 @@ const sandbox = sinon.createSandbox();
     });
     (0, mocha_1.describe)('updatePullRequest', () => {
         (0, mocha_1.it)('handles a ref branch different from the base branch', async () => {
-            const forkBranchStub = sandbox
-                .stub(github, 'forkBranch') // eslint-disable-line @typescript-eslint/no-explicit-any
-                .withArgs('release-please--branches--main--changes--next', 'next')
+            const upsertReleaseBranch = sandbox
+                .stub(github, 'upsertReleaseBranch') // eslint-disable-line @typescript-eslint/no-explicit-any
                 .resolves('the-pull-request-branch-sha');
-            const commitAndPushStub = sandbox
-                .stub(codeSuggesterCommitAndPush, 'commitAndPush')
-                .withArgs(sinon.match.any, 'the-pull-request-branch-sha', sinon.match.any, sinon.match.has('branch', 'release-please--branches--main--changes--next'), sinon.match.string, true)
-                .resolves();
             const getPullRequestStub = sandbox
                 .stub(github, 'getPullRequest')
                 .withArgs(123)
@@ -899,17 +893,13 @@ const sandbox = sinon.createSandbox();
                 conventionalCommits: [],
             };
             await github.updatePullRequest(123, pullRequest, 'main', 'next');
-            sinon.assert.calledOnce(forkBranchStub);
-            sinon.assert.calledOnce(commitAndPushStub);
+            sinon.assert.calledOnce(upsertReleaseBranch);
             sinon.assert.calledOnce(getPullRequestStub);
             req.done();
         });
         (0, mocha_1.it)('handles a PR body that is too big', async () => {
-            const commitAndPushStub = sandbox
-                .stub(codeSuggesterCommitAndPush, 'commitAndPush')
-                .resolves();
-            const forkBranchStub = sandbox
-                .stub(github, 'forkBranch') // eslint-disable-line @typescript-eslint/no-explicit-any
+            const upsertReleaseBranch = sandbox
+                .stub(github, 'upsertReleaseBranch') // eslint-disable-line @typescript-eslint/no-explicit-any
                 .resolves('the-pull-request-branch-sha');
             req = req.patch('/repos/fake/fake/pulls/123').reply(200, {
                 number: 123,
@@ -952,8 +942,7 @@ const sandbox = sinon.createSandbox();
                 pullRequestOverflowHandler,
             });
             sinon.assert.calledOnce(handleOverflowStub);
-            sinon.assert.calledOnce(commitAndPushStub);
-            sinon.assert.calledOnce(forkBranchStub);
+            sinon.assert.calledOnce(upsertReleaseBranch);
             sinon.assert.calledOnce(getPullRequestStub);
             req.done();
         });

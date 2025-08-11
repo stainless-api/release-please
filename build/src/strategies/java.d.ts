@@ -19,12 +19,13 @@ export declare class Java extends BaseStrategy {
     protected readonly snapshotLabels: string[];
     readonly skipSnapshot: boolean;
     constructor(options: BaseStrategyOptions);
-    buildReleasePullRequest({ commits, labels, latestRelease, draft, }: {
+    buildReleasePullRequest({ commits, labels, latestRelease, draft, manifestPath, }: {
         commits: ConventionalCommit[];
         latestRelease?: Release;
         draft?: boolean;
         labels?: string[];
         existingPullRequest?: PullRequest;
+        manifestPath?: string;
     }): Promise<ReleasePullRequest | undefined>;
     protected buildSnapshotPullRequest(latestRelease?: Release, draft?: boolean, labels?: string[]): Promise<ReleasePullRequest>;
     isPublishedVersion(version: Version): boolean;

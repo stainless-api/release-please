@@ -293,6 +293,8 @@ export declare class GitHub {
      * @throws {GitHubAPIError} on an API error
      */
     createPullRequest: (pullRequest: PullRequest, baseBranch: string, refBranch: string, message: string, updates: Update[], options?: CreatePullRequestOptions | undefined) => Promise<PullRequest>;
+    upsertReleaseBranch: (pullRequest: PullRequest, refBranch: string, message: string, updates: Update[]) => Promise<void>;
+    isRefDoesNotExistError: (error: unknown) => boolean;
     /**
      * Fetch a pull request given the pull number
      * @param {number} number The pull request number
