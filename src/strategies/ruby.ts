@@ -80,15 +80,46 @@ export class Ruby extends BaseStrategy {
       createIfMissing: false,
       updater: new GemfileLock({
         version,
-        gemName:
-          this.component ||
-          // grab the gem name from the version file path if it's not provided via the component
-          this.versionFile.match(/lib\/(.*)\/version.rb/)?.[1] ||
-          '',
+        gemName: await this.determineGemName(),
       }),
     });
 
     return updates;
+  }
+
+  private async determineGemName(): Promise<string> {
+    // attempt to grab the gem name by regex matching the gemspec file; it is arbitrary ruby code so
+    // this could fail but only if the user has implemented some weird custom code
+    const gemspec = await this.github.findFilesByGlobAndRef(
+      '*.gemspec',
+      this.changesBranch
+    );
+
+    if (gemspec.length === 1) {
+      const gemspecContent = (
+        await this.github.getFileContentsOnBranch(
+          gemspec[0],
+          this.changesBranch
+        )
+      ).parsedContent;
+
+      const gemNameMatch = gemspecContent.match(
+        /\.name\s*=\s*['"](.*)['"]/
+      )?.[1];
+
+      if (gemNameMatch) {
+        return gemNameMatch;
+      } else {
+        this.logger.error('could not determine gem name from gemspec file');
+      }
+    }
+
+    return (
+      this.component ||
+      // grab the gem name from the version file path if it's not provided via the component
+      this.versionFile.match(/lib\/(.*)\/version.rb/)?.[1] ||
+      ''
+    );
   }
 
   protected async postProcessCommits(
