@@ -1401,15 +1401,7 @@ export class GitHub {
           'updated existing branch'
         );
       } catch (error) {
-        if (
-          error &&
-          typeof error === 'object' &&
-          'status' in error &&
-          error.status === 422 &&
-          'message' in error &&
-          typeof error.message === 'string' &&
-          error.message.includes('does not exist')
-        ) {
+        if (this.isRefDoesNotExistError(error)) {
           this.logger.debug(
             {
               ref: ref,
@@ -1437,6 +1429,18 @@ export class GitHub {
       }
     }
   );
+
+  isRefDoesNotExistError = (error: unknown): boolean => {
+    return (
+      (error &&
+        typeof error === 'object' &&
+        'status' in error &&
+        error.status === 422 &&
+        'message' in error &&
+        typeof error.message === 'string' &&
+        error.message.includes('does not exist')) === true
+    );
+  };
 
   /**
    * Fetch a pull request given the pull number
