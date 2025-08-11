@@ -29,7 +29,6 @@ class Ruby extends base_1.BaseStrategy {
         this.tagSeparator = '/';
     }
     async buildUpdates(options) {
-        var _a;
         const updates = [];
         const version = options.newVersion;
         updates.push({
@@ -69,14 +68,31 @@ class Ruby extends base_1.BaseStrategy {
             createIfMissing: false,
             updater: new gemfile_lock_1.GemfileLock({
                 version,
-                gemName: this.component ||
-                    (
-                    // grab the gem name from the version file path if it's not provided via the component
-                    (_a = this.versionFile.match(/lib\/(.*)\/version.rb/)) === null || _a === void 0 ? void 0 : _a[1]) ||
-                    '',
+                gemName: await this.determineGemName(),
             }),
         });
         return updates;
+    }
+    async determineGemName() {
+        var _a, _b;
+        // attempt to grab the gem name by regex matching the gemspec file; it is arbitrary ruby code so
+        // this could fail but only if the user has implemented some weird custom code
+        const gemspec = await this.github.findFilesByGlobAndRef('*.gemspec', this.changesBranch);
+        if (gemspec.length === 1) {
+            const gemspecContent = (await this.github.getFileContentsOnBranch(gemspec[0], this.changesBranch)).parsedContent;
+            const gemNameMatch = (_a = gemspecContent.match(/\.name\s*=\s*['"](.*)['"]/)) === null || _a === void 0 ? void 0 : _a[1];
+            if (gemNameMatch) {
+                return gemNameMatch;
+            }
+            else {
+                this.logger.error('could not determine gem name from gemspec file');
+            }
+        }
+        return (this.component ||
+            (
+            // grab the gem name from the version file path if it's not provided via the component
+            (_b = this.versionFile.match(/lib\/(.*)\/version.rb/)) === null || _b === void 0 ? void 0 : _b[1]) ||
+            '');
     }
     async postProcessCommits(commits) {
         commits.forEach(commit => {

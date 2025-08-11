@@ -26,6 +26,12 @@ const changelog_1 = require("../../src/updaters/changelog");
 const version_rb_1 = require("../../src/updaters/ruby/version-rb");
 const gemfile_lock_1 = require("../../src/updaters/ruby/gemfile-lock");
 const pull_request_body_1 = require("../../src/util/pull-request-body");
+const GEM_NAME = 'google-cloud-automl-gem';
+const GEMFILE_CONTENTS = `
+Gem::Specification.new do |gem|
+  gem.name = "${GEM_NAME}"
+end
+`;
 const sandbox = sinon.createSandbox();
 const COMMITS = [
     ...(0, helpers_2.buildMockConventionalCommit)('fix(deps): update dependency com.google.cloud:google-cloud-storage to v1.120.0'),
@@ -40,6 +46,14 @@ const COMMITS = [
             repo: 'ruby-test-repo',
             defaultBranch: 'main',
         });
+        const fileFilesStub = sandbox.stub(github, 'findFilesByGlobAndRef');
+        fileFilesStub
+            .withArgs('*.gemspec', 'main')
+            .resolves(['google-cloud-automl.gemspec']);
+        const getFileContentsStub = sandbox.stub(github, 'getFileContentsOnBranch');
+        getFileContentsStub
+            .withArgs('google-cloud-automl.gemspec', 'main')
+            .resolves((0, helpers_1.buildGitHubFileRaw)(GEMFILE_CONTENTS));
     });
     (0, mocha_1.afterEach)(() => {
         sandbox.restore();
@@ -87,7 +101,11 @@ const COMMITS = [
                 github,
                 component: 'google-cloud-automl',
             });
-            const latestRelease = undefined;
+            const latestRelease = {
+                tag: new tag_name_1.TagName(version_1.Version.parse('0.123.4'), 'google-cloud-automl'),
+                sha: 'abc123',
+                notes: 'some notes',
+            };
             const release = await strategy.buildReleasePullRequest({
                 commits: COMMITS,
                 latestRelease,
@@ -98,7 +116,10 @@ const COMMITS = [
             (0, helpers_1.assertHasUpdate)(updates, 'lib/google/cloud/automl/version.rb', version_rb_1.VersionRB);
             (0, helpers_1.assertHasUpdate)(updates, 'sig/lib/google/cloud/automl/version.rbs', version_rb_1.VersionRB);
             (0, helpers_1.assertHasUpdate)(updates, 'rbi/lib/google/cloud/automl/version.rbi', version_rb_1.VersionRB);
-            (0, helpers_1.assertHasUpdate)(updates, 'Gemfile.lock', gemfile_lock_1.GemfileLock);
+            const gemfileLockUpdate = (0, helpers_1.assertHasUpdate)(updates, 'Gemfile.lock', gemfile_lock_1.GemfileLock);
+            // gemfile lock updater should be able to update content that includes the gem name from
+            // the gemspec file
+            (0, chai_1.expect)(gemfileLockUpdate.updater.updateContent(`${GEM_NAME} (${latestRelease.tag.version})`)).to.eql(`${GEM_NAME} (${release.version})`);
         });
         (0, mocha_1.it)('allows overriding version file', async () => {
             const strategy = new ruby_1.Ruby({
