@@ -198,11 +198,11 @@ describe('CSharp', () => {
     });
   });
   describe('normalizeComponent', () => {
-    it('strips namespace prefix from component', async () => {
+    it('strips namespace prefix when deriving component from packageName', async () => {
       const strategy = new CSharp({
         targetBranch: 'main',
         github,
-        component: 'Acme.Utilities.Core',
+        packageName: 'Acme.Utilities.Core',
       });
       sandbox
         .stub(github, 'findFilesByGlobAndRef')
@@ -210,11 +210,11 @@ describe('CSharp', () => {
       const component = await strategy.getBranchComponent();
       expect(component).to.eql('Core');
     });
-    it('handles component without namespace', async () => {
+    it('handles packageName without namespace', async () => {
       const strategy = new CSharp({
         targetBranch: 'main',
         github,
-        component: 'TestProject',
+        packageName: 'TestProject',
       });
       sandbox
         .stub(github, 'findFilesByGlobAndRef')
