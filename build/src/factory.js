@@ -37,6 +37,7 @@ const expo_1 = require("./strategies/expo");
 const always_bump_patch_1 = require("./versioning-strategies/always-bump-patch");
 const service_pack_1 = require("./versioning-strategies/service-pack");
 const dependency_manifest_1 = require("./versioning-strategies/dependency-manifest");
+const csharp_1 = require("./strategies/csharp");
 const dotnet_yoshi_1 = require("./strategies/dotnet-yoshi");
 const java_1 = require("./strategies/java");
 const maven_1 = require("./strategies/maven");
@@ -47,6 +48,7 @@ tslib_1.__exportStar(require("./factories/changelog-notes-factory"), exports);
 tslib_1.__exportStar(require("./factories/plugin-factory"), exports);
 tslib_1.__exportStar(require("./factories/versioning-strategy-factory"), exports);
 const releasers = {
+    csharp: options => new csharp_1.CSharp(options),
     'dotnet-yoshi': options => new dotnet_yoshi_1.DotnetYoshi(options),
     go: options => new go_1.Go(options),
     'go-yoshi': options => new go_yoshi_1.GoYoshi(options),
