@@ -38,6 +38,7 @@ import {AlwaysBumpPatch} from './versioning-strategies/always-bump-patch';
 import {ServicePackVersioningStrategy} from './versioning-strategies/service-pack';
 import {DependencyManifest} from './versioning-strategies/dependency-manifest';
 import {BaseStrategyOptions} from './strategies/base';
+import {CSharp} from './strategies/csharp';
 import {DotnetYoshi} from './strategies/dotnet-yoshi';
 import {Java} from './strategies/java';
 import {Maven} from './strategies/maven';
@@ -65,6 +66,7 @@ export interface StrategyFactoryOptions extends ReleaserConfig {
 }
 
 const releasers: Record<string, ReleaseBuilder> = {
+  csharp: options => new CSharp(options),
   'dotnet-yoshi': options => new DotnetYoshi(options),
   go: options => new Go(options),
   'go-yoshi': options => new GoYoshi(options),
