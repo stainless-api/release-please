@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <PackageId>Acme.TestProject</PackageId>
+    <Version>0.123.4</Version>
+    <AssemblyName>TestProject</AssemblyName>
+    <RootNamespace>Acme.TestProject</RootNamespace>
+    <Description>A test project for release-please</Description>
+    <Authors>Test Author</Authors>
+  </PropertyGroup>
+
+</Project>
