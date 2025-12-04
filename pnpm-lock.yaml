@@ -13,7 +13,7 @@ importers:
         version: 0.4.1
       '@google-automations/git-file-utils':
         specifier: ^1.2.5
-        version: 1.2.5
+        version: 1.2.6
       '@iarna/toml':
         specifier: ^3.0.0
         version: 3.0.0
@@ -263,8 +263,8 @@ packages:
     resolution: {integrity: sha512-Ag+9YM4ocKQx9AarydN0KY2j0ErMHNIocPDrVo8zAE44xLTjEtz81OdR68/cydGtk6m6jDb5Za3r2useMzYmSw==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
 
-  '@google-automations/git-file-utils@1.2.5':
-    resolution: {integrity: sha512-1fJ/+W5yzyzGIVet8SHUSF5zFJyhwNKoUB34oXp7zL72L6arwOhUs5CQ9S45cw3ReCFleAB9MjwX0f120ufX8g==}
+  '@google-automations/git-file-utils@1.2.6':
+    resolution: {integrity: sha512-wNWeNLBtQH39kTayGuJMF1IRVPxfcywH//thQHD+xzRlanTNDI/5WACUvBkIz9bhnEC7ADm5ibA+DX9meU+JwQ==}
     engines: {node: '>= 14'}
 
   '@humanwhocodes/config-array@0.11.11':
@@ -384,6 +384,12 @@ packages:
     peerDependencies:
       '@octokit/core': '>=4'
 
+  '@octokit/plugin-paginate-rest@6.1.2':
+    resolution: {integrity: sha512-qhrmtQeHU/IivxucOV1bbI/xZyC/iOBhclokv7Sut5vnejAIAEXVcGQeRpQlU39E0WwK9lNvJHphHri/DB6lbQ==}
+    engines: {node: '>= 14'}
+    peerDependencies:
+      '@octokit/core': '>=4'
+
   '@octokit/plugin-request-log@1.0.4':
     resolution: {integrity: sha512-mLUsMkgP7K/cnFEw07kWqXGF5LKrOkD+lhCrKvPHXWDywAwuDUeDwWBpc69XK3pNX0uKiVt8g5z96PJ6z9xCFA==}
     peerDependencies:
@@ -391,6 +397,12 @@ packages:
 
   '@octokit/plugin-rest-endpoint-methods@6.7.0':
     resolution: {integrity: sha512-orxQ0fAHA7IpYhG2flD2AygztPlGYNAdlzYz8yrD8NDgelPfOYoRPROfEyIe035PlxvbYrgkfUZIhSBKju/Cvw==}
+    engines: {node: '>= 14'}
+    peerDependencies:
+      '@octokit/core': '>=3'
+
+  '@octokit/plugin-rest-endpoint-methods@7.2.3':
+    resolution: {integrity: sha512-I5Gml6kTAkzVlN7KCtjOM+Ruwe/rQppp0QU372K1GP7kNOYEKe8Xn5BW4sE62JAHdwpq95OQK/qGNyKQMUzVgA==}
     engines: {node: '>= 14'}
     peerDependencies:
       '@octokit/core': '>=3'
@@ -419,9 +431,16 @@ packages:
     resolution: {integrity: sha512-6VDqgj0HMc2FUX2awIs+sM6OwLgwHvAi4KCK3mT2H2IKRt6oH9d0fej5LluF5mck1lRR/rFWN0YIDSYXYSylbw==}
     engines: {node: '>= 14'}
 
+  '@octokit/rest@19.0.13':
+    resolution: {integrity: sha512-/EzVox5V9gYGdbAI+ovYj3nXQT1TtTHRT+0eZPcuC05UFSWO3mdO9UY1C0i2eLF9Un1ONJkAk+IEtYGAC+TahA==}
+    engines: {node: '>= 14'}
+
   '@octokit/rest@19.0.5':
     resolution: {integrity: sha512-+4qdrUFq2lk7Va+Qff3ofREQWGBeoTKNqlJO+FGjFP35ZahP+nBenhZiGdu8USSgmq4Ky3IJ/i4u0xbLqHaeow==}
     engines: {node: '>= 14'}
+
+  '@octokit/tsconfig@1.0.2':
+    resolution: {integrity: sha512-I0vDR0rdtP8p2lGMzvsJzbhdOWy405HcGovrspJ8RRibHnyRgggUSNO5AIox5LmqiwmatHKYsvj6VGFHkqS7lA==}
 
   '@octokit/types@10.0.0':
     resolution: {integrity: sha512-Vm8IddVmhCgU1fxC1eyinpwqzXPEYu0NrYzD3YZjlGjyftdLBTeqNblRC0jmJmgxbJIsQlyogVeGnrNaaMVzIg==}
@@ -745,8 +764,8 @@ packages:
   brace-expansion@1.1.11:
     resolution: {integrity: sha512-iCuPHDFgrHX7H2vEI/5xpz07zSHB00TpugqhmYtVmMO6518mCuRMoOYFldEBl0g187ufozdaHgWKcYFb61qGiA==}
 
-  brace-expansion@2.0.1:
-    resolution: {integrity: sha512-XnAIvQ8eM+kC6aULx6wuQiwVsnzsi9d3WxzV3FpWTGA19F621kwdbsAcFKXgKUHZWsy+mY6iL1sHTxWEFCytDA==}
+  brace-expansion@2.0.2:
+    resolution: {integrity: sha512-Jt0vHyM+jmUBqojB7E1NIYadt0vI0Qxjxd2TErW94wDz+E2LAm5vKMXXwg6ZZBTHPuUlDgQHKXvjGBdfcF1ZDQ==}
 
   braces@3.0.2:
     resolution: {integrity: sha512-b8um+L1RzM3WDSzvhm6gIz1yfTbBt6YTlcEKAvsmqCZZFw46z626lVj9j1yEPW33H5H+lBQpZMP1k8l+78Ha0A==}
@@ -1589,6 +1608,7 @@ packages:
 
   lodash.get@4.4.2:
     resolution: {integrity: sha512-z+Uw/vLuy6gQe8cfaFWD7p0wVv8fJl3mbzXh33RS+0oW2wvUqiRXiQ69gLWSLpgB5/6sU+r6BlQR0MBILadqTQ==}
+    deprecated: This package is deprecated. Use the optional chaining (?.) operator instead.
 
   lodash.ismatch@4.4.0:
     resolution: {integrity: sha512-fPMfXjGQEV9Xsq/8MTSgUf255gawYRbjwMyDbcvDhXgV7enSZA0hynz6vMPnpAb5iONEzBHBPsT+0zes5Z301g==}
@@ -2467,10 +2487,10 @@ snapshots:
 
   '@eslint/js@8.44.0': {}
 
-  '@google-automations/git-file-utils@1.2.5':
+  '@google-automations/git-file-utils@1.2.6':
     dependencies:
-      '@octokit/rest': 19.0.5
-      '@octokit/types': 8.2.1
+      '@octokit/rest': 19.0.13
+      '@octokit/types': 9.3.2
       minimatch: 5.1.6
     transitivePeerDependencies:
       - encoding
@@ -2604,6 +2624,12 @@ snapshots:
       '@octokit/core': 4.2.4
       '@octokit/types': 8.2.1
 
+  '@octokit/plugin-paginate-rest@6.1.2(@octokit/core@4.2.4)':
+    dependencies:
+      '@octokit/core': 4.2.4
+      '@octokit/tsconfig': 1.0.2
+      '@octokit/types': 9.3.2
+
   '@octokit/plugin-request-log@1.0.4(@octokit/core@4.2.4)':
     dependencies:
       '@octokit/core': 4.2.4
@@ -2613,6 +2639,11 @@ snapshots:
       '@octokit/core': 4.2.4
       '@octokit/types': 8.2.1
       deprecation: 2.3.1
+
+  '@octokit/plugin-rest-endpoint-methods@7.2.3(@octokit/core@4.2.4)':
+    dependencies:
+      '@octokit/core': 4.2.4
+      '@octokit/types': 10.0.0
 
   '@octokit/plugin-retry@5.0.5(@octokit/core@4.2.4)':
     dependencies:
@@ -2650,6 +2681,15 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
+  '@octokit/rest@19.0.13':
+    dependencies:
+      '@octokit/core': 4.2.4
+      '@octokit/plugin-paginate-rest': 6.1.2(@octokit/core@4.2.4)
+      '@octokit/plugin-request-log': 1.0.4(@octokit/core@4.2.4)
+      '@octokit/plugin-rest-endpoint-methods': 7.2.3(@octokit/core@4.2.4)
+    transitivePeerDependencies:
+      - encoding
+
   '@octokit/rest@19.0.5':
     dependencies:
       '@octokit/core': 4.2.4
@@ -2658,6 +2698,8 @@ snapshots:
       '@octokit/plugin-rest-endpoint-methods': 6.7.0(@octokit/core@4.2.4)
     transitivePeerDependencies:
       - encoding
+
+  '@octokit/tsconfig@1.0.2': {}
 
   '@octokit/types@10.0.0':
     dependencies:
@@ -2992,7 +3034,7 @@ snapshots:
       balanced-match: 1.0.2
       concat-map: 0.0.1
 
-  brace-expansion@2.0.1:
+  brace-expansion@2.0.2:
     dependencies:
       balanced-match: 1.0.2
 
@@ -3954,7 +3996,7 @@ snapshots:
 
   minimatch@5.1.6:
     dependencies:
-      brace-expansion: 2.0.1
+      brace-expansion: 2.0.2
 
   minimist-options@4.1.0:
     dependencies:
