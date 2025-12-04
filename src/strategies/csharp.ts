@@ -53,7 +53,7 @@ export class CSharp extends BaseStrategy {
   private async getCsprojName(): Promise<string> {
     // First, try to find .csproj files in the path
     const files = await this.github.findFilesByGlobAndRef(
-      '*.csproj',
+      '**/*.csproj',
       this.changesBranch,
       this.path === '.' ? undefined : this.path
     );
