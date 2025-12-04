@@ -42,7 +42,7 @@ class CSharp extends base_1.BaseStrategy {
     }
     async getCsprojName() {
         // First, try to find .csproj files in the path
-        const files = await this.github.findFilesByGlobAndRef('*.csproj', this.changesBranch, this.path === '.' ? undefined : this.path);
+        const files = await this.github.findFilesByGlobAndRef('**/*.csproj', this.changesBranch, this.path === '.' ? undefined : this.path);
         if (files.length > 0) {
             // Return just the filename, not the full path
             const fullPath = files[0];
