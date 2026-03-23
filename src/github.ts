@@ -1285,16 +1285,46 @@ export class GitHub {
       if (options?.existingPrNumber) {
         pullRequestNumber = options.existingPrNumber;
       } else {
-        const createPrResponse = await this.octokit.pulls.create({
-          owner: this.repository.owner,
-          repo: this.repository.repo,
-          title: pullRequest.title,
-          head: pullRequest.headBranchName,
-          base: baseBranch,
-          body: pullRequest.body,
-          draft: !!options?.draft,
-        });
-        pullRequestNumber = createPrResponse.data.number;
+        try {
+          const createPrResponse = await this.octokit.pulls.create({
+            owner: this.repository.owner,
+            repo: this.repository.repo,
+            title: pullRequest.title,
+            head: pullRequest.headBranchName,
+            base: baseBranch,
+            body: pullRequest.body,
+            draft: !!options?.draft,
+          });
+          pullRequestNumber = createPrResponse.data.number;
+        } catch (e) {
+          if (
+            isOctokitRequestError(e) &&
+            e.status === 422 &&
+            (GitHubAPIError.parseErrors(e).some(
+              err => err.message?.includes('pull request already exists')
+            ) ||
+              (
+                GitHubAPIError.parseErrorBody(e) as
+                  | {message?: string}
+                  | undefined
+              )?.message?.includes('pull request already exists'))
+          ) {
+            this.logger.info(
+              `Pull request already exists for ${pullRequest.headBranchName}, finding existing PR`
+            );
+            const existingPr = await this.findExistingPullRequest(
+              pullRequest.headBranchName,
+              baseBranch
+            );
+            if (existingPr) {
+              pullRequestNumber = existingPr.number;
+            } else {
+              throw e;
+            }
+          } else {
+            throw e;
+          }
+        }
       }
 
       // add labels, autorelease labels are needed for the github-release command
@@ -1441,6 +1471,41 @@ export class GitHub {
         error.message.includes('does not exist')) === true
     );
   };
+
+  /**
+   * Find an existing open pull request by head and base branch
+   * @param {string} headBranch The head branch of the pull request
+   * @param {string} baseBranch The base branch of the pull request
+   * @returns {PullRequest}
+   */
+  private async findExistingPullRequest(
+    headBranch: string,
+    baseBranch: string
+  ): Promise<PullRequest | undefined> {
+    const response = await this.octokit.pulls.list({
+      owner: this.repository.owner,
+      repo: this.repository.repo,
+      head: `${this.repository.owner}:${headBranch}`,
+      base: baseBranch,
+      state: 'open',
+      per_page: 1,
+    });
+    if (response.data.length > 0) {
+      const pull = response.data[0]!;
+      return {
+        headBranchName: pull.head.ref,
+        baseBranchName: pull.base.ref,
+        number: pull.number,
+        title: pull.title,
+        body: pull.body || '',
+        files: [],
+        labels: pull.labels
+          .map(label => label.name)
+          .filter(name => !!name) as string[],
+      };
+    }
+    return undefined;
+  }
 
   /**
    * Fetch a pull request given the pull number
