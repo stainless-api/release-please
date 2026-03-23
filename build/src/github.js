@@ -145,6 +145,7 @@ class GitHub {
          * @throws {GitHubAPIError} on an API error
          */
         this.createPullRequest = wrapAsync(async (pullRequest, baseBranch, refBranch, message, updates, options) => {
+            var _a, _b;
             await this.upsertReleaseBranch(pullRequest, refBranch, message, updates);
             // create pull request, unless one already exists
             let pullRequestNumber;
@@ -152,16 +153,36 @@ class GitHub {
                 pullRequestNumber = options.existingPrNumber;
             }
             else {
-                const createPrResponse = await this.octokit.pulls.create({
-                    owner: this.repository.owner,
-                    repo: this.repository.repo,
-                    title: pullRequest.title,
-                    head: pullRequest.headBranchName,
-                    base: baseBranch,
-                    body: pullRequest.body,
-                    draft: !!(options === null || options === void 0 ? void 0 : options.draft),
-                });
-                pullRequestNumber = createPrResponse.data.number;
+                try {
+                    const createPrResponse = await this.octokit.pulls.create({
+                        owner: this.repository.owner,
+                        repo: this.repository.repo,
+                        title: pullRequest.title,
+                        head: pullRequest.headBranchName,
+                        base: baseBranch,
+                        body: pullRequest.body,
+                        draft: !!(options === null || options === void 0 ? void 0 : options.draft),
+                    });
+                    pullRequestNumber = createPrResponse.data.number;
+                }
+                catch (e) {
+                    if ((0, errors_1.isOctokitRequestError)(e) &&
+                        e.status === 422 &&
+                        (errors_1.GitHubAPIError.parseErrors(e).some(err => { var _a; return (_a = err.message) === null || _a === void 0 ? void 0 : _a.includes('pull request already exists'); }) ||
+                            ((_b = (_a = errors_1.GitHubAPIError.parseErrorBody(e)) === null || _a === void 0 ? void 0 : _a.message) === null || _b === void 0 ? void 0 : _b.includes('pull request already exists')))) {
+                        this.logger.info(`Pull request already exists for ${pullRequest.headBranchName}, finding existing PR`);
+                        const existingPr = await this.findExistingPullRequest(pullRequest.headBranchName, baseBranch);
+                        if (existingPr) {
+                            pullRequestNumber = existingPr.number;
+                        }
+                        else {
+                            throw e;
+                        }
+                    }
+                    else {
+                        throw e;
+                    }
+                }
             }
             // add labels, autorelease labels are needed for the github-release command
             await (0, labels_1.addLabels)(this.octokit, {
@@ -1177,6 +1198,37 @@ class GitHub {
     async getFileJson(path, branch) {
         const content = await this.getFileContentsOnBranch(path, branch);
         return JSON.parse(content.parsedContent);
+    }
+    /**
+     * Find an existing open pull request by head and base branch
+     * @param {string} headBranch The head branch of the pull request
+     * @param {string} baseBranch The base branch of the pull request
+     * @returns {PullRequest}
+     */
+    async findExistingPullRequest(headBranch, baseBranch) {
+        const response = await this.octokit.pulls.list({
+            owner: this.repository.owner,
+            repo: this.repository.repo,
+            head: `${this.repository.owner}:${headBranch}`,
+            base: baseBranch,
+            state: 'open',
+            per_page: 1,
+        });
+        if (response.data.length > 0) {
+            const pull = response.data[0];
+            return {
+                headBranchName: pull.head.ref,
+                baseBranchName: pull.base.ref,
+                number: pull.number,
+                title: pull.title,
+                body: pull.body || '',
+                files: [],
+                labels: pull.labels
+                    .map(label => label.name)
+                    .filter(name => !!name),
+            };
+        }
+        return undefined;
     }
     /**
      * Given a set of proposed updates, build a changeset to suggest.

@@ -5,6 +5,7 @@ interface SingleError {
     resource: string;
     code: string;
     field: string;
+    message?: string;
 }
 export declare class ConfigurationError extends Error {
     releaserName: string;

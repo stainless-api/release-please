@@ -296,6 +296,13 @@ export declare class GitHub {
     upsertReleaseBranch: (pullRequest: PullRequest, refBranch: string, message: string, updates: Update[]) => Promise<void>;
     isRefDoesNotExistError: (error: unknown) => boolean;
     /**
+     * Find an existing open pull request by head and base branch
+     * @param {string} headBranch The head branch of the pull request
+     * @param {string} baseBranch The base branch of the pull request
+     * @returns {PullRequest}
+     */
+    private findExistingPullRequest;
+    /**
      * Fetch a pull request given the pull number
      * @param {number} number The pull request number
      * @returns {PullRequest}

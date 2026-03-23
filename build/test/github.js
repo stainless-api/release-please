@@ -947,6 +947,133 @@ const sandbox = sinon.createSandbox();
             req.done();
         });
     });
+    (0, mocha_1.describe)('createPullRequest', () => {
+        const pullRequest = {
+            title: 'test-title',
+            headBranchName: 'release-please--branches--main',
+            baseBranchName: 'main',
+            number: 0,
+            body: 'test body',
+            labels: ['autorelease: pending'],
+            files: [],
+        };
+        (0, mocha_1.it)('creates a new pull request', async () => {
+            sandbox
+                .stub(github, 'upsertReleaseBranch') // eslint-disable-line @typescript-eslint/no-explicit-any
+                .resolves();
+            req = req
+                .post('/repos/fake/fake/pulls', body => {
+                (0, chai_1.expect)(body.title).to.eql('test-title');
+                (0, chai_1.expect)(body.head).to.eql('release-please--branches--main');
+                (0, chai_1.expect)(body.base).to.eql('main');
+                (0, chai_1.expect)(body.body).to.eql('test body');
+                return true;
+            })
+                .reply(200, { number: 99 });
+            sandbox
+                .stub(github, 'getPullRequest')
+                .withArgs(99)
+                .resolves({
+                title: 'test-title',
+                headBranchName: 'release-please--branches--main',
+                baseBranchName: 'main',
+                number: 99,
+                body: 'test body',
+                labels: ['autorelease: pending'],
+                files: [],
+            });
+            // addLabels
+            req = req.post('/repos/fake/fake/issues/99/labels').reply(200, []);
+            const result = await github.createPullRequest(pullRequest, 'main', 'main', 'chore: release', []);
+            (0, chai_1.expect)(result.number).to.eql(99);
+            req.done();
+        });
+        (0, mocha_1.it)('recovers when a pull request already exists', async () => {
+            sandbox
+                .stub(github, 'upsertReleaseBranch') // eslint-disable-line @typescript-eslint/no-explicit-any
+                .resolves();
+            req = req.post('/repos/fake/fake/pulls').reply(422, {
+                message: 'Validation Failed: A pull request already exists for fake:release-please--branches--main.',
+            });
+            req = req
+                .get('/repos/fake/fake/pulls')
+                .query({
+                head: 'fake:release-please--branches--main',
+                base: 'main',
+                state: 'open',
+                per_page: 1,
+            })
+                .reply(200, [
+                {
+                    number: 42,
+                    title: 'existing-title',
+                    body: 'existing body',
+                    head: { ref: 'release-please--branches--main' },
+                    base: { ref: 'main' },
+                    labels: [{ name: 'autorelease: pending' }],
+                },
+            ]);
+            // addLabels
+            req = req.post('/repos/fake/fake/issues/42/labels').reply(200, []);
+            sandbox
+                .stub(github, 'getPullRequest')
+                .withArgs(42)
+                .resolves({
+                title: 'existing-title',
+                headBranchName: 'release-please--branches--main',
+                baseBranchName: 'main',
+                number: 42,
+                body: 'existing body',
+                labels: ['autorelease: pending'],
+                files: [],
+            });
+            const result = await github.createPullRequest(pullRequest, 'main', 'main', 'chore: release', []);
+            (0, chai_1.expect)(result.number).to.eql(42);
+            (0, chai_1.expect)(result.title).to.eql('existing-title');
+            req.done();
+        });
+        (0, mocha_1.it)('throws when 422 but no existing PR is found', async () => {
+            sandbox
+                .stub(github, 'upsertReleaseBranch') // eslint-disable-line @typescript-eslint/no-explicit-any
+                .resolves();
+            req = req.post('/repos/fake/fake/pulls').reply(422, {
+                message: 'Validation Failed: A pull request already exists for fake:release-please--branches--main.',
+            });
+            req = req
+                .get('/repos/fake/fake/pulls')
+                .query({
+                head: 'fake:release-please--branches--main',
+                base: 'main',
+                state: 'open',
+                per_page: 1,
+            })
+                .reply(200, []);
+            try {
+                await github.createPullRequest(pullRequest, 'main', 'main', 'chore: release', []);
+                (0, assert_1.fail)('should have thrown');
+            }
+            catch (e) {
+                (0, chai_1.expect)(e.status).to.eql(422);
+            }
+            req.done();
+        });
+        (0, mocha_1.it)('throws on non-422 errors', async () => {
+            sandbox
+                .stub(github, 'upsertReleaseBranch') // eslint-disable-line @typescript-eslint/no-explicit-any
+                .resolves();
+            req = req.post('/repos/fake/fake/pulls').reply(500, {
+                message: 'Internal Server Error',
+            });
+            try {
+                await github.createPullRequest(pullRequest, 'main', 'main', 'chore: release', []);
+                (0, assert_1.fail)('should have thrown');
+            }
+            catch (e) {
+                (0, chai_1.expect)(e.status).to.eql(500);
+            }
+            req.done();
+        });
+    });
     (0, mocha_1.describe)('enablePullRequestAutoMerge', () => {
         (0, mocha_1.it)('toggle on github auto-merge feature for PR', async () => {
             req
