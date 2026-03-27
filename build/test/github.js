@@ -869,7 +869,14 @@ const sandbox = sinon.createSandbox();
                 labels: [],
                 files: [],
             });
-            req = req.patch('/repos/fake/fake/pulls/123').reply(200, {
+            req = req
+                .get('/repos/fake/fake/pulls/123')
+                .reply(200, {
+                number: 123,
+                state: 'open',
+            })
+                .patch('/repos/fake/fake/pulls/123')
+                .reply(200, {
                 number: 123,
                 title: 'updated-title',
                 body: 'updated body',
@@ -901,7 +908,14 @@ const sandbox = sinon.createSandbox();
             const upsertReleaseBranch = sandbox
                 .stub(github, 'upsertReleaseBranch') // eslint-disable-line @typescript-eslint/no-explicit-any
                 .resolves('the-pull-request-branch-sha');
-            req = req.patch('/repos/fake/fake/pulls/123').reply(200, {
+            req = req
+                .get('/repos/fake/fake/pulls/123')
+                .reply(200, {
+                number: 123,
+                state: 'open',
+            })
+                .patch('/repos/fake/fake/pulls/123')
+                .reply(200, {
                 number: 123,
                 title: 'updated-title',
                 body: 'updated body',
@@ -944,6 +958,47 @@ const sandbox = sinon.createSandbox();
             sinon.assert.calledOnce(handleOverflowStub);
             sinon.assert.calledOnce(upsertReleaseBranch);
             sinon.assert.calledOnce(getPullRequestStub);
+            req.done();
+        });
+        (0, mocha_1.it)('skips update if the PR was merged between query and update', async () => {
+            const upsertReleaseBranch = sandbox
+                .stub(github, 'upsertReleaseBranch') // eslint-disable-line @typescript-eslint/no-explicit-any
+                .resolves('the-pull-request-branch-sha');
+            const getPullRequestStub = sandbox
+                .stub(github, 'getPullRequest')
+                .withArgs(123)
+                .resolves({
+                title: 'release: 1.9.1',
+                headBranchName: 'release-please--branches--main--changes--next',
+                baseBranchName: 'main',
+                number: 123,
+                body: 'release body',
+                labels: ['autorelease: tagged'],
+                files: [],
+            });
+            // PR was merged between the initial open-PR query and this update
+            req = req.get('/repos/fake/fake/pulls/123').reply(200, {
+                number: 123,
+                state: 'closed',
+                merged: true,
+            });
+            const pullRequest = {
+                title: pull_request_title_1.PullRequestTitle.ofTargetBranch('main', 'next'),
+                body: new pull_request_body_1.PullRequestBody((0, helpers_1.mockReleaseData)(1000), {
+                    useComponents: true,
+                }),
+                labels: ['autorelease: pending'],
+                headRefName: 'release-please--branches--main--changes--next',
+                draft: false,
+                updates: [],
+                conventionalCommits: [],
+            };
+            const result = await github.updatePullRequest(123, pullRequest, 'main', 'next');
+            // Should return the current PR state without modifying it
+            sinon.assert.notCalled(upsertReleaseBranch);
+            sinon.assert.calledOnce(getPullRequestStub);
+            (0, chai_1.expect)(result.number).to.equal(123);
+            (0, chai_1.expect)(result.labels).to.include('autorelease: tagged');
             req.done();
         });
     });
