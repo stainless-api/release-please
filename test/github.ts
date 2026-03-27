@@ -1128,18 +1128,25 @@ describe('GitHub', () => {
           files: [],
         });
 
-      req = req.patch('/repos/fake/fake/pulls/123').reply(200, {
-        number: 123,
-        title: 'updated-title',
-        body: 'updated body',
-        labels: [],
-        head: {
-          ref: 'release-please--branches--main--changes--next',
-        },
-        base: {
-          ref: 'main',
-        },
-      });
+      req = req
+        .get('/repos/fake/fake/pulls/123')
+        .reply(200, {
+          number: 123,
+          state: 'open',
+        })
+        .patch('/repos/fake/fake/pulls/123')
+        .reply(200, {
+          number: 123,
+          title: 'updated-title',
+          body: 'updated body',
+          labels: [],
+          head: {
+            ref: 'release-please--branches--main--changes--next',
+          },
+          base: {
+            ref: 'main',
+          },
+        });
 
       const pullRequest: ReleasePullRequest = {
         title: PullRequestTitle.ofTargetBranch('main', 'next'),
@@ -1164,18 +1171,25 @@ describe('GitHub', () => {
         .stub(github, <any>'upsertReleaseBranch') // eslint-disable-line @typescript-eslint/no-explicit-any
         .resolves('the-pull-request-branch-sha');
 
-      req = req.patch('/repos/fake/fake/pulls/123').reply(200, {
-        number: 123,
-        title: 'updated-title',
-        body: 'updated body',
-        labels: [],
-        head: {
-          ref: 'release-please--branches--main',
-        },
-        base: {
-          ref: 'main',
-        },
-      });
+      req = req
+        .get('/repos/fake/fake/pulls/123')
+        .reply(200, {
+          number: 123,
+          state: 'open',
+        })
+        .patch('/repos/fake/fake/pulls/123')
+        .reply(200, {
+          number: 123,
+          title: 'updated-title',
+          body: 'updated body',
+          labels: [],
+          head: {
+            ref: 'release-please--branches--main',
+          },
+          base: {
+            ref: 'main',
+          },
+        });
       const getPullRequestStub = sandbox
         .stub(github, 'getPullRequest')
         .withArgs(123)
@@ -1207,6 +1221,58 @@ describe('GitHub', () => {
       sinon.assert.calledOnce(handleOverflowStub);
       sinon.assert.calledOnce(upsertReleaseBranch);
       sinon.assert.calledOnce(getPullRequestStub);
+      req.done();
+    });
+
+    it('skips update if the PR was merged between query and update', async () => {
+      const upsertReleaseBranch = sandbox
+        .stub(github, <any>'upsertReleaseBranch') // eslint-disable-line @typescript-eslint/no-explicit-any
+        .resolves('the-pull-request-branch-sha');
+
+      const getPullRequestStub = sandbox
+        .stub(github, 'getPullRequest')
+        .withArgs(123)
+        .resolves({
+          title: 'release: 1.9.1',
+          headBranchName: 'release-please--branches--main--changes--next',
+          baseBranchName: 'main',
+          number: 123,
+          body: 'release body',
+          labels: ['autorelease: tagged'],
+          files: [],
+        });
+
+      // PR was merged between the initial open-PR query and this update
+      req = req.get('/repos/fake/fake/pulls/123').reply(200, {
+        number: 123,
+        state: 'closed',
+        merged: true,
+      });
+
+      const pullRequest: ReleasePullRequest = {
+        title: PullRequestTitle.ofTargetBranch('main', 'next'),
+        body: new PullRequestBody(mockReleaseData(1000), {
+          useComponents: true,
+        }),
+        labels: ['autorelease: pending'],
+        headRefName: 'release-please--branches--main--changes--next',
+        draft: false,
+        updates: [],
+        conventionalCommits: [],
+      };
+
+      const result = await github.updatePullRequest(
+        123,
+        pullRequest,
+        'main',
+        'next'
+      );
+
+      // Should return the current PR state without modifying it
+      sinon.assert.notCalled(upsertReleaseBranch);
+      sinon.assert.calledOnce(getPullRequestStub);
+      expect(result.number).to.equal(123);
+      expect(result.labels).to.include('autorelease: tagged');
       req.done();
     });
   });

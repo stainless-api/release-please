@@ -1567,6 +1567,21 @@ export class GitHub {
         .toString()
         .slice(0, MAX_ISSUE_BODY_SIZE);
 
+      // re-fetch before trying to recreate the PR, in case an existing one
+      // was merged while this was running. this avoids modifying a PR that's
+      // already closed.
+      const currentPr = await this.octokit.pulls.get({
+        owner: this.repository.owner,
+        repo: this.repository.repo,
+        pull_number: number,
+      });
+      if (currentPr.data.state !== 'open') {
+        this.logger.warn(
+          `Pull request #${number} is no longer open (state: ${currentPr.data.state}) - skipping update`
+        );
+        return this.getPullRequest(number);
+      }
+
       await this.createPullRequest(
         {
           headBranchName: releasePullRequest.headRefName,
