@@ -22,8 +22,6 @@ This pull request is managed by Stainless's [GitHub App](https://github.com/apps
 
 The [semver version number](https://semver.org/#semantic-versioning-specification-semver) is based on included [commit messages](https://www.conventionalcommits.org/en/v1.0.0/). Alternatively, you can manually set the version number in the title of this pull request.
 
-For a better experience, it is recommended to use either rebase-merge or squash-merge when merging this pull request.
-
 🔗 Stainless [website](https://www.stainlessapi.com)
 📚 Read the [docs](https://app.stainlessapi.com/docs)
 🙋 [Reach out](mailto:support@stainlessapi.com) for help or questions
@@ -52,8 +50,6 @@ Release notes for path: maven3, releaseType: maven
 This pull request is managed by Stainless's [GitHub App](https://github.com/apps/stainless-app).
 
 The [semver version number](https://semver.org/#semantic-versioning-specification-semver) is based on included [commit messages](https://www.conventionalcommits.org/en/v1.0.0/). Alternatively, you can manually set the version number in the title of this pull request.
-
-For a better experience, it is recommended to use either rebase-merge or squash-merge when merging this pull request.
 
 🔗 Stainless [website](https://www.stainlessapi.com)
 📚 Read the [docs](https://app.stainlessapi.com/docs)
@@ -84,8 +80,6 @@ Release notes for path: multi1, releaseType: java-yoshi
 This pull request is managed by Stainless's [GitHub App](https://github.com/apps/stainless-app).
 
 The [semver version number](https://semver.org/#semantic-versioning-specification-semver) is based on included [commit messages](https://www.conventionalcommits.org/en/v1.0.0/). Alternatively, you can manually set the version number in the title of this pull request.
-
-For a better experience, it is recommended to use either rebase-merge or squash-merge when merging this pull request.
 
 🔗 Stainless [website](https://www.stainlessapi.com)
 📚 Read the [docs](https://app.stainlessapi.com/docs)
@@ -147,8 +141,6 @@ This pull request is managed by Stainless's [GitHub App](https://github.com/apps
 
 The [semver version number](https://semver.org/#semantic-versioning-specification-semver) is based on included [commit messages](https://www.conventionalcommits.org/en/v1.0.0/). Alternatively, you can manually set the version number in the title of this pull request.
 
-For a better experience, it is recommended to use either rebase-merge or squash-merge when merging this pull request.
-
 🔗 Stainless [website](https://www.stainlessapi.com)
 📚 Read the [docs](https://app.stainlessapi.com/docs)
 🙋 [Reach out](mailto:support@stainlessapi.com) for help or questions
@@ -193,8 +185,6 @@ This pull request is managed by Stainless's [GitHub App](https://github.com/apps
 
 The [semver version number](https://semver.org/#semantic-versioning-specification-semver) is based on included [commit messages](https://www.conventionalcommits.org/en/v1.0.0/). Alternatively, you can manually set the version number in the title of this pull request.
 
-For a better experience, it is recommended to use either rebase-merge or squash-merge when merging this pull request.
-
 🔗 Stainless [website](https://www.stainlessapi.com)
 📚 Read the [docs](https://app.stainlessapi.com/docs)
 🙋 [Reach out](mailto:support@stainlessapi.com) for help or questions
@@ -238,8 +228,6 @@ Release notes for path: maven1, releaseType: maven
 This pull request is managed by Stainless's [GitHub App](https://github.com/apps/stainless-app).
 
 The [semver version number](https://semver.org/#semantic-versioning-specification-semver) is based on included [commit messages](https://www.conventionalcommits.org/en/v1.0.0/). Alternatively, you can manually set the version number in the title of this pull request.
-
-For a better experience, it is recommended to use either rebase-merge or squash-merge when merging this pull request.
 
 🔗 Stainless [website](https://www.stainlessapi.com)
 📚 Read the [docs](https://app.stainlessapi.com/docs)
